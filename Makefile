@@ -5,12 +5,13 @@ LDFLAGS = -lSDL -lGL
 SRC_PATH = src
 BIN_PATH = bin
 
-EXEC = Imac2GL3
+EXEC = SUPER_IMACRAFT
 
 SRC_FILES = $(shell find $(SRC_PATH) -type f -name '*.cpp')
 OBJ_FILES = $(patsubst $(SRC_PATH)/%.cpp, $(SRC_PATH)/%.o, $(SRC_FILES))
 
 all: $(BIN_PATH)/$(EXEC)
+	@echo [--compilation finished : WELL DONE !--]
 
 $(BIN_PATH)/$(EXEC): $(OBJ_FILES) $(SRC_PATH)/glew-1.9/glew.o
 	$(CC) -o $@ $^ $(LDFLAGS)
