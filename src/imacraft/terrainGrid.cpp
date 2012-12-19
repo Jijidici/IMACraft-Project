@@ -1,7 +1,10 @@
 #include<iostream>
-#include<string>
+#include<cstdlib>
+#include<string.h>
+#include <stdint.h>
+#include <stdio.h>
 
-#include"terrainGrid.hpp"
+#include"imacraft/terrainGrid.hpp"
 
 namespace imacraft{
 
@@ -11,7 +14,7 @@ namespace imacraft{
 		char path[80] = "terrain_data/";
 		strcat(path,fileName);
 
-		rDdataFile = fopen(path, "rb");
+		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
 			std::cout << "[!] > Unable to read the terrain_data file" << std::endl;
 			return EXIT_FAILURE;
@@ -24,7 +27,7 @@ namespace imacraft{
 		m_data = new uint8_t[m_width];
 		test_fic = fread(m_data, m_width*sizeof(uint8_t), 1, rDataFile);
 
-		fclose(rDdataFile);
+		fclose(rDataFile);
 
 		if(!test_fic) return false;
 		else return true;
