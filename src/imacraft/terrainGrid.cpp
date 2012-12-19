@@ -1,13 +1,22 @@
-#include<iostream>
-#include<cstdlib>
-#include<string.h>
+#include <iostream>
+#include <cstdlib>
+#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include"imacraft/terrainGrid.hpp"
 
 namespace imacraft{
-
+	
+	TerrainGrid::TerrainGrid(){
+		m_data = NULL;
+		m_width = 0;
+	}
+	
+	TerrainGrid::~TerrainGrid(){
+		if(NULL == m_data){ delete[] m_data; } 
+	}
+	
 	bool TerrainGrid::readFile(const char* fileName){
 
 		FILE *rDataFile = NULL;

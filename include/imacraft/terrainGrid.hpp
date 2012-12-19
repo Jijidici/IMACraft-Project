@@ -8,6 +8,8 @@ namespace imacraft{
 			uint8_t *m_data;
 			uint16_t m_width;
 		public:
+			TerrainGrid();
+			~TerrainGrid();
 			bool readFile(const char*);
 			bool writeFile(const char*);
 	};

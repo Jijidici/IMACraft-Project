@@ -38,10 +38,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     
-    // Creation des ressources OpenGL
-    
-    /** PLACEZ VOTRE CODE DE CREATION DES VBOS/VAOS/SHADERS/... ICI **/
-    
+    // Creation des ressources OpenGL    
     
     
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
