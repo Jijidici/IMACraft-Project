@@ -43,6 +43,17 @@ int main(int argc, char** argv) {
     
     
     
+    GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
+    if(!program){
+		return (EXIT_FAILURE);
+	}
+    glUseProgram(program);
+    
+    
+    /** Matrices **/
+    GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
+    
+    glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 1000.f); // tout doit être en float !!!
     
     
     //~ Camera vue libre
@@ -57,7 +68,18 @@ int main(int argc, char** argv) {
     bool done = false;
     while(!done) {
         // Nettoyage de la fenêtre
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        
+        glm::mat4 VP = P * V.getViewMatrix();
+    
+		MatrixStack myStack;
+		myStack.set(VP);
+		
+		/********* AFFICHAGE **********/
+		
+		glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(myStack.top()));
+
 
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();

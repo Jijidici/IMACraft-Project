@@ -1,4 +1,4 @@
-#include "imac2gl3/cameras/TrackBallCamera.hpp"
+#include "imacraft/cameras/TrackBallCamera.hpp"
 
 TrackBallCamera::TrackBallCamera() : m_fDistance(0.f), m_fAngleX(0.f), m_fAngleY(0.f){
 }

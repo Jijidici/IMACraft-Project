@@ -1,4 +1,4 @@
-#include "imac2gl3/cameras/FreeFlyCamera.hpp"
+#include "imacraft/cameras/FreeFlyCamera.hpp"
 
 #define PI 3.141592654
 
