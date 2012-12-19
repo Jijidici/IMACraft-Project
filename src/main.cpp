@@ -14,6 +14,7 @@
 
 #include "imacraft/cameras/FreeFlyCamera.hpp" 
 
+#include "imacraft/Renderer.hpp"
 
 
 static const size_t WINDOW_WIDTH = 512, WINDOW_HEIGHT = 512;
