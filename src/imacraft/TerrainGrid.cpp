@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include"imacraft/terrainGrid.hpp"
+#include"imacraft/TerrainGrid.hpp"
 
 namespace imacraft{
 	
@@ -15,6 +15,14 @@ namespace imacraft{
 	
 	TerrainGrid::~TerrainGrid(){
 		if(NULL == m_data){ delete[] m_data; } 
+	}
+	
+	uint8_t TerrainGrid::operator [](size_t idx) const{
+		return m_data[idx];
+	}
+	
+	uint8_t& TerrainGrid::operator [](size_t idx){
+		return m_data[idx];
 	}
 	
 	bool TerrainGrid::readFile(const char* fileName){
@@ -33,8 +41,8 @@ namespace imacraft{
 		
 		test_fic = fread(&m_width, sizeof(uint16_t), 1, rDataFile);
 
-		m_data = new uint8_t[m_width];
-		test_fic = fread(m_data, m_width*sizeof(uint8_t), 1, rDataFile);
+		m_data = new uint8_t[m_width*m_width*TERRAIN_HEIGHT];
+		test_fic = fread(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
 
 		fclose(rDataFile);
 
@@ -63,6 +71,18 @@ namespace imacraft{
 
 		if(!test_fic) return false;
 		else return true;
+	}
+	
+	uint32_t TerrainGrid::length() const{
+		return m_width*m_width*TERRAIN_HEIGHT;
+	}
+	
+	uint16_t TerrainGrid::width() const{
+		return m_width;
+	}
+	
+	uint16_t TerrainGrid::height() const{
+		return TERRAIN_HEIGHT;
 	}
 
 }

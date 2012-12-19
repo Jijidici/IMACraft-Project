@@ -1,18 +1,20 @@
 #ifndef _RENDERER_HPP_
 #define _RENDERER_HPP_
 
-//~ #include "imacraft/CubeInstance.hpp"
-//~ #include "imacraft/TerrainGrid.hpp"
+#include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/TerrainGrid.hpp"
+#include "imacraft/MatrixStack.hpp"
 
 namespace imacraft{
 	struct Renderer{
-		//~ CubeInstance m_cubeModel;
-		//~ TerrainGrid m_grid;
-		//~ Renderer(CubeInstance cubeModel, TerrainGrid grid);
+		private:
+			CubeInstance m_cubeModel;
+			TerrainGrid m_grid;
 		
-		void render();
-		
-		~Renderer();
+		public:
+			Renderer(CubeInstance& cubeModel, TerrainGrid& grid);
+			~Renderer();
+			void render(MatrixStack& ms, GLuint MVPLocation);
 	};
 }
 
