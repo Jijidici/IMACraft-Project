@@ -4,6 +4,18 @@
 #include <SDL/SDL.h>
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "imacraft/shader_tools.hpp"
+
+#include "imacraft/MatrixStack.hpp"
+
+#include "imacraft/cameras/FreeFlyCamera.hpp" 
+
+
+
 static const size_t WINDOW_WIDTH = 512, WINDOW_HEIGHT = 512;
 static const size_t BYTES_PER_PIXEL = 32;
 
@@ -29,6 +41,18 @@ int main(int argc, char** argv) {
     
     /** PLACEZ VOTRE CODE DE CREATION DES VBOS/VAOS/SHADERS/... ICI **/
     
+    
+    
+    
+    
+    //~ Camera vue libre
+    FreeFlyCamera V;
+	
+    V.moveFront(-5.f);
+    
+    int posX = 0;
+    int posY = 0;
+    
     // Boucle principale
     bool done = false;
     while(!done) {
@@ -38,6 +62,9 @@ int main(int argc, char** argv) {
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();
         
+        
+        Uint8 *keystate = SDL_GetKeyState(NULL);
+        
         // Boucle de gestion des évenements
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
@@ -46,10 +73,33 @@ int main(int argc, char** argv) {
                 done = true;
                 break;
             }
-            
+            if(e.type == SDL_KEYUP){
+            	if(e.key.keysym.sym == SDLK_ESCAPE){
+            		done = true;
+            		break;
+            	}
+            }
             // Traitement des autres évenements:
             
             /** PLACEZ VOTRE CODE DE TRAITEMENT DES EVENTS ICI **/
+            if(SDL_GetRelativeMouseState(&posX, &posY)&SDL_BUTTON(SDL_BUTTON_RIGHT)){
+				//std::cout << "posX : " << posX << " posY : " << posY << std::endl;
+				V.rotateLeft(-posX);
+				V.rotateUp(-posY);
+			}
+			
+			if(keystate[SDLK_z]){
+				V.moveFront(0.1);
+			}
+			if(keystate[SDLK_s]){
+				V.moveFront(-0.1);
+			}
+			if(keystate[SDLK_q]){
+				V.moveLeft(0.1);
+			}
+			if(keystate[SDLK_d]){
+				V.moveLeft(-0.1);
+			}
         }
     }
     
