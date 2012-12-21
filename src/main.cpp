@@ -15,8 +15,8 @@
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
 
-
-static const size_t WINDOW_WIDTH = 512, WINDOW_HEIGHT = 512;
+static const Uint32 MIN_LOOP_TIME = 1000/60;
+static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;
 
 int main(int argc, char** argv) {
@@ -61,26 +61,36 @@ int main(int argc, char** argv) {
     imacraft::Renderer rend(&model_cube, &grid);
     
     //~ Camera vue libre
-    FreeFlyCamera V;
-    V.moveFront(-5.f);
+    imacraft::FreeFlyCamera ffCam;
     
-    int posX = 0;
-    int posY = 0;
+    //variable d'events
+	bool is_lKeyPressed = false;
+	bool is_rKeyPressed = false;
+	bool is_uKeyPressed = false;
+	bool is_dKeyPressed = false;
+	float ffC_angleX = 0;
+	float ffC_angleY = 0;
     
     // Boucle principale
     bool done = false;
     while(!done) {
+		// Initilisation compteur
+		Uint32 start = 0;
+		Uint32 end = 0;
+		Uint32 ellapsedTime = 0;
+		start = SDL_GetTicks();
+    
         // Nettoyage de la fenêtre
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        glm::mat4 VP = P * V.getViewMatrix();        
+        glm::mat4 VP = P * ffCam.getViewMatrix();        
     
 		MatrixStack myStack;
 		myStack.set(VP);
 		
 		/********* AFFICHAGE **********/
 		myStack.push();
-			myStack.translate(glm::vec3(-1.f, -1.f, 1.f));
+			myStack.translate(glm::vec3(-1.f, -1.f, 0.f));
 			rend.render(myStack, MVPLocation);
 		myStack.pop();
 		
@@ -88,50 +98,89 @@ int main(int argc, char** argv) {
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();
         
-        
-        Uint8 *keystate = SDL_GetKeyState(NULL);
-        
         // Boucle de gestion des évenements
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
-            // Traitement de l'évenement fermeture de fenêtre
-            if(e.type == SDL_QUIT) {
-                done = true;
-                break;
-            }
-            if(e.type == SDL_KEYUP){
-            	if(e.key.keysym.sym == SDLK_ESCAPE){
-            		done = true;
-            		break;
-            	}
-            }
-            // Traitement des autres évenements:
-            
-            /** PLACEZ VOTRE CODE DE TRAITEMENT DES EVENTS ICI **/
-            if(SDL_GetRelativeMouseState(&posX, &posY)&SDL_BUTTON(SDL_BUTTON_RIGHT)){
-				//std::cout << "posX : " << posX << " posY : " << posY << std::endl;
-				V.rotateLeft(-posX);
-				V.rotateUp(-posY);
-			}
-			
-			if(keystate[SDLK_z]){
-				V.moveFront(0.1);
-			}
-			if(keystate[SDLK_s]){
-				V.moveFront(-0.1);
-			}
-			if(keystate[SDLK_q]){
-				V.moveLeft(0.1);
-			}
-			if(keystate[SDLK_d]){
-				V.moveLeft(-0.1);
+			switch(e.type){
+				case SDL_QUIT:
+					done = true;
+					break;
+				
+				case SDL_KEYDOWN:
+					switch(e.key.keysym.sym){
+						case SDLK_ESCAPE:
+							done = true;
+							break;
+							
+						case SDLK_q:
+							is_lKeyPressed = true;
+							break;
+
+						case SDLK_d:
+							is_rKeyPressed = true;
+							break;
+
+						case SDLK_z:
+							is_uKeyPressed = true;
+							break;
+
+						case SDLK_s:
+							is_dKeyPressed = true;
+							break;
+						
+						default:
+							break;
+					}
+					break;
+					
+				case SDL_KEYUP:
+					switch(e.key.keysym.sym){							
+						case SDLK_q:
+							is_lKeyPressed = false;
+							break;
+
+						case SDLK_d:
+							is_rKeyPressed = false;
+							break;
+
+						case SDLK_z:
+							is_uKeyPressed = false;
+							break;
+
+						case SDLK_s:
+							is_dKeyPressed = false;
+							break;
+						
+						default:
+							break;
+					}
+					break;
+					
+				case SDL_MOUSEMOTION:
+					ffC_angleX = 0.6f*(WINDOW_WIDTH/2. - e.motion.x);
+					ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
+					ffCam.rotateLeft(ffC_angleX);
+					ffCam.rotateUp(ffC_angleY);
+					break;
+							
+				default:
+					break;
 			}
         }
+        
+        //IDLE
+        if(is_lKeyPressed){ ffCam.moveLeft(0.01); }
+		if(is_rKeyPressed){ ffCam.moveLeft(-0.01); }
+		if(is_uKeyPressed){ ffCam.moveFront(0.01); }
+		if(is_dKeyPressed){ ffCam.moveFront(-0.01); }
+		
+		// Gestion compteur
+		end = SDL_GetTicks();
+		ellapsedTime = end - start;
+		if(ellapsedTime < MIN_LOOP_TIME){
+			SDL_Delay(MIN_LOOP_TIME - ellapsedTime);
+		}
     }
-    
-    // Destruction des ressources OpenGL
-    
-    /** PLACEZ VOTRE CODE DE DESTRUCTION DES VBOS/VAOS/SHADERS/... ICI **/
     
     SDL_Quit();
     
