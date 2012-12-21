@@ -14,14 +14,14 @@ namespace imacraft{
 	}
 	
 	TerrainGrid::~TerrainGrid(){
-		if(NULL == m_data){ delete[] m_data; } 
+		if(NULL != m_data){ delete[] m_data; } 
 	}
 	
-	uint8_t TerrainGrid::operator [](size_t idx) const{
+	uint8_t TerrainGrid::operator[](size_t idx) const{
 		return m_data[idx];
 	}
 	
-	uint8_t& TerrainGrid::operator [](size_t idx){
+	uint8_t& TerrainGrid::operator[](size_t idx){
 		return m_data[idx];
 	}
 	
@@ -40,10 +40,10 @@ namespace imacraft{
 		size_t test_fic = 0;
 		
 		test_fic = fread(&m_width, sizeof(uint16_t), 1, rDataFile);
-
+		
 		m_data = new uint8_t[m_width*m_width*TERRAIN_HEIGHT];
 		test_fic = fread(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
-
+	
 		fclose(rDataFile);
 
 		if(!test_fic) return false;

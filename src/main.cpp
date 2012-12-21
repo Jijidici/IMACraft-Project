@@ -9,12 +9,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "imacraft/shader_tools.hpp"
-
 #include "imacraft/MatrixStack.hpp"
-
 #include "imacraft/cameras/FreeFlyCamera.hpp" 
-
 #include "imacraft/Renderer.hpp"
+#include "imacraft/TerrainGrid.hpp"
+#include "imacraft/shapes/CubeInstance.hpp"
 
 
 static const size_t WINDOW_WIDTH = 512, WINDOW_HEIGHT = 512;
@@ -38,8 +37,9 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     
-    // Creation des ressources OpenGL    
+    glEnable(GL_DEPTH_TEST);
     
+    // Creation des ressources OpenGL    
     
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
     if(!program){
@@ -50,13 +50,18 @@ int main(int argc, char** argv) {
     
     /** Matrices **/
     GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
-    
     glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 1000.f); // tout doit être en float !!!
     
+    /* Physical terrain */
+    imacraft::TerrainGrid grid;
+    grid.readFile("terrain_imacraft.data");
+    
+    /* Renderer stuff */
+    imacraft::CubeInstance model_cube;
+    imacraft::Renderer rend(&model_cube, &grid);
     
     //~ Camera vue libre
     FreeFlyCamera V;
-	
     V.moveFront(-5.f);
     
     int posX = 0;
@@ -68,17 +73,18 @@ int main(int argc, char** argv) {
         // Nettoyage de la fenêtre
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        
-        glm::mat4 VP = P * V.getViewMatrix();
+        glm::mat4 VP = P * V.getViewMatrix();        
     
 		MatrixStack myStack;
 		myStack.set(VP);
 		
 		/********* AFFICHAGE **********/
+		myStack.push();
+			myStack.translate(glm::vec3(-1.f, -1.f, 1.f));
+			rend.render(myStack, MVPLocation);
+		myStack.pop();
 		
-		glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(myStack.top()));
-
-
+		/*rend.render(myStack, MVPLocation);*/
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();
         

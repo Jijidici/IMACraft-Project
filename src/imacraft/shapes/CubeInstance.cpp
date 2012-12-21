@@ -5,7 +5,7 @@
 namespace imacraft{
 	CubeInstance::CubeInstance(){
 		vertexCount = 36;
-		ShapeVertex vertices[36];
+		ShapeVertex* vertices = new ShapeVertex[vertexCount];
 		
 		GLfloat hS = 0.5f;
 		
@@ -168,7 +168,7 @@ namespace imacraft{
 		vbo = 0;
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, VERTEX_BYTE_SIZE, vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertexCount*VERTEX_BYTE_SIZE, vertices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 		//Creation du VAO
@@ -184,6 +184,8 @@ namespace imacraft{
 				glVertexAttribPointer(TEXCOORDS_LOCATION, TEXCOORDS_NUM_COMPONENTS, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, reinterpret_cast<const GLvoid*>(TEXCOORDS_OFFSET));
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+		
+		delete[] vertices;
 	}
 	
 	//DESTRUCTOR
