@@ -61,6 +61,11 @@ int main(int argc, char** argv) {
     imacraft::CubeInstance model_cube;
     imacraft::Renderer rend(&model_cube, &grid);
     
+    /* Material */
+    imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.44f, 0.07f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+    imacraft::MaterialUniform cubeMatUniform;
+    cubeMatUniform.getLocations("uMaterial", program);
+    
     //~ Camera vue libre
     imacraft::FreeFlyCamera ffCam;
     
@@ -90,12 +95,12 @@ int main(int argc, char** argv) {
 		myStack.set(VP);
 		
 		/********* AFFICHAGE **********/
+		sendMaterial(cubeMat, cubeMatUniform);
 		myStack.push();
 			myStack.translate(glm::vec3(-1.f, -1.f, 0.f));
 			rend.render(myStack, MVPLocation);
 		myStack.pop();
 		
-		/*rend.render(myStack, MVPLocation);*/
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();
         
