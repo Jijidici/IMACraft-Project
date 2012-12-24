@@ -15,6 +15,7 @@
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
 #include "imacraft/lighting/Material.hpp"
+#include "imacraft/lighting/Lights.hpp"
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
