@@ -7,9 +7,9 @@
 namespace imacraft{
 	struct DirectionalLight{
 		glm::vec3 dir;
-		float i;
+		glm::vec3 i;
 		
-		DirectionalLight(const glm::vec3 inDir, const float inI);
+		DirectionalLight(const glm::vec3 inDir, const glm::vec3 inI);
 	};
 	
 	struct DirectionalLightUniform{

@@ -1,6 +1,7 @@
 #ifndef _RENDERER_HPP_
 #define _RENDERER_HPP_
 
+#include <glm/glm.hpp>
 #include "imacraft/shapes/CubeInstance.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/MatrixStack.hpp"

@@ -9,9 +9,8 @@ uniform mat4 uMVPMatrix = mat4(1.f);
 out vec3 vNormal;
 out vec2 vTexCoords;
 
-
 void main(){
-	vNormal = normal;
+	vNormal = normalize(normal);
 	vTexCoords = texture;
 	
 	gl_Position = uMVPMatrix * vec4(position, 1.f);

@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace imacraft{
-	DirectionalLight::DirectionalLight(const glm::vec3 inDir, const float inI) : 
+	DirectionalLight::DirectionalLight(const glm::vec3 inDir, const glm::vec3 inI) : 
 		dir(inDir), i(inI){
 	}
 	
@@ -21,6 +21,6 @@ namespace imacraft{
 	
 	void sendDirectionalLight(const DirectionalLight& dl, const DirectionalLightUniform& dlUniform){
 		glUniform3fv(dlUniform.DirLocation, 1, glm::value_ptr(dl.dir));
-		glUniform1f(dlUniform.ILocation, dl.i);
+		glUniform3fv(dlUniform.ILocation, 1, glm::value_ptr(dl.i));
 	}
 }
