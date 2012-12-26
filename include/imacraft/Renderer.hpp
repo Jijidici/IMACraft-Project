@@ -17,7 +17,7 @@ namespace imacraft{
 		public:
 			Renderer(CubeInstance* cubeModel, TerrainGrid* grid);
 			~Renderer();
-			void render(MatrixStack& ms, GLuint MVPLocation);
+			void render(MatrixStack& ms, MatrixStack& vs, GLuint MVPLocation, GLuint MVLocation, GLuint NormalLocation);
 	};
 }
 

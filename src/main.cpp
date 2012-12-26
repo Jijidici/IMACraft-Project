@@ -53,6 +53,11 @@ int main(int argc, char** argv) {
     /** Matrices **/
     GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
     glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 1000.f); // tout doit être en float !!!
+    MatrixStack myStack;
+	myStack.set(P);
+	
+    GLuint	MVLocation = glGetUniformLocation(program, "uMVMatrix");
+    GLuint	NormalLocation = glGetUniformLocation(program, "uNormalMatrix");
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
@@ -63,7 +68,7 @@ int main(int argc, char** argv) {
     imacraft::Renderer rend(&model_cube, &grid);
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.4f, 0.2f, 0.7f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(1.f, 1.f, 1.f), 1.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
@@ -94,19 +99,16 @@ int main(int argc, char** argv) {
     
         // Nettoyage de la fenêtre
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glm::mat4 V = ffCam.getViewMatrix();
-        glm::mat4 VP = P * V;        
-    
-		MatrixStack myStack;
-		myStack.set(VP);
+        MatrixStack viewStack;
+        viewStack.set(ffCam.getViewMatrix());
 		
 		sendMaterial(cubeMat, cubeMatUniform);
 		sendDirectionalLight(sun, sunUniform);
 		
 		/********* AFFICHAGE **********/
 		myStack.push();
-			myStack.translate(glm::vec3(-1.f, -2.f, 0.f));
-			rend.render(myStack, MVPLocation);
+			viewStack.translate(glm::vec3(-1.f, -2.f, 0.f));
+			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
 		myStack.pop();
 		
         // Mise à jour de l'affichage
