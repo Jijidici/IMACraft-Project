@@ -20,8 +20,24 @@ namespace imacraft{
 		void getLocations(const char* uniform, const GLuint program);
 	};
 	
+	struct PointLight{
+		glm::vec4 lPos;
+		glm::vec3 i;
+		
+		PointLight(const glm::vec4 inLPos, const glm::vec3 inI);
+	};
+	
+	struct PointLightUniform{
+		GLint LPosLocation;
+		GLint ILocation;
+		
+		PointLightUniform();
+		void getLocations(const char* uniform, const GLuint program);
+	};
+	
 	/* Envoie à la carte graphique */
 	void sendDirectionalLight(const DirectionalLight& dl, const DirectionalLightUniform& dlUniform);
+	void sendPointLight(const PointLight& dl, const PointLightUniform& dlUniform);
 }
 
 #endif

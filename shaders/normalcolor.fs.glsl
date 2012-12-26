@@ -12,6 +12,11 @@ struct DirectionalLight{
 	vec4 dir;
 	vec3 i;
 };
+
+struct PointLight{
+	vec4 lPos;
+	vec3 i;
+};
 //END
 
 in vec4 vNormal;
