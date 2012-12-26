@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     imacraft::Renderer rend(&model_cube, &grid);
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(1.f, 1.f, 1.f), 3.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
@@ -190,10 +190,10 @@ int main(int argc, char** argv) {
         }
         
         //IDLE
-        if(is_lKeyPressed){ ffCam.moveLeft(0.01); }
-		if(is_rKeyPressed){ ffCam.moveLeft(-0.01); }
-		if(is_uKeyPressed){ ffCam.moveFront(0.01); }
-		if(is_dKeyPressed){ ffCam.moveFront(-0.01); }
+        if(is_lKeyPressed){ ffCam.moveLeft(0.05); }
+		if(is_rKeyPressed){ ffCam.moveLeft(-0.05); }
+		if(is_uKeyPressed){ ffCam.moveFront(0.05); }
+		if(is_dKeyPressed){ ffCam.moveFront(-0.05); }
 		
 		// Gestion compteur
 		end = SDL_GetTicks();
