@@ -9,7 +9,7 @@ struct Material{
 };
 
 struct DirectionalLight{
-	vec3 dir;
+	vec4 dir;
 	vec3 i;
 };
 //END
@@ -23,7 +23,7 @@ uniform DirectionalLight uDirLight;
 out vec4 fFragColor;
 
 void main() {
-	float coefDiffus = max(0, dot(vNormal, - normalize(vec4(uDirLight.dir, 0.f))));
+	float coefDiffus = max(0, dot(vNormal, - normalize(uDirLight.dir)));
 	vec3 color =  uDirLight.i *(uMaterial.Ka + uMaterial.Kd*coefDiffus);
 	fFragColor = vec4(color, 1.f);
 }

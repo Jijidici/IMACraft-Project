@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     cubeMatUniform.getLocations("uMaterial", program);
     
     /* Lights */
-    imacraft::DirectionalLight sun(glm::vec3(1.f, -1.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
+    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
     imacraft::DirectionalLightUniform sunUniform;
     sunUniform.getLocations("uDirLight", program);
     
@@ -103,11 +103,16 @@ int main(int argc, char** argv) {
         viewStack.set(ffCam.getViewMatrix());
 		
 		sendMaterial(cubeMat, cubeMatUniform);
-		sendDirectionalLight(sun, sunUniform);
 		
 		/********* AFFICHAGE **********/
 		myStack.push();
+			/* Move the terrain compared to us */ 
 			viewStack.translate(glm::vec3(-1.f, -2.f, 0.f));
+			
+			/* compute the sun direction in the view space */
+			imacraft::DirectionalLight viewSun(viewStack.top() * sun.dir, sun.i);
+			sendDirectionalLight(viewSun, sunUniform);
+			
 			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
 		myStack.pop();
 		
