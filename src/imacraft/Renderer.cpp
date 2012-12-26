@@ -19,28 +19,36 @@ namespace imacraft{
 	Renderer::~Renderer(){}
 	
 	void Renderer::render(MatrixStack& ms, MatrixStack& vs, GLuint MVPLocation, GLuint MVLocation, GLuint NormalLocation){
-		ms.push();
-			/* Move in the View space */
-			ms.mult(vs.top());
-		
-			for(uint16_t i=0;i<m_pGrid->width();++i){
-				for(uint16_t j=0;j<m_pGrid->height();++j){
-					for(uint16_t k=0;k<m_pGrid->width();++k){
-						uint32_t currentCube = k*m_pGrid->width()*m_pGrid->height() + j*m_pGrid->width() + i;
+		for(uint16_t i=0;i<m_pGrid->width();++i){
+			for(uint16_t j=0;j<m_pGrid->height();++j){
+				for(uint16_t k=0;k<m_pGrid->width();++k){
+					uint32_t currentCube = k*m_pGrid->width()*m_pGrid->height() + j*m_pGrid->width() + i;
+					
+					/* If there is a bloc */
+					if((*m_pGrid)[currentCube] != 0){
 						
-						/* If there is a bloc */
-						if((*m_pGrid)[currentCube] != 0){
+						vs.push();
+							/* Compute the MV matrix */
+							vs.translate(glm::vec3(CUBE_SIZE*i, CUBE_SIZE*j, CUBE_SIZE*k));
+							vs.scale(glm::vec3(CUBE_SIZE));
+							glUniformMatrix4fv(MVLocation, 1, GL_FALSE, glm::value_ptr(vs.top()));
 							
+							/* Compute the Normal matrix */
+							glm::mat4 normalMatrix = glm::transpose(glm::inverse(vs.top()));
+							glUniformMatrix4fv(NormalLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+							
+							/* Compute the MVP matrix*/
 							ms.push();
-								ms.translate(glm::vec3(CUBE_SIZE*i, CUBE_SIZE*j, CUBE_SIZE*k));
-								ms.scale(glm::vec3(CUBE_SIZE));
+								ms.mult(vs.top());
 								glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, glm::value_ptr(ms.top()));
-								m_pCubeModel->draw();
 							ms.pop();
-						}
+						vs.pop();
+						
+						/* Draw the bloc */
+						m_pCubeModel->draw();
 					}
 				}
 			}
-		ms.pop();
+		}
 	}
 }
