@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     imacraft::Renderer rend(&model_cube, &grid);
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(1.f, 1.f, 1.f), 3.f);
+    imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
@@ -76,6 +76,10 @@ int main(int argc, char** argv) {
     imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
     imacraft::DirectionalLightUniform sunUniform;
     sunUniform.getLocations("uDirLight", program);
+    
+    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 0.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
+    imacraft::PointLightUniform torchUniform;
+    torchUniform.getLocations("uPointLight", program);
     
     //~ Camera vue libre
     imacraft::FreeFlyCamera ffCam;
@@ -105,13 +109,14 @@ int main(int argc, char** argv) {
 		sendMaterial(cubeMat, cubeMatUniform);
 		
 		/********* AFFICHAGE **********/
-		myStack.push();
-			/* Move the terrain compared to us */ 
-			viewStack.translate(glm::vec3(-1.f, -2.f, 0.f));
-			
+		myStack.push();			
 			/* compute the sun direction in the view space */
 			imacraft::DirectionalLight viewSun(viewStack.top() * sun.dir, sun.i);
 			sendDirectionalLight(viewSun, sunUniform);
+			
+			/* compute the torch position in the view space */
+			imacraft::PointLight viewTorch(viewStack.top() * torch.lPos, torch.i);
+			sendPointLight(viewTorch, torchUniform);
 			
 			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
 		myStack.pop();

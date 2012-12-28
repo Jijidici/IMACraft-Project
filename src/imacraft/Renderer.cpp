@@ -29,7 +29,7 @@ namespace imacraft{
 						
 						vs.push();
 							/* Compute the MV matrix */
-							vs.translate(glm::vec3(CUBE_SIZE*i, CUBE_SIZE*j, CUBE_SIZE*k));
+							vs.translate(glm::vec3(CUBE_SIZE*i-1., CUBE_SIZE*j-1., CUBE_SIZE*k-1.));
 							vs.scale(glm::vec3(CUBE_SIZE));
 							glUniformMatrix4fv(MVLocation, 1, GL_FALSE, glm::value_ptr(vs.top()));
 							
