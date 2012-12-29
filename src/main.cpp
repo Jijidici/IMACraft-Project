@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <sstream>
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
@@ -42,6 +41,7 @@ int main(int argc, char** argv) {
     }
     
     glEnable(GL_DEPTH_TEST);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.f);
     
     // Creation des ressources OpenGL    
     
@@ -76,12 +76,13 @@ int main(int argc, char** argv) {
     
     /* Lights */
     imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-    imacraft::DirectionalLightUniform sunUniform;
-    sunUniform.getLocations("uDirLight", program);
+    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
     
-    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 0.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
-    imacraft::PointLightUniform torchUniform;
-    torchUniform.getLocations("uPointLight", program);
+    imacraft::LightManager lMage;
+    lMage.addLight(sun);
+    lMage.addLight(torch);
+    torch.lPos.z = -1.f;
+    lMage.addLight(torch);
     
     //~ Camera vue libre
     imacraft::FreeFlyCamera ffCam;
@@ -111,17 +112,13 @@ int main(int argc, char** argv) {
 		sendMaterial(cubeMat, cubeMatUniform);
 		
 		/********* AFFICHAGE **********/
-		myStack.push();			
-			/* compute the sun direction in the view space */
-			imacraft::DirectionalLight viewSun(viewStack.top() * sun.dir, sun.i);
-			sendDirectionalLight(viewSun, sunUniform);
+		viewStack.push();	
+			viewStack.translate(glm::vec3(-1.f, -1.f, 0.f));		
 			
-			/* compute the torch position in the view space */
-			imacraft::PointLight viewTorch(viewStack.top() * torch.lPos, torch.i);
-			sendPointLight(viewTorch, torchUniform);
+			lMage.sendLights(program, viewStack.top());
 			
 			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
-		myStack.pop();
+		viewStack.pop();
 		
         // Mise à jour de l'affichage
         SDL_GL_SwapBuffers();
