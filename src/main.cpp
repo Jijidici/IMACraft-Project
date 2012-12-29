@@ -11,9 +11,12 @@
 #include "imacraft/shader_tools.hpp"
 #include "imacraft/MatrixStack.hpp"
 #include "imacraft/cameras/FreeFlyCamera.hpp" 
+#include "imacraft/Player.hpp" 
 #include "imacraft/Renderer.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
+
+#define PI 3.14159265
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
@@ -40,17 +43,15 @@ int main(int argc, char** argv) {
     glEnable(GL_DEPTH_TEST);
     
     // Creation des ressources OpenGL    
-    
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
     if(!program){
 		return (EXIT_FAILURE);
 	}
     glUseProgram(program);
     
-    
     /** Matrices **/
     GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
-    glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.1f, 1000.f); // tout doit être en float !!!
+    glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f); // tout doit être en float !!!
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
@@ -62,125 +63,243 @@ int main(int argc, char** argv) {
     
     //~ Camera vue libre
     imacraft::FreeFlyCamera ffCam;
+    imacraft::Player player;
     
     //variable d'events
-	bool is_lKeyPressed = false;
-	bool is_rKeyPressed = false;
-	bool is_uKeyPressed = false;
-	bool is_dKeyPressed = false;
-	float ffC_angleX = 0;
-	float ffC_angleY = 0;
+		bool is_lKeyPressed = false;
+		bool is_rKeyPressed = false;
+		bool is_uKeyPressed = false;
+		bool is_dKeyPressed = false;
+		float ffC_angleX = 0;
+		float ffC_angleY = 0;
+		uint32_t currentCube;
     
     // Boucle principale
     bool done = false;
     while(!done) {
-		// Initilisation compteur
-		Uint32 start = 0;
-		Uint32 end = 0;
-		Uint32 ellapsedTime = 0;
-		start = SDL_GetTicks();
-    
-        // Nettoyage de la fenêtre
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glm::mat4 VP = P * ffCam.getViewMatrix();        
-    
-		MatrixStack myStack;
-		myStack.set(VP);
+			// Initilisation compteur
+			Uint32 start = 0;
+			Uint32 end = 0;
+			Uint32 ellapsedTime = 0;
+			start = SDL_GetTicks();
+		  
+		  // Nettoyage de la fenêtre
+		  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		      
+		  glm::mat4 VP = P * player.getViewMatrix();
+		  
+			MatrixStack myStack;
+			myStack.set(VP);
 		
-		/********* AFFICHAGE **********/
-		myStack.push();
-			myStack.translate(glm::vec3(-1.f, -1.f, 0.f));
-			rend.render(myStack, MVPLocation);
-		myStack.pop();
+			/********* AFFICHAGE **********/
+			myStack.push();
+				myStack.translate(glm::vec3(-1.f, -1.f, 0.f));
+				rend.render(myStack, MVPLocation);
+			myStack.pop();
 		
-		/*rend.render(myStack, MVPLocation);*/
-        // Mise à jour de l'affichage
-        SDL_GL_SwapBuffers();
-        
-        // Boucle de gestion des évenements
-        SDL_Event e;
-        while(SDL_PollEvent(&e)) {
-			switch(e.type){
-				case SDL_QUIT:
-					done = true;
-					break;
+      // Mise à jour de l'affichage
+		  SDL_GL_SwapBuffers();
+
+			//affichage position du perso i,j,k
+			player.computeCubePosition(grid.width(),grid.height());
+			//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
+
+		  // Boucle de gestion des évenements
+		  SDL_Event e;
+		  while(SDL_PollEvent(&e)) {
+				switch(e.type){
+					case SDL_QUIT:
+						done = true;
+						break;
 				
-				case SDL_KEYDOWN:
-					switch(e.key.keysym.sym){
-						case SDLK_ESCAPE:
-							done = true;
-							break;
+					case SDL_KEYDOWN:
+						switch(e.key.keysym.sym){
+							case SDLK_ESCAPE:
+								done = true;
+								break;
 							
-						case SDLK_q:
-							is_lKeyPressed = true;
-							break;
+							case SDLK_q:
+								is_lKeyPressed = true;
+								break;
 
-						case SDLK_d:
-							is_rKeyPressed = true;
-							break;
+							case SDLK_d:
+								is_rKeyPressed = true;
+								break;
 
-						case SDLK_z:
-							is_uKeyPressed = true;
-							break;
+							case SDLK_z:
+								is_uKeyPressed = true;
+								break;
 
-						case SDLK_s:
-							is_dKeyPressed = true;
-							break;
+							case SDLK_s:
+								is_dKeyPressed = true;
+								break;
+
+							case SDLK_SPACE:
+								player.jump();
+								if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] ==0){
+									player.fall(CUBE_SIZE);
+								}
+								break;
 						
-						default:
-							break;
-					}
-					break;
+							default:
+								break;
+						}
+						break;
 					
-				case SDL_KEYUP:
-					switch(e.key.keysym.sym){							
-						case SDLK_q:
-							is_lKeyPressed = false;
-							break;
+					case SDL_KEYUP:
+						switch(e.key.keysym.sym){							
+							case SDLK_q:
+								is_lKeyPressed = false;
+								break;
 
-						case SDLK_d:
-							is_rKeyPressed = false;
-							break;
+							case SDLK_d:
+								is_rKeyPressed = false;
+								break;
 
-						case SDLK_z:
-							is_uKeyPressed = false;
-							break;
+							case SDLK_z:
+								is_uKeyPressed = false;
+								break;
 
-						case SDLK_s:
-							is_dKeyPressed = false;
-							break;
+							case SDLK_s:
+								is_dKeyPressed = false;
+								break;
 						
-						default:
-							break;
-					}
-					break;
+							default:
+								break;
+						}
+						break;
 					
-				case SDL_MOUSEMOTION:
-					ffC_angleX = 0.6f*(WINDOW_WIDTH/2. - e.motion.x);
-					ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
-					ffCam.rotateLeft(ffC_angleX);
-					ffCam.rotateUp(ffC_angleY);
-					break;
+					case SDL_MOUSEMOTION:
+						ffC_angleX = 0.6f*(WINDOW_WIDTH/2. - e.motion.x);
+						ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
+						if(ffC_angleX < 180 && ffC_angleX > -180) player.rotateLeft(ffC_angleX); //empêcher le perso de faire un tour sur lui même
+						if(ffC_angleY >= 30) ffC_angleY = 30;
+						if(ffC_angleY <= -40) ffC_angleY = -40;
+						player.rotateUp(ffC_angleY);
+						break;
 							
-				default:
-					break;
+					default:
+						break;
+				}
+		      }
+		      
+		  //IDLE - GESTION DES COLLISIONS
+			//GAUCHE
+		  if(is_lKeyPressed){
+				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x+1" << std::endl;
+					}else player.moveLeft(0.01);
+				}
+				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z-1" << std::endl;
+					}else player.moveLeft(0.01);
+				}
+				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x-1" << std::endl;
+					}else player.moveLeft(0.01);
+				}
+				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z+1" << std::endl;
+					}else player.moveLeft(0.01);
+				}
 			}
-        }
-        
-        //IDLE
-        if(is_lKeyPressed){ ffCam.moveLeft(0.01); }
-		if(is_rKeyPressed){ ffCam.moveLeft(-0.01); }
-		if(is_uKeyPressed){ ffCam.moveFront(0.01); }
-		if(is_dKeyPressed){ ffCam.moveFront(-0.01); }
+			//DROITE
+			if(is_rKeyPressed){
+				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x+1" << std::endl;
+					}else player.moveLeft(-0.01);
+				}
+				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z+1" << std::endl;
+					}else player.moveLeft(-0.01);
+				}
+				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x-1" << std::endl;
+					}else player.moveLeft(-0.01);
+				}
+				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z-1" << std::endl;
+					}else player.moveLeft(-0.01);
+				}
+			}
+			//EN AVANT
+			if(is_uKeyPressed){
+				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z+1" << std::endl;
+					}else player.moveFront(0.01);
+				}
+				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x-1" << std::endl;
+					}else player.moveFront(0.01);
+				}
+				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z-1" << std::endl;
+					}else player.moveFront(0.01);
+				}
+				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x+1" << std::endl;
+					}else player.moveFront(0.01);
+				}
+			}
+			//EN ARRIERE
+			if(is_dKeyPressed){ 
+				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z-1" << std::endl;
+					}else player.moveFront(-0.01);
+				}
+				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x+1" << std::endl;
+					}else player.moveFront(-0.01);
+				}
+				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+						player.blockZ(player.getPosition().z);
+						std::cout << "collision z+1" << std::endl;
+					}else player.moveFront(-0.01);
+				}
+				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+						player.blockX(player.getPosition().x);
+						std::cout << "collision x-1" << std::endl;
+					}else player.moveFront(-0.01);
+				}
+			}
 		
-		// Gestion compteur
-		end = SDL_GetTicks();
-		ellapsedTime = end - start;
-		if(ellapsedTime < MIN_LOOP_TIME){
-			SDL_Delay(MIN_LOOP_TIME - ellapsedTime);
+			// Gestion compteur
+			end = SDL_GetTicks();
+			ellapsedTime = end - start;
+			if(ellapsedTime < MIN_LOOP_TIME){
+				SDL_Delay(MIN_LOOP_TIME - ellapsedTime);
+			}
 		}
-    }
     
     SDL_Quit();
     
