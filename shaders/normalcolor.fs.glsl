@@ -1,4 +1,5 @@
 #version 330
+#define MAX_POINT_LIGHT_COUNT 16
 
 //STRUCTURES
 struct Material{
@@ -25,7 +26,8 @@ in vec2 vTexCoords;
 
 uniform Material uMaterial;
 uniform DirectionalLight uDirLight;
-uniform PointLight uPointLight;
+uniform PointLight uPointLights[MAX_POINT_LIGHT_COUNT];
+uniform int uPointLightCount = 0;
 
 out vec4 fFragColor;
 
@@ -40,20 +42,24 @@ void main() {
 	//compute the reflection of the directionnal light
 	vec4 d_LightDir =  normalize(uDirLight.dir);
 	vec4 d_reflectLightDir = normalize(reflect(d_LightDir, vNormal));
+	
 	float d_coefDiffus = max(0, dot(vNormal, -d_LightDir));
 	float d_coefSpecular = pow(max(0, dot(-vPosition, d_reflectLightDir)), uMaterial.shininess);
-	vec3 d_colorLight =  uDirLight.i *(uMaterial.Ka + uMaterial.Kd*d_coefDiffus + uMaterial.Ks*d_coefSpecular);
 	
-	//compute the reflection of the point light
-	vec4 p_LightDir = normalize(createVector(uPointLight.lPos, vPosition));
-	float p_lengLightDir = dot(p_LightDir, p_LightDir);
-	vec4 p_reflectLightDir = normalize(reflect(p_LightDir, vNormal));
-	float p_coefDiffus = max(0, dot(vNormal, -p_LightDir)) / p_lengLightDir;
-	float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
-	//vec3 p_colorLight = uPointLight.i * (uMaterial.Ka + uMaterial.Kd*p_coefDiffus);
-	vec3 p_colorLight = uPointLight.i * (uMaterial.Ka + uMaterial.Kd*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
+	vec3 color =  uDirLight.i *(uMaterial.Ka + uMaterial.Kd*d_coefDiffus + uMaterial.Ks*d_coefSpecular);
 	
-	//fFragColor = vec4(p_colorLight, 1.f);
-	fFragColor = vec4(d_colorLight + p_colorLight, 1.f);
+	//compute the reflection of all the point light
+	for(int i=0;i<uPointLightCount;++i){
+		vec4 p_LightDir = normalize(createVector(uPointLights[i].lPos, vPosition));
+		float p_lengLightDir = dot(p_LightDir, p_LightDir);
+		vec4 p_reflectLightDir = normalize(reflect(p_LightDir, vNormal));
+		
+		float p_coefDiffus = max(0, dot(vNormal, -p_LightDir)) / p_lengLightDir;
+		float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
+		
+		color += uPointLights[i].i * (uMaterial.Ka + uMaterial.Kd*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
+	}
+	
+	fFragColor = vec4(color, 1.f);
 }
 

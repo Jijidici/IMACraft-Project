@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <sstream>
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
