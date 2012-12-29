@@ -9,6 +9,7 @@ namespace imacraft{
 		glm::vec4 dir;
 		glm::vec3 i;
 		
+		DirectionalLight();
 		DirectionalLight(const glm::vec4 inDir, const glm::vec3 inI);
 	};
 	
@@ -24,6 +25,7 @@ namespace imacraft{
 		glm::vec4 lPos;
 		glm::vec3 i;
 		
+		PointLight();
 		PointLight(const glm::vec4 inLPos, const glm::vec3 inI);
 	};
 	

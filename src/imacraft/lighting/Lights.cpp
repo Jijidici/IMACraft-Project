@@ -6,6 +6,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 namespace imacraft{
+	DirectionalLight::DirectionalLight() : dir(glm::vec4(0.f, 0.f, 0.f, 0.f)), i(glm::vec3(0.f, 0.f, 0.f)){
+	}
+
 	DirectionalLight::DirectionalLight(const glm::vec4 inDir, const glm::vec3 inI) : 
 		dir(inDir), i(inI){
 	}
@@ -17,6 +20,9 @@ namespace imacraft{
 	void DirectionalLightUniform::getLocations(const char* uniform, const GLuint program){
 		DirLocation = glGetUniformLocation(program, (std::string(uniform)+".dir").c_str());
 		ILocation = glGetUniformLocation(program, (std::string(uniform)+".i").c_str());
+	}
+	
+	PointLight::PointLight() : lPos(glm::vec4(0.f, 0.f, 0.f, 0.f)), i(glm::vec3(0.f, 0.f, 0.f)){
 	}
 	
 	PointLight::PointLight(const glm::vec4 inLPos, const glm::vec3 inI) : 
