@@ -10,7 +10,7 @@
 namespace imacraft{
 
 	Player::Player(){
-		m_Position = glm::vec3(0.f, 4*CUBE_SIZE, 0.f);
+		m_Position = glm::vec3(0.f, 5*CUBE_SIZE, 0.f);
 		m_fPhi = 0;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
@@ -27,16 +27,16 @@ namespace imacraft{
 	void Player::moveLeft(float const t){
 		if(m_Position.x >= 1) blockX(1); 
 		if(m_Position.x <= -1) blockX(-1); 
-		if(m_Position.z >= 2) blockZ(2); 
-		if(m_Position.z <= 0) blockZ(0);
+		if(m_Position.z >= 1) blockZ(1); 
+		if(m_Position.z <= -1) blockZ(-1);
 		m_Position += t * m_LeftVector;
 	}
 
 	void Player::moveFront(float const t){
 		if(m_Position.x >= 1) blockX(1); 
 		if(m_Position.x <= -1) blockX(-1); 
-		if(m_Position.z >= 2) blockZ(2); 
-		if(m_Position.z <= 0) blockZ(0); 
+		if(m_Position.z >= 1) blockZ(1); 
+		if(m_Position.z <= -1) blockZ(-1); 
 		m_Position.x += t * m_FrontVector.x;
 		m_Position.z += t * m_FrontVector.z;
 	}
@@ -62,7 +62,7 @@ namespace imacraft{
 	void Player::computeCubePosition(uint16_t terrainWidth, uint16_t terrainHeight){
 		int i = (m_Position.x+1)*terrainWidth/2;
 		int j = (m_Position.y+1)*terrainHeight/2-1;
-		int k = m_Position.z*terrainWidth/2;
+		int k = (m_Position.z+1)*terrainWidth/2;
 		m_CubePosition = glm::ivec3(i,j,k);
 	}
 

@@ -1,26 +1,66 @@
 #version 330
+#define MAX_POINT_LIGHT_COUNT 16
 
-in vec3 vNormal;
+//STRUCTURES
+struct Material{
+	vec3 Ka;
+	vec3 Kd;
+	vec3 Ks;
+	float shininess;
+};
+
+struct DirectionalLight{
+	vec4 dir;
+	vec3 i;
+};
+
+struct PointLight{
+	vec4 lPos;
+	vec3 i;
+};
+//END
+
+in vec4 vNormal;
+in vec4 vPosition;
 in vec2 vTexCoords;
+
+uniform Material uMaterial;
+uniform DirectionalLight uDirLight;
+uniform PointLight uPointLights[MAX_POINT_LIGHT_COUNT];
+uniform int uPointLightCount = 0;
 
 out vec4 fFragColor;
 
-float dotProduct(vec3 v1, vec3 v2){
-	return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+//FUNCTIONS
+vec4 createVector(vec4 p1, vec4 p2){
+	return vec4(p2.x-p1.x, p2.y-p1.y, p2.z-p1.z, p2.w-p1.w);
 }
 
-float norm(vec3 v){
-	return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
-}
-
-vec3 normalize(vec3 v){
-	float vec_norm = norm(v);
-	return vec3(v.x/vec_norm, v.y/vec_norm, v.z/vec_norm);
-}
+//END
 
 void main() {
-	vec3 light = vec3(1.f, -1.f, 0.f);
-	float simpleLightProcess = dotProduct(normalize(vNormal), normalize(light));
-	fFragColor = vec4(0.7f - simpleLightProcess, 0.8f - simpleLightProcess, 1.f - simpleLightProcess, 1.f);
+	//compute the reflection of the directionnal light
+	vec4 d_LightDir =  normalize(uDirLight.dir);
+	vec4 d_reflectLightDir = normalize(reflect(d_LightDir, vNormal));
+	
+	float d_coefDiffus = max(0, dot(vNormal, -d_LightDir));
+	float d_coefSpecular = pow(max(0, dot(-vPosition, d_reflectLightDir)), uMaterial.shininess);
+	
+	vec3 color =  uDirLight.i *(uMaterial.Ka + uMaterial.Kd*d_coefDiffus + uMaterial.Ks*d_coefSpecular);
+	
+	//compute the reflection of all the point light
+	for(int i=0;i<uPointLightCount;++i){
+		vec4 p_LightDir = createVector(uPointLights[i].lPos, vPosition);
+		float p_lengLightDir = dot(p_LightDir, p_LightDir);
+		vec4 p_normalizedLD = normalize(p_LightDir);
+		vec4 p_reflectLightDir = normalize(reflect(p_normalizedLD, vNormal));
+		
+		float p_coefDiffus = max(0, dot(vNormal, -p_normalizedLD)) / p_lengLightDir;
+		float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
+		
+		color += uPointLights[i].i * (uMaterial.Ka + uMaterial.Kd*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
+	}
+	
+	fFragColor = vec4(color, 1.f);
 }
 

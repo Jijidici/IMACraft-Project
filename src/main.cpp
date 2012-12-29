@@ -15,6 +15,9 @@
 #include "imacraft/Renderer.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/lighting/Material.hpp"
+#include "imacraft/lighting/Lights.hpp"
+#include "imacraft/lighting/LightManager.hpp"
 
 #define PI 3.14159265
 
@@ -41,6 +44,7 @@ int main(int argc, char** argv) {
     }
     
     glEnable(GL_DEPTH_TEST);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.f);
     
     // Creation des ressources OpenGL    
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
@@ -52,6 +56,11 @@ int main(int argc, char** argv) {
     /** Matrices **/
     GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
     glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f); // tout doit être en float !!!
+    MatrixStack myStack;
+	myStack.set(P);
+	
+    GLuint	MVLocation = glGetUniformLocation(program, "uMVMatrix");
+    GLuint	NormalLocation = glGetUniformLocation(program, "uNormalMatrix");
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
@@ -60,6 +69,21 @@ int main(int argc, char** argv) {
     /* Renderer stuff */
     imacraft::CubeInstance model_cube;
     imacraft::Renderer rend(&model_cube, &grid);
+    
+    /* Material */
+    imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
+    imacraft::MaterialUniform cubeMatUniform;
+    cubeMatUniform.getLocations("uMaterial", program);
+    
+    /* Lights */
+    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
+    
+    imacraft::LightManager lMage;
+    lMage.addLight(sun);
+    lMage.addLight(torch);
+    torch.lPos.z = -1.f;
+    lMage.addLight(torch);
     
     //~ Camera vue libre
     imacraft::FreeFlyCamera ffCam;
@@ -77,40 +101,42 @@ int main(int argc, char** argv) {
     // Boucle principale
     bool done = false;
     while(!done) {
-			// Initilisation compteur
-			Uint32 start = 0;
-			Uint32 end = 0;
-			Uint32 ellapsedTime = 0;
-			start = SDL_GetTicks();
-		  
-		  // Nettoyage de la fenêtre
-		  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		      
-		  glm::mat4 VP = P * player.getViewMatrix();
-		  
-			MatrixStack myStack;
-			myStack.set(VP);
+		// Initilisation compteur
+		Uint32 start = 0;
+		Uint32 end = 0;
+		Uint32 ellapsedTime = 0;
+		start = SDL_GetTicks();
+    
+        // Nettoyage de la fenêtre
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        MatrixStack viewStack;
+        viewStack.set(player.getViewMatrix());
 		
-			/********* AFFICHAGE **********/
-			myStack.push();
-				myStack.translate(glm::vec3(-1.f, -1.f, 0.f));
-				rend.render(myStack, MVPLocation);
-			myStack.pop();
+		sendMaterial(cubeMat, cubeMatUniform);
 		
-      // Mise à jour de l'affichage
-		  SDL_GL_SwapBuffers();
-
-			//affichage position du perso i,j,k
-			player.computeCubePosition(grid.width(),grid.height());
-			//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
-
-		  // Boucle de gestion des évenements
-		  SDL_Event e;
-		  while(SDL_PollEvent(&e)) {
-				switch(e.type){
-					case SDL_QUIT:
-						done = true;
-						break;
+		/********* AFFICHAGE **********/
+		viewStack.push();	
+			//viewStack.translate(glm::vec3(-1.f, -1.f, 0.f));		
+			
+			lMage.sendLights(program, viewStack.top());
+			
+			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
+		viewStack.pop();
+		
+        // Mise à jour de l'affichage
+        SDL_GL_SwapBuffers();
+        
+        //affichage position du perso i,j,k
+		player.computeCubePosition(grid.width(),grid.height());
+		//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
+        
+        // Boucle de gestion des évenements
+        SDL_Event e;
+        while(SDL_PollEvent(&e)) {
+			switch(e.type){
+				case SDL_QUIT:
+					done = true;
+					break;
 				
 					case SDL_KEYDOWN:
 						switch(e.key.keysym.sym){
