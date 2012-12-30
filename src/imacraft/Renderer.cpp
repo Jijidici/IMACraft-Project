@@ -14,9 +14,20 @@ namespace imacraft{
 	Renderer::Renderer(CubeInstance* cubeModel, TerrainGrid* grid){
 		m_pCubeModel = cubeModel;
 		m_pGrid = grid;
+		
+		//init the vbo
+		m_mMvbo = 0;
+		glGenBuffers(1, &m_mMvbo);
+		
+		//init the vao
+		m_mMvao = 0;
+		glGenVertexArrays(1, &m_mMvao);
 	}
 	
-	Renderer::~Renderer(){}
+	Renderer::~Renderer(){
+		glDeleteBuffers(1, &m_mMvbo);
+		glDeleteVertexArrays(1, &m_mMvao);
+	}
 	
 	void Renderer::render(MatrixStack& ms, MatrixStack& vs, GLuint MVPLocation, GLuint MVLocation, GLuint NormalLocation){
 		for(uint16_t i=0;i<m_pGrid->width();++i){
