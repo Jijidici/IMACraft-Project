@@ -15,13 +15,25 @@ namespace imacraft{
 		m_pCubeModel = cubeModel;
 		m_pGrid = grid;
 		
-		//init the vbo
+		//generate the model matrices vbo
 		m_mMvbo = 0;
 		glGenBuffers(1, &m_mMvbo);
 		
-		//init the vao
+		//generate and init the model matrices vao
 		m_mMvao = 0;
 		glGenVertexArrays(1, &m_mMvao);
+		glBindVertexArray(m_mMvao);
+			/* Active the Model Matrix as an attribute in the VS */
+			for(int i=0;i<4;++i){
+				glEnableVertexAttribArray(MATRIXMODEL_LOCATION + i); 
+			}
+			glBindBuffer(GL_ARRAY_BUFFER, m_mMvbo);
+				for(int i=0;i<4;++i){
+					glVertexAttribPointer(MATRIXMODEL_LOCATION + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (const GLvoid*)(sizeof(GLfloat) * i * 4));
+					glVertexAttribDivisor(MATRIXMODEL_LOCATION +i, 1);
+				}
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 	
 	Renderer::~Renderer(){
