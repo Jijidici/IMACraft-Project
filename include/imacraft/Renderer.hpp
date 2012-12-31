@@ -16,13 +16,12 @@ namespace imacraft{
 		private:
 			CubeInstance* m_pCubeModel;
 			TerrainGrid* m_pGrid;
-			GLuint m_mMvbo;
-			GLuint m_mMvao;
+			GLuint m_mMVvbo;
 		
 		public:
 			Renderer(CubeInstance* cubeModel, TerrainGrid* grid);
 			~Renderer();
-			void render(MatrixStack& ms, MatrixStack& vs, GLuint MVPLocation, GLuint MVLocation, GLuint NormalLocation);
+			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation);
 	};
 }
 

@@ -195,9 +195,9 @@ namespace imacraft{
 	}
 	
 	//Dessin
-	void CubeInstance::draw(){
+	void CubeInstance::draw(uint32_t nbInstances){	
 		glBindVertexArray(vao);
-			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCount, nbInstances);
 		glBindVertexArray(0);
 	}
 }

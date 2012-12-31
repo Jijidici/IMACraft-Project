@@ -54,13 +54,9 @@ int main(int argc, char** argv) {
     glUseProgram(program);
     
     /** Matrices **/
-    GLuint MVPLocation = glGetUniformLocation(program, "uMVPMatrix");
-    glm::mat4 P = glm::perspective(70.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f); // tout doit être en float !!!
-    MatrixStack myStack;
-	myStack.set(P);
+    GLuint PLocation = glGetUniformLocation(program, "uPMatrix");
+    glm::mat4 P = glm::perspective(90.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f); // tout doit être en float !!!
 	
-    GLuint	MVLocation = glGetUniformLocation(program, "uMVMatrix");
-    GLuint	NormalLocation = glGetUniformLocation(program, "uNormalMatrix");
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
@@ -86,7 +82,6 @@ int main(int argc, char** argv) {
     lMage.addLight(torch);
     
     //~ Camera vue libre
-    imacraft::FreeFlyCamera ffCam;
     imacraft::Player player;
     
     //variable d'events
@@ -96,7 +91,6 @@ int main(int argc, char** argv) {
 		bool is_dKeyPressed = false;
 		float ffC_angleX = 0;
 		float ffC_angleY = 0;
-		uint32_t currentCube;
     
     // Boucle principale
     bool done = false;
@@ -115,12 +109,10 @@ int main(int argc, char** argv) {
 		sendMaterial(cubeMat, cubeMatUniform);
 		
 		/********* AFFICHAGE **********/
-		viewStack.push();	
-			//viewStack.translate(glm::vec3(-1.f, -1.f, 0.f));		
-			
+		viewStack.push();			
 			lMage.sendLights(program, viewStack.top());
 			
-			rend.render(myStack, viewStack, MVPLocation, MVLocation, NormalLocation);
+			rend.render(P, viewStack, PLocation);
 		viewStack.pop();
 		
         // Mise à jour de l'affichage

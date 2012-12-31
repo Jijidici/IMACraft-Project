@@ -28,7 +28,7 @@ namespace imacraft{
 		public:
 			CubeInstance();
 			~CubeInstance();
-			void draw();
+			void draw(uint32_t nbInstances);
 	};
 	
 	struct ShapeVertex {
