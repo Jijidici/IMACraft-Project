@@ -11,12 +11,10 @@
 
 namespace imacraft{
 	struct Renderer{
-		static const GLint MATRIXMODEL_LOCATION = 3;
 	
 		private:
 			CubeInstance* m_pCubeModel;
 			TerrainGrid* m_pGrid;
-			GLuint m_mMVvbo;
 		
 		public:
 			Renderer(CubeInstance* cubeModel, TerrainGrid* grid);

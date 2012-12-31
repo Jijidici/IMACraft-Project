@@ -15,25 +15,9 @@ namespace imacraft{
 	Renderer::Renderer(CubeInstance* cubeModel, TerrainGrid* grid){
 		m_pCubeModel = cubeModel;
 		m_pGrid = grid;
-		
-		//generate the modelView matrices vbo
-		m_mMVvbo = 0;
-		glGenBuffers(1, &m_mMVvbo);
-		
-		/* Active the Model Matrix as an attribute in the VS */
-		for(int i=0;i<4;++i){
-			glEnableVertexAttribArray(MATRIXMODEL_LOCATION + i); 
-		}
-		glBindBuffer(GL_ARRAY_BUFFER, m_mMVvbo);
-			for(int i=0;i<4;++i){
-				glVertexAttribPointer(MATRIXMODEL_LOCATION + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * i * 4));
-				glVertexAttribDivisor(MATRIXMODEL_LOCATION +i, 1);
-			}
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	
 	Renderer::~Renderer(){
-		glDeleteBuffers(1, &m_mMVvbo);
 	}
 	
 	void Renderer::render(glm::mat4& P, MatrixStack& vs, GLuint PLocation){
@@ -52,7 +36,7 @@ namespace imacraft{
 							/* Compute the MV matrix*/
 							vs.translate(glm::vec3(CUBE_SIZE*i-1., CUBE_SIZE*j-1., CUBE_SIZE*k-1.));
 							vs.scale(glm::vec3(CUBE_SIZE));
-							vecModelMatrix.push_back(glm::transpose(vs.top()));
+							vecModelMatrix.push_back(vs.top());
 						vs.pop();
 					}
 				}
@@ -64,11 +48,8 @@ namespace imacraft{
 			MVMatrices[i] = vecModelMatrix[i];
 		}
 		
-		glBindBuffer(GL_ARRAY_BUFFER, m_mMVvbo);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4)*drawedCubeCount, MVMatrices, GL_DYNAMIC_DRAW);
-		
 		/* Draw the blocs */
-		m_pCubeModel->draw(drawedCubeCount);
+		m_pCubeModel->draw(drawedCubeCount, MVMatrices);
 		
 		
 		delete[] MVMatrices;

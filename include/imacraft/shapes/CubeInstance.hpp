@@ -19,16 +19,18 @@ namespace imacraft{
 		static const GLint POSITION_LOCATION = 0;
 		static const GLint NORMAL_LOCATION = 1;
 		static const GLint TEXCOORDS_LOCATION = 2;
+		static const GLint MATRIXMODEL_LOCATION = 3;
 		
 		private:
 			GLuint vbo;
+			GLuint MVvbo;
 			GLuint vao;
 			GLuint vertexCount;
 			
 		public:
 			CubeInstance();
 			~CubeInstance();
-			void draw(uint32_t nbInstances);
+			void draw(uint32_t nbInstances, glm::mat4* MVMatrices);
 	};
 	
 	struct ShapeVertex {

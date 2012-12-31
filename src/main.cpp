@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
 		sendMaterial(cubeMat, cubeMatUniform);
 		
 		/********* AFFICHAGE **********/
-		viewStack.push();			
+		viewStack.push();
 			lMage.sendLights(program, viewStack.top());
 			
 			rend.render(P, viewStack, PLocation);

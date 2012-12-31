@@ -171,6 +171,10 @@ namespace imacraft{
 			glBufferData(GL_ARRAY_BUFFER, vertexCount*VERTEX_BYTE_SIZE, vertices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
+		//generate the modelView matrices vbo
+		MVvbo = 0;
+		glGenBuffers(1, &MVvbo);
+		
 		//Creation du VAO
 		vao = 0;
 		glGenVertexArrays(1, &vao);
@@ -182,6 +186,17 @@ namespace imacraft{
 				glVertexAttribPointer(POSITION_LOCATION, POSITION_NUM_COMPONENTS, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, reinterpret_cast<const GLvoid*>(POSITION_OFFSET));
 				glVertexAttribPointer(NORMAL_LOCATION, NORMAL_NUM_COMPONENTS, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, reinterpret_cast<const GLvoid*>(NORMAL_OFFSET));
 				glVertexAttribPointer(TEXCOORDS_LOCATION, TEXCOORDS_NUM_COMPONENTS, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, reinterpret_cast<const GLvoid*>(TEXCOORDS_OFFSET));
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			
+			/* Active the Model Matrix as an attribute in the VS */
+			for(int i=0;i<4;++i){
+				glEnableVertexAttribArray(MATRIXMODEL_LOCATION + i); 
+			}
+			glBindBuffer(GL_ARRAY_BUFFER, MVvbo);
+				for(int i=0;i<4;++i){
+					glVertexAttribPointer(MATRIXMODEL_LOCATION + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), reinterpret_cast<const GLvoid*>(sizeof(GLfloat) * i * 4));
+					glVertexAttribDivisor(MATRIXMODEL_LOCATION +i, 1);
+				}
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		
@@ -195,7 +210,11 @@ namespace imacraft{
 	}
 	
 	//Dessin
-	void CubeInstance::draw(uint32_t nbInstances){	
+	void CubeInstance::draw(uint32_t nbInstances, glm::mat4* MVMatrices){
+		glBindBuffer(GL_ARRAY_BUFFER, MVvbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4)*nbInstances, MVMatrices, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 		glBindVertexArray(vao);
 			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCount, nbInstances);
 		glBindVertexArray(0);
