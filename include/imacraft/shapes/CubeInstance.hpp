@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#include "imacraft/Texture.hpp"
+
 namespace imacraft{
 	struct CubeInstance{
 		static const GLint POSITION_NUM_COMPONENTS = 3;
@@ -26,11 +28,15 @@ namespace imacraft{
 			GLuint MVvbo;
 			GLuint vao;
 			GLuint vertexCount;
+			Texture cubeTexture;
 			
 		public:
-			CubeInstance();
+			CubeInstance(Texture &texture);
 			~CubeInstance();
+			
 			void draw(uint32_t nbInstances, glm::mat4* MVMatrices);
+			void setTexture(Texture &texture);
+			
 	};
 	
 	struct ShapeVertex {

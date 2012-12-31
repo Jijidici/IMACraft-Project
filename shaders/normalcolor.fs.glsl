@@ -29,6 +29,8 @@ uniform DirectionalLight uDirLight;
 uniform PointLight uPointLights[MAX_POINT_LIGHT_COUNT];
 uniform int uPointLightCount = 0;
 
+uniform sampler2D uTextureSampler;
+
 out vec4 fFragColor;
 
 //FUNCTIONS
@@ -59,8 +61,10 @@ void main() {
 		float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
 		
 		color += uPointLights[i].i * (uMaterial.Ka + uMaterial.Kd*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
+		
 	}
 	
 	fFragColor = vec4(color, 1.f);
+	fFragColor += 0.5*texture(uTextureSampler, vTexCoords);
 }
 

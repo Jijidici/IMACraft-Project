@@ -18,6 +18,7 @@
 #include "imacraft/lighting/Material.hpp"
 #include "imacraft/lighting/Lights.hpp"
 #include "imacraft/lighting/LightManager.hpp"
+#include "imacraft/Texture.hpp"
 
 #define PI 3.14159265
 
@@ -62,8 +63,11 @@ int main(int argc, char** argv) {
     imacraft::TerrainGrid grid;
     grid.readFile("terrain_imacraft.data");
     
+    /* Texture */
+    imacraft::Texture test("textures/brique.png", program);
+    
     /* Renderer stuff */
-    imacraft::CubeInstance model_cube;
+    imacraft::CubeInstance model_cube(test); // texture needed in argument
     imacraft::Renderer rend(&model_cube, &grid);
     
     /* Material */
@@ -83,6 +87,15 @@ int main(int argc, char** argv) {
     
     //~ Camera vue libre
     imacraft::Player player;
+    
+    
+    /********************/
+    /*  TESTS TEXTURES  */
+    /********************/
+    
+    
+    std::cout << test.textureIndex << std::endl;
+
     
     //variable d'events
 		bool is_lKeyPressed = false;

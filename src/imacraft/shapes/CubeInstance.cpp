@@ -1,9 +1,10 @@
-#include "imacraft/shapes/CubeInstance.hpp"
-
 #include <GL/glew.h>
 
+#include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/Texture.hpp"
+
 namespace imacraft{
-	CubeInstance::CubeInstance(){
+	CubeInstance::CubeInstance(Texture &texture) : cubeTexture(texture){
 		vertexCount = 36;
 		ShapeVertex* vertices = new ShapeVertex[vertexCount];
 		
@@ -214,9 +215,15 @@ namespace imacraft{
 		glBindBuffer(GL_ARRAY_BUFFER, MVvbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4)*nbInstances, MVMatrices, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+		
+		cubeTexture.bindTexture();
 		glBindVertexArray(vao);
 			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexCount, nbInstances);
 		glBindVertexArray(0);
+		cubeTexture.debindTexture();
+	}
+	
+	void CubeInstance::setTexture(Texture &texture){
+		cubeTexture = texture;
 	}
 }

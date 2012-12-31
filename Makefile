@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -ansi -pedantic -I include
-LDFLAGS = -lSDL -lGL
+LDFLAGS = -lSDL -lSDL_image -lGL
 
 SRC_PATH = src
 BIN_PATH = bin
