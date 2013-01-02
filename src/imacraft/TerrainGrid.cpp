@@ -34,13 +34,13 @@ namespace imacraft{
 
 		std::string stringToCompare = fileName;
 		size_t findNorth = 0;
-		size_t northCount = -1;
+		int northCount = -1;
 		size_t findSouth = 0;
-		size_t southCount = -1;
+		int southCount = -1;
 		size_t findEast = 0;
-		size_t eastCount = -1;
+		int eastCount = -1;
 		size_t findWest = 0;
-		size_t westCount = -1;
+		int westCount = -1;
 		
 		while(findNorth != std::string::npos){
 			findNorth = stringToCompare.find("N", findNorth+1);
@@ -146,11 +146,11 @@ namespace imacraft{
 		return TERRAIN_HEIGHT;
 	}
 	
-	uint16_t TerrainGrid::getNorthPos() const{
+	int TerrainGrid::getNorthPos() const{
 		return m_northPosition;
 	}
 	
-	uint16_t TerrainGrid::getEastPos() const{
+	int TerrainGrid::getEastPos() const{
 		return m_eastPosition;
 	}
 	

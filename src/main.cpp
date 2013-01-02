@@ -67,15 +67,18 @@ int main(int argc, char** argv) {
     //~ grid.readFile("test.data");
     //~ grid.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("terrain_imacraft_E.data");
+    grid1.readFile("terrain_imacraft_S.data");
     //~ grid1.readFile("terrain_imacraft_test_E.data");
     imacraft::TerrainGrid grid2;
-    grid2.readFile("terrain_imacraft_W.data");
+    grid2.readFile("terrain_imacraft_N.data");
     
-    std::vector<imacraft::TerrainGrid*> vecGrid(2);
+    std::cout << "grid 1 : " << grid1.getNorthPos() << " " << grid1.getEastPos() << std::endl;
+    std::cout << "grid 2 : " << grid2.getNorthPos() << " " << grid2.getEastPos() << std::endl;
+    
+    std::vector<imacraft::TerrainGrid*> vecGrid(3);
     vecGrid[0] = &grid;
     vecGrid[1] = &grid1;
-    //~ vecGrid[2] = &grid2;
+    vecGrid[2] = &grid2;
     
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
