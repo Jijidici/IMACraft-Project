@@ -29,7 +29,7 @@ uniform DirectionalLight uDirLight;
 uniform PointLight uPointLights[MAX_POINT_LIGHT_COUNT];
 uniform int uPointLightCount = 0;
 
-uniform sampler2D uTextureSampler;
+uniform sampler2D uTextureSampler0;
 
 out vec4 fFragColor;
 
@@ -65,6 +65,6 @@ void main() {
 	}
 	
 	fFragColor = vec4(color, 1.f);
-	fFragColor += 0.5*texture(uTextureSampler, vTexCoords);
+	fFragColor += 0.5*texture(uTextureSampler0, vTexCoords);
 }
 

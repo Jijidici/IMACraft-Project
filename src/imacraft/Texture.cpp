@@ -9,11 +9,15 @@
 
 namespace imacraft{
 
-unsigned int Texture::textureIndex = 0;
+GLint Texture::textureIndex = 0;
 
-Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(0){
+Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(textureIndex){
+	//~ std::cout << m_path << std::endl;
+	m_textureIndex = textureIndex;
+	//~ std::cout << m_textureIndex << std::endl;
 	sendTextureToGPU(m_texture_gluint);
-	getUniformSamlerLocation();
+	getUniformSamplerLocation();
+	++textureIndex;
 }
 	
 SDL_Surface* Texture::loadImage(){
@@ -35,6 +39,8 @@ void Texture::print_test(){
 
 void Texture::sendTextureToGPU(GLuint &texture_gluint){
 	SDL_Surface* image = loadImage();
+	
+	//~ std::cout << "test" << texture_gluint << std::endl;
 	
 	glGenTextures(1, &texture_gluint);
 	glBindTexture(GL_TEXTURE_2D, texture_gluint);
@@ -58,17 +64,36 @@ void Texture::sendTextureToGPU(GLuint &texture_gluint){
 	SDL_FreeSurface(image);
 }
 
-void Texture::getUniformSamlerLocation(){
-	glUniform1i(glGetUniformLocation(m_program, "uTextureSampler"), 0); // !!! 0 à changer pour textureIndex ??
-	++textureIndex;
+void Texture::getUniformSamplerLocation(){
+	//~ std::cout << m_textureIndex << std::endl;
+	//~ if(m_textureIndex == 0){
+		//~ glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), m_textureIndex); // !!! 0 à changer pour textureIndex ??
+	//~ }
+	//~ if(m_textureIndex == 1){
+		//~ glUniform1i(glGetUniformLocation(m_program, "uTextureSampler1"), m_textureIndex); // !!! 0 à changer pour textureIndex ??
+	//~ }
+	glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), 0); // !!! 0 à changer pour textureIndex ??
+	
 }
 
 void Texture::bindTexture(){
+	//~ if(m_textureIndex == 0){
+		//~ glActiveTexture(GL_TEXTURE0);
+	//~ }
+	//~ if(m_textureIndex == 1){
+		//~ glActiveTexture(GL_TEXTURE1);
+	//~ }
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_texture_gluint);
 }
 
 void Texture::debindTexture(){
+	//~ if(m_textureIndex == 0){
+		//~ glActiveTexture(GL_TEXTURE0);
+	//~ }
+	//~ if(m_textureIndex == 1){
+		//~ glActiveTexture(GL_TEXTURE1);
+	//~ }
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
