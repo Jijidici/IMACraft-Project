@@ -11,6 +11,8 @@ namespace imacraft{
 	TerrainGrid::TerrainGrid(){
 		m_data = NULL;
 		m_width = 0;
+		m_northPosition = 0;
+		m_eastPosition = 0;
 	}
 	
 	TerrainGrid::~TerrainGrid(){
@@ -26,11 +28,48 @@ namespace imacraft{
 	}
 	
 	bool TerrainGrid::readFile(const char* fileName){
-
 		FILE *rDataFile = NULL;
 		char path[80] = "terrain_data/";
 		strcat(path,fileName);
 
+		std::string stringToCompare = fileName;
+		size_t findNorth = 0;
+		size_t northCount = -1;
+		size_t findSouth = 0;
+		size_t southCount = -1;
+		size_t findEast = 0;
+		size_t eastCount = -1;
+		size_t findWest = 0;
+		size_t westCount = -1;
+		
+		while(findNorth != std::string::npos){
+			findNorth = stringToCompare.find("N", findNorth+1);
+			++northCount;
+			//~ if(findNorth != std::string::npos){ // if found
+				//~ std::cout << "position N : " << findNorth << std::endl;
+			//~ }
+		}
+		m_northPosition += northCount;
+		//~ std::cout << "northCount : " << northCount << std::endl;
+		
+		while(findSouth != std::string::npos){
+			findSouth = stringToCompare.find("S", findSouth+1);
+			++southCount;
+		}
+		m_northPosition -= southCount;
+		
+		while(findEast != std::string::npos){
+			findEast = stringToCompare.find("E", findEast+1);
+			++eastCount;
+		}
+		m_eastPosition += eastCount;
+		
+		while(findWest != std::string::npos){
+			findWest = stringToCompare.find("W", findWest+1);
+			++westCount;
+		}
+		m_eastPosition -= westCount;
+		
 		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
 			std::cout << "[!] > Unable to read the terrain_data file" << std::endl;
@@ -55,6 +94,18 @@ namespace imacraft{
 		FILE *wDataFile = NULL;
 		char path[80] = "terrain_data/";
 		strcat(path,fileName);
+		for(int i = 0; i < m_northPosition; ++i){
+			strcat(path,"N");
+		}
+		for(int i = 0; i < -m_northPosition; ++i){
+			strcat(path,"S");
+		}
+		for(int i = 0; i < m_eastPosition; ++i){
+			strcat(path,"E");
+		}
+		for(int i = 0; i < -m_eastPosition; ++i){
+			strcat(path,"W");
+		}
 
 		wDataFile = fopen(path, "wb");
 		if(NULL == wDataFile){
@@ -83,6 +134,14 @@ namespace imacraft{
 	
 	uint16_t TerrainGrid::height() const{
 		return TERRAIN_HEIGHT;
+	}
+	
+	uint16_t TerrainGrid::getNorthPos() const{
+		return m_northPosition;
+	}
+	
+	uint16_t TerrainGrid::getEastPos() const{
+		return m_eastPosition;
 	}
 
 }

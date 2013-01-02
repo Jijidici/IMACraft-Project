@@ -35,7 +35,7 @@ namespace imacraft{
 					if((*m_pGrid)[currentCube] != 0){
 						vs.push();
 							/* Compute the MV matrix*/
-							vs.translate(glm::vec3(CUBE_SIZE*i-1., CUBE_SIZE*j-1., CUBE_SIZE*k-1.));
+							vs.translate(glm::vec3(CUBE_SIZE*i-1. + 2*(*m_pGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*m_pGrid).getNorthPos())); // offset (north & east positions)
 							vs.scale(glm::vec3(CUBE_SIZE));
 							
 							if(k%2){ // condition to define different sets of blocks (determines the texture too)

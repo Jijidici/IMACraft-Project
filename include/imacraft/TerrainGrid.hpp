@@ -9,6 +9,8 @@ namespace imacraft{
 		private:
 			uint8_t *m_data;
 			uint16_t m_width;
+			uint16_t m_northPosition;
+			uint16_t m_eastPosition;
 		public:
 			TerrainGrid();
 			~TerrainGrid();
@@ -19,6 +21,8 @@ namespace imacraft{
 			uint32_t length() const;
 			uint16_t width() const;
 			uint16_t height() const;
+			uint16_t getNorthPos() const;
+			uint16_t getEastPos() const;
 	};
 
 }

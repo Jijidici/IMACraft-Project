@@ -58,12 +58,19 @@ int main(int argc, char** argv) {
     
     /** Matrices **/
     GLuint PLocation = glGetUniformLocation(program, "uPMatrix");
-    glm::mat4 P = glm::perspective(90.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f); // tout doit être en float !!!
+    glm::mat4 P = glm::perspective(90.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f);
 	
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
-    grid.readFile("terrain_imacraft.data");
+    grid.readFile("terrain_imacraft_.data");
+    imacraft::TerrainGrid grid1;
+    grid1.readFile("terrain_imacraft_N.data");
+    
+    imacraft::TerrainGrid *vecGrid[2];
+    
+    vecGrid[0] = &grid;
+    vecGrid[1] = &grid1;
     
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
@@ -192,6 +199,10 @@ int main(int argc, char** argv) {
 
 							case SDLK_s:
 								is_dKeyPressed = false;
+								break;
+								
+							case SDLK_t:
+								grid1.writeFile("test");
 								break;
 						
 							default:
