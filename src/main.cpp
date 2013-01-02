@@ -64,12 +64,18 @@ int main(int argc, char** argv) {
     /* Physical terrain */
     imacraft::TerrainGrid grid;
     grid.readFile("terrain_imacraft_.data");
+    //~ grid.readFile("test.data");
+    //~ grid.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("terrain_imacraft_N.data");
+    grid1.readFile("terrain_imacraft_E.data");
+    //~ grid1.readFile("terrain_imacraft_test_E.data");
+    imacraft::TerrainGrid grid2;
+    grid2.readFile("terrain_imacraft_W.data");
     
     std::vector<imacraft::TerrainGrid*> vecGrid(2);
     vecGrid[0] = &grid;
     vecGrid[1] = &grid1;
+    //~ vecGrid[2] = &grid2;
     
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
@@ -80,7 +86,7 @@ int main(int argc, char** argv) {
     vecTextures[1] = stoneTexture; // then assign 
     
     /* Renderer stuff */
-    imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replace by a default texture
+    imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replaced by a default texture
     imacraft::Renderer rend(&model_cube, vecGrid, vecTextures);
     
     /* Material */
@@ -201,7 +207,8 @@ int main(int argc, char** argv) {
 								break;
 								
 							case SDLK_t:
-								grid1.writeFile("test");
+								rend.writeAllFiles();
+								//~ grid.writeFile("test");
 								break;
 						
 							default:

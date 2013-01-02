@@ -25,18 +25,50 @@ namespace imacraft{
 	}
 
 	void Player::moveLeft(float const t){
-		if(m_Position.x >= 1) blockX(1); 
-		if(m_Position.x <= -1) blockX(-1); 
-		if(m_Position.z >= 1) blockZ(1); 
-		if(m_Position.z <= -1) blockZ(-1);
+		//~ if(m_Position.x >= 1) blockX(1); 
+		//~ if(m_Position.x <= -1) blockX(-1); 
+		//~ if(m_Position.z >= 1) blockZ(1); 
+		//~ if(m_Position.z <= -1) blockZ(-1);
+		if(m_Position.x > 1){
+			std::cout << "testX1" << std::endl;
+			m_Position.x = -1+CUBE_SIZE; 
+		}
+		if(m_Position.x <= -1){
+			std::cout << "testX2" << std::endl;
+			m_Position.x = 1; 
+		}
+		if(m_Position.z >= 1){
+			std::cout << "testZ1" << std::endl;
+			m_Position.z = -1+CUBE_SIZE; 
+		}
+		if(m_Position.z <= -1){
+			std::cout << "testZ2" << std::endl;
+			m_Position.z = 1; 
+		}
 		m_Position += t * m_LeftVector;
 	}
 
 	void Player::moveFront(float const t){
-		if(m_Position.x >= 1) blockX(1); 
-		if(m_Position.x <= -1) blockX(-1); 
-		if(m_Position.z >= 1) blockZ(1); 
-		if(m_Position.z <= -1) blockZ(-1); 
+		//~ if(m_Position.x >= 1) blockX(1); 
+		//~ if(m_Position.x <= -1) blockX(-1); 
+		//~ if(m_Position.z >= 1) blockZ(1); 
+		//~ if(m_Position.z <= -1) blockZ(-1); 
+		if(m_Position.x >= 1){
+			std::cout << "testX1" << std::endl;
+			m_Position.x = -1+CUBE_SIZE; 
+		}
+		if(m_Position.x <= -1){
+			std::cout << "testX2" << std::endl;
+			m_Position.x = 1; 
+		}
+		if(m_Position.z >= 1){
+			std::cout << "testZ1" << std::endl;
+			m_Position.z = -1+CUBE_SIZE; 
+		}
+		if(m_Position.z <= -1){
+			std::cout << "testZ2" << std::endl;
+			m_Position.z = 1; 
+		}
 		m_Position.x += t * m_FrontVector.x;
 		m_Position.z += t * m_FrontVector.z;
 	}

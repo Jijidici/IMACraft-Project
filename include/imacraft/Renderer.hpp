@@ -25,6 +25,7 @@ namespace imacraft{
 			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures);
 			~Renderer();
 			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation);
+			bool writeAllFiles();
 	};
 }
 

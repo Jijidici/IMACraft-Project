@@ -5,7 +5,7 @@ namespace imacraft{
 
 	struct TerrainGrid{
 		static const uint16_t TERRAIN_HEIGHT = 128;
-	
+		
 		private:
 			uint8_t *m_data;
 			uint16_t m_width;

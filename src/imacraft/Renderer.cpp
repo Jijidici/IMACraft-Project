@@ -21,6 +21,13 @@ namespace imacraft{
 	Renderer::~Renderer(){
 	}
 	
+	bool Renderer::writeAllFiles(){
+		for(size_t i = 0; i < m_vecGrid.size(); ++i){
+			if(!(*m_vecGrid[i]).writeFile("terrain_imacraft_")) return false;
+		}
+		return true;
+	}
+	
 	void Renderer::render(glm::mat4& P, MatrixStack& vs, GLuint PLocation){
 		glUniformMatrix4fv(PLocation, 1, GL_FALSE, glm::value_ptr(P));
 	
@@ -41,7 +48,7 @@ namespace imacraft{
 						if((*currentGrid)[currentCube] != 0){
 							vs.push();
 								/* Compute the MV matrix*/
-								vs.translate(glm::vec3(CUBE_SIZE*i-1. + 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
+								vs.translate(glm::vec3(CUBE_SIZE*i-1. - 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
 								vs.scale(glm::vec3(CUBE_SIZE));
 								
 								if(k%2){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file

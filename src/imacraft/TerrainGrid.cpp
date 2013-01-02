@@ -106,6 +106,8 @@ namespace imacraft{
 		for(int i = 0; i < -m_eastPosition; ++i){
 			strcat(path,"W");
 		}
+		
+		strcat(path,".data");
 
 		wDataFile = fopen(path, "wb");
 		if(NULL == wDataFile){
@@ -114,10 +116,18 @@ namespace imacraft{
 		}
 
 		size_t test_fic = 0;
+		
+		//~ for(int i = 0; i < m_width*m_width*TERRAIN_HEIGHT; ++i){
+			//~ if(m_data[i] != 0)
+				//~ std::cout << m_data[i] << std::endl;
+		//~ }
 
 		test_fic = fwrite(&m_width, sizeof(uint16_t), 1, wDataFile);
-		test_fic = fwrite(m_data, m_width*sizeof(uint8_t), 1, wDataFile);
-
+		std::cout << "written elelments : " << test_fic << std::endl;
+		
+		test_fic = fwrite(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, wDataFile);
+		std::cout << "written elelments : " << test_fic << std::endl;
+		
 		fclose(wDataFile);
 
 		if(!test_fic) return false;
@@ -143,5 +153,7 @@ namespace imacraft{
 	uint16_t TerrainGrid::getEastPos() const{
 		return m_eastPosition;
 	}
-
+	
 }
+
+
