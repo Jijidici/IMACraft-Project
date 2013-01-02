@@ -12,9 +12,9 @@
 #include "imacraft/TerrainGrid.hpp"
 
 namespace imacraft{
-	Renderer::Renderer(CubeInstance* cubeModel, TerrainGrid* grid, std::vector<imacraft::Texture> &vecTextures){
+	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures){
 		m_pCubeModel = cubeModel;
-		m_pGrid = grid;
+		m_vecGrid = vecGrid;
 		m_vecTextures = vecTextures;
 	}
 	
@@ -26,29 +26,37 @@ namespace imacraft{
 	
 		std::vector<glm::mat4> vecModelMatrix1;
 		std::vector<glm::mat4> vecModelMatrix2;
-	
-		for(uint16_t i=0;i<m_pGrid->width();++i){
-			for(uint16_t j=0;j<m_pGrid->height();++j){
-				for(uint16_t k=0;k<m_pGrid->width();++k){
-					uint32_t currentCube = k*m_pGrid->width()*m_pGrid->height() + j*m_pGrid->width() + i;
-					/* If there is a bloc */
-					if((*m_pGrid)[currentCube] != 0){
-						vs.push();
-							/* Compute the MV matrix*/
-							vs.translate(glm::vec3(CUBE_SIZE*i-1. + 2*(*m_pGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*m_pGrid).getNorthPos())); // offset (north & east positions)
-							vs.scale(glm::vec3(CUBE_SIZE));
-							
-							if(k%2){ // condition to define different sets of blocks (determines the texture too)
-								vecModelMatrix1.push_back(vs.top());
-							}else{
-								vecModelMatrix2.push_back(vs.top());
-							}
-							
-						vs.pop();
+		
+		TerrainGrid *currentGrid = m_vecGrid[0];
+		
+		for(size_t i = 0; i < m_vecGrid.size(); ++i){
+			
+			currentGrid = m_vecGrid[i];
+			
+			for(uint16_t i=0;i<currentGrid->width();++i){
+				for(uint16_t j=0;j<currentGrid->height();++j){
+					for(uint16_t k=0;k<currentGrid->width();++k){
+						uint32_t currentCube = k*currentGrid->width()*currentGrid->height() + j*currentGrid->width() + i;
+						/* If there is a bloc */
+						if((*currentGrid)[currentCube] != 0){
+							vs.push();
+								/* Compute the MV matrix*/
+								vs.translate(glm::vec3(CUBE_SIZE*i-1. + 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
+								vs.scale(glm::vec3(CUBE_SIZE));
+								
+								if(k%2){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file
+									vecModelMatrix1.push_back(vs.top());
+								}else{
+									vecModelMatrix2.push_back(vs.top());
+								}
+								
+							vs.pop();
+						}
 					}
 				}
 			}
-		}
+			
+		} // end for
 		uint32_t drawedCubeCount1 = vecModelMatrix1.size();
 		glm::mat4* MVMatrices1 = new glm::mat4[drawedCubeCount1];
 		
@@ -73,5 +81,5 @@ namespace imacraft{
 		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
-	}
+	} // end render()
 }

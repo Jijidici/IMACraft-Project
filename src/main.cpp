@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
     
     /* Renderer stuff */
     imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replace by a default texture
-    imacraft::Renderer rend(&model_cube, vecGrid[0], vecTextures);
+    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures);
     
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
