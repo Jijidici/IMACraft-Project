@@ -15,16 +15,16 @@
 
 namespace imacraft{
 	struct Renderer{
-	
 		private:
 			CubeInstance* m_pCubeModel;
-			TerrainGrid* m_pGrid;
-			std::vector<imacraft::Texture> m_vecTextures;
+			std::vector<TerrainGrid*> m_vecGrid;
+			std::vector<Texture> m_vecTextures;
 		
 		public:
-			Renderer(CubeInstance* cubeModel, TerrainGrid* grid, std::vector<imacraft::Texture> &vecTextures);
+			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures);
 			~Renderer();
 			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation);
+			bool writeAllFiles();
 	};
 }
 
