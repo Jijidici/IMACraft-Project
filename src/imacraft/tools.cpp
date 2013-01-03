@@ -135,17 +135,17 @@ bool loadGrids(int northPos, int eastPos, std::vector<imacraft::TerrainGrid*> &v
 		strcat(northWestPath,"W");
 
 	strcat(northWestPath,".data");
-	//~ 
-	//~ std::cout << centerPath << std::endl;
-	//~ std::cout << northPath << std::endl;
-	//~ std::cout << southPath << std::endl;
-	//~ std::cout << eastPath << std::endl;
-	//~ std::cout << westPath << std::endl;
-	//~ std::cout << northEastPath << std::endl;
-	//~ std::cout << southEastPath << std::endl;
-	//~ std::cout << southWestPath << std::endl;
-	//~ std::cout << northWestPath << std::endl;
-	//~ 
+	
+	std::cout << centerPath << std::endl;
+	std::cout << northPath << std::endl;
+	std::cout << southPath << std::endl;
+	std::cout << eastPath << std::endl;
+	std::cout << westPath << std::endl;
+	std::cout << northEastPath << std::endl;
+	std::cout << southEastPath << std::endl;
+	std::cout << southWestPath << std::endl;
+	std::cout << northWestPath << std::endl;
+	
 	if(!(*vecGrid[CENTER]).readFile(centerPath)) return false;
 	if(!(*vecGrid[NORTH]).readFile(northPath)) return false;
 	if(!(*vecGrid[SOUTH]).readFile(southPath)) return false;
@@ -155,6 +155,16 @@ bool loadGrids(int northPos, int eastPos, std::vector<imacraft::TerrainGrid*> &v
 	if(!(*vecGrid[SOUTH_EAST]).readFile(southEastPath)) return false;
 	if(!(*vecGrid[SOUTH_WEST]).readFile(southWestPath)) return false;
 	if(!(*vecGrid[NORTH_WEST]).readFile(northWestPath)) return false;
+
+	(*vecGrid[CENTER]).setGridRelativePosition(0,0);
+	(*vecGrid[NORTH]).setGridRelativePosition(1,0);
+	(*vecGrid[SOUTH]).setGridRelativePosition(-1,0);
+	(*vecGrid[EAST]).setGridRelativePosition(0,1);
+	(*vecGrid[WEST]).setGridRelativePosition(0,-1);
+	(*vecGrid[NORTH_EAST]).setGridRelativePosition(1,1);
+	(*vecGrid[SOUTH_EAST]).setGridRelativePosition(-1,1);
+	(*vecGrid[SOUTH_WEST]).setGridRelativePosition(-1,-1);
+	(*vecGrid[NORTH_WEST]).setGridRelativePosition(1,-1);
 	
 	return true;
 }

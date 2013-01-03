@@ -76,8 +76,8 @@ int main(int argc, char** argv) {
     imacraft::Player player;
     
     /* Physical terrain */
-    imacraft::TerrainGrid grid;
-    grid.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid0;
+    grid0.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid1;
     grid1.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid2;
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     grid8.readFile("terrain_imacraft_test_.data");
     
     std::vector<imacraft::TerrainGrid*> vecGrid(9);
-    vecGrid[CENTER] = &grid;
+    vecGrid[CENTER] = &grid0;
     vecGrid[NORTH] = &grid1;
     vecGrid[SOUTH] = &grid2;
     vecGrid[EAST] = &grid3;
@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
         SDL_GL_SwapBuffers();
         
         //affichage position du perso i,j,k
-		player.computeCubePosition(grid.width(),grid.height());
+		player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
 		//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
         
         // Boucle de gestion des évenements
@@ -209,7 +209,7 @@ int main(int argc, char** argv) {
 
 							case SDLK_SPACE:
 								player.jump();
-								if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] ==0){
+								if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] ==0){
 									player.fall(CUBE_SIZE);
 								}
 								break;
@@ -269,46 +269,58 @@ int main(int argc, char** argv) {
 			//GAUCHE
 		  if(is_lKeyPressed){
 				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
 					}else{
 						if(player.moveLeft(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
-					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
 					}else{
 						if(player.moveLeft(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
 					}else{
 						if(player.moveLeft(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
-					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
 					}else{
 						if(player.moveLeft(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
@@ -316,46 +328,58 @@ int main(int argc, char** argv) {
 			//DROITE
 			if(is_rKeyPressed){
 				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
 					}else{
 						if(player.moveLeft(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
-					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
 					}else{
 						if(player.moveLeft(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
 					}else{
 						if(player.moveLeft(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
-					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
 					}else{
 						if(player.moveLeft(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
@@ -363,46 +387,58 @@ int main(int argc, char** argv) {
 			//EN AVANT
 			if(is_uKeyPressed){
 				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
-					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
 					}else{
 						if(player.moveFront(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
 					}else{
 						if(player.moveFront(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
-					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
 					}else{
 						if(player.moveFront(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
 					}else{
 						if(player.moveFront(0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
@@ -410,44 +446,56 @@ int main(int argc, char** argv) {
 			//EN ARRIERE
 			if(is_dKeyPressed){ 
 				if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
-					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
 					}else{
 						if(player.moveFront(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
 					}else{
 						if(player.moveFront(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
-					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
+					if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
 					}else{
 						if(player.moveFront(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
-					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
+					if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
 					}else{
 						if(player.moveFront(-0.01)){
 							std::cout << "changeGrid !!" << std::endl;
 							rend.writeAllFiles();
+							if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+								std::cout << "error while loading grids" << std::endl;
+							}
 						}
 					}
 				}

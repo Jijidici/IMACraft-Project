@@ -25,6 +25,7 @@ namespace imacraft{
 		for(size_t i = 0; i < m_vecGrid.size(); ++i){
 			if(!(*m_vecGrid[i]).writeFile("terrain_imacraft_")) return false;
 		}
+		
 		return true;
 	}
 	

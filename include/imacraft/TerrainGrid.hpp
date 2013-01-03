@@ -10,7 +10,9 @@ namespace imacraft{
 			uint8_t *m_data;
 			uint16_t m_width;
 			int m_northPosition;
+			int m_northRelativePosition;
 			int m_eastPosition;
+			int m_eastRelativePosition;
 		public:
 			TerrainGrid();
 			~TerrainGrid();
@@ -23,6 +25,7 @@ namespace imacraft{
 			uint16_t height() const;
 			int getNorthPos() const;
 			int getEastPos() const;
+			void setGridRelativePosition(int north, int east);
 	};
 
 }

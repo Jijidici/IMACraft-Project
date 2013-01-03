@@ -13,6 +13,8 @@ namespace imacraft{
 		m_width = 0;
 		m_northPosition = 0;
 		m_eastPosition = 0;
+		m_northRelativePosition = 0;
+		m_eastRelativePosition = 0;
 	}
 	
 	TerrainGrid::~TerrainGrid(){
@@ -72,7 +74,7 @@ namespace imacraft{
 		
 		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
-			std::cout << "[!] > Unable to read the terrain_data file" << std::endl;
+			std::cout << "[!] > Unable to read the terrain_data file : " << path << std::endl;
 			return EXIT_FAILURE;
 		}
 
@@ -147,11 +149,16 @@ namespace imacraft{
 	}
 	
 	int TerrainGrid::getNorthPos() const{
-		return m_northPosition;
+		return m_northRelativePosition;
 	}
 	
 	int TerrainGrid::getEastPos() const{
-		return m_eastPosition;
+		return m_eastRelativePosition;
+	}
+	
+	void TerrainGrid::setGridRelativePosition(int north, int east){
+		m_northRelativePosition = north;
+		m_eastRelativePosition = east;
 	}
 	
 }
