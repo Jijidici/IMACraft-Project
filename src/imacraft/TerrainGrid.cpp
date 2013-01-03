@@ -49,7 +49,7 @@ namespace imacraft{
 				//~ std::cout << "position N : " << findNorth << std::endl;
 			//~ }
 		}
-		m_northPosition += northCount;
+		m_northPosition = northCount;
 		//~ std::cout << "northCount : " << northCount << std::endl;
 		
 		while(findSouth != std::string::npos){
@@ -62,7 +62,7 @@ namespace imacraft{
 			findEast = stringToCompare.find("E", findEast+1);
 			++eastCount;
 		}
-		m_eastPosition += eastCount;
+		m_eastPosition = eastCount;
 		
 		while(findWest != std::string::npos){
 			findWest = stringToCompare.find("W", findWest+1);

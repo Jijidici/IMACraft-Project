@@ -37,7 +37,11 @@ class Player{
 		void jump();
 		void fall(float end);
 		
-		void setCurrentPosition(int &north, int &east);
+		void setCurrentNEPosition(int &north, int &east);
+		void printCurrentNEPosition();
+		int getCurrentNorthPosition();
+		int getCurrentEastPosition();
+		
 };
 
 }

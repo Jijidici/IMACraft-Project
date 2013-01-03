@@ -156,8 +156,20 @@ namespace imacraft{
 		}
 	}
 	
-	void Player::setCurrentPosition(int &north, int &east){
+	void Player::setCurrentNEPosition(int &north, int &east){
 		m_currentNorthPosition = north;
 		m_currentEastPosition = east;
+	}
+	
+	void Player::printCurrentNEPosition(){
+		std::cout << "North position : " << m_currentNorthPosition << std::endl;
+		std::cout << "East position : " << m_currentEastPosition << std::endl;
+	}
+	
+	int Player::getCurrentNorthPosition(){
+		return m_currentNorthPosition;
+	}
+	int Player::getCurrentEastPosition(){
+		return m_currentEastPosition;
 	}
 }

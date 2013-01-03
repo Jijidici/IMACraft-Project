@@ -21,12 +21,24 @@
 #include "imacraft/lighting/Lights.hpp"
 #include "imacraft/lighting/LightManager.hpp"
 #include "imacraft/Texture.hpp"
+#include "imacraft/tools.hpp"
 
 #define PI 3.14159265
+
+#define CENTER 0
+#define NORTH 1
+#define EAST 3
+#define SOUTH 2
+#define WEST 4
+#define NORTH_EAST 5
+#define SOUTH_EAST 6
+#define SOUTH_WEST 7
+#define NORTH_WEST 8
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;
+
 
 int main(int argc, char** argv) {
     /********************************************************************
@@ -65,19 +77,39 @@ int main(int argc, char** argv) {
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
-    grid.readFile("terrain_imacraft_.data");
+    grid.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("terrain_imacraft_N.data");
+    grid1.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid2;
-    grid2.readFile("terrain_imacraft_S.data");
+    grid2.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid3;
+    grid3.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid4;
+    grid4.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid5;
+    grid5.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid6;
+    grid6.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid7;
+    grid7.readFile("terrain_imacraft_test_.data");
+    imacraft::TerrainGrid grid8;
+    grid8.readFile("terrain_imacraft_test_.data");
     
-    std::cout << "grid 1 : " << grid1.getNorthPos() << " " << grid1.getEastPos() << std::endl;
-    std::cout << "grid 2 : " << grid2.getNorthPos() << " " << grid2.getEastPos() << std::endl;
+    std::vector<imacraft::TerrainGrid*> vecGrid(9);
+    vecGrid[CENTER] = &grid;
+    vecGrid[NORTH] = &grid1;
+    vecGrid[SOUTH] = &grid2;
+    vecGrid[EAST] = &grid3;
+    vecGrid[WEST] = &grid4;
+    vecGrid[NORTH_EAST] = &grid5;
+    vecGrid[NORTH_WEST] = &grid6;
+    vecGrid[SOUTH_EAST] = &grid7;
+    vecGrid[SOUTH_WEST] = &grid8;
     
-    std::vector<imacraft::TerrainGrid*> vecGrid(3);
-    vecGrid[0] = &grid; // center
-    vecGrid[1] = &grid1; // north
-    vecGrid[2] = &grid2; // south
+    if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
+		std::cout << "error while loading grids" << std::endl;
+	}
+    
     
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
@@ -108,12 +140,12 @@ int main(int argc, char** argv) {
 
     
     //variable d'events
-		bool is_lKeyPressed = false;
-		bool is_rKeyPressed = false;
-		bool is_uKeyPressed = false;
-		bool is_dKeyPressed = false;
-		float ffC_angleX = 0;
-		float ffC_angleY = 0;
+	bool is_lKeyPressed = false;
+	bool is_rKeyPressed = false;
+	bool is_uKeyPressed = false;
+	bool is_dKeyPressed = false;
+	float ffC_angleX = 0;
+	float ffC_angleY = 0;
     
     // Boucle principale
     bool done = false;
@@ -209,7 +241,11 @@ int main(int argc, char** argv) {
 								rend.writeAllFiles();
 								//~ grid.writeFile("test");
 								break;
-						
+								
+							case SDLK_p:
+								player.printCurrentNEPosition();
+								break;
+								
 							default:
 								break;
 						}
