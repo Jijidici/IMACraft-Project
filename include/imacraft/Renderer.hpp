@@ -15,7 +15,6 @@
 
 namespace imacraft{
 	struct Renderer{
-	
 		private:
 			CubeInstance* m_pCubeModel;
 			std::vector<TerrainGrid*> m_vecGrid;

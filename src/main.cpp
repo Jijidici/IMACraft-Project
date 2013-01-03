@@ -60,25 +60,24 @@ int main(int argc, char** argv) {
     GLuint PLocation = glGetUniformLocation(program, "uPMatrix");
     glm::mat4 P = glm::perspective(90.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f);
 	
+	//~ FreeFlyCamera
+    imacraft::Player player;
     
     /* Physical terrain */
     imacraft::TerrainGrid grid;
     grid.readFile("terrain_imacraft_.data");
-    //~ grid.readFile("test.data");
-    //~ grid.readFile("terrain_imacraft_test_.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("terrain_imacraft_S.data");
-    //~ grid1.readFile("terrain_imacraft_test_E.data");
+    grid1.readFile("terrain_imacraft_N.data");
     imacraft::TerrainGrid grid2;
-    grid2.readFile("terrain_imacraft_N.data");
+    grid2.readFile("terrain_imacraft_S.data");
     
     std::cout << "grid 1 : " << grid1.getNorthPos() << " " << grid1.getEastPos() << std::endl;
     std::cout << "grid 2 : " << grid2.getNorthPos() << " " << grid2.getEastPos() << std::endl;
     
     std::vector<imacraft::TerrainGrid*> vecGrid(3);
-    vecGrid[0] = &grid;
-    vecGrid[1] = &grid1;
-    vecGrid[2] = &grid2;
+    vecGrid[0] = &grid; // center
+    vecGrid[1] = &grid1; // north
+    vecGrid[2] = &grid2; // south
     
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
@@ -106,9 +105,6 @@ int main(int argc, char** argv) {
     lMage.addLight(torch);
     torch.lPos.z = -1.f;
     lMage.addLight(torch);
-    
-    //~ Camera vue libre
-    imacraft::Player player;
 
     
     //variable d'events
@@ -240,25 +236,45 @@ int main(int argc, char** argv) {
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
-					}else player.moveLeft(0.01);
+					}else{
+						if(player.moveLeft(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
-					}else player.moveLeft(0.01);
+					}else{
+						if(player.moveLeft(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
-					}else player.moveLeft(0.01);
+					}else{
+						if(player.moveLeft(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
-					}else player.moveLeft(0.01);
+					}else{
+						if(player.moveLeft(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 			}
 			//DROITE
@@ -267,25 +283,45 @@ int main(int argc, char** argv) {
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
-					}else player.moveLeft(-0.01);
+					}else{
+						if(player.moveLeft(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 					if(grid[(player.getCubePosition().z+1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
-					}else player.moveLeft(-0.01);
+					}else{
+						if(player.moveLeft(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
-					}else player.moveLeft(-0.01);
+					}else{
+						if(player.moveLeft(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 					if(grid[(player.getCubePosition().z-1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
-					}else player.moveLeft(-0.01);
+					}else{
+						if(player.moveLeft(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 			}
 			//EN AVANT
@@ -294,25 +330,45 @@ int main(int argc, char** argv) {
 					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
-					}else player.moveFront(0.01);
+					}else{
+						if(player.moveFront(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
-					}else player.moveFront(0.01);
+					}else{
+						if(player.moveFront(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
-					}else player.moveFront(0.01);
+					}else{
+						if(player.moveFront(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
-					}else player.moveFront(0.01);
+					}else{
+						if(player.moveFront(0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 			}
 			//EN ARRIERE
@@ -321,25 +377,43 @@ int main(int argc, char** argv) {
 					if(grid[(player.getCubePosition().z -1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z-1" << std::endl;
-					}else player.moveFront(-0.01);
+					}else{
+						if(player.moveFront(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+						}
+					}
 				}
 				else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x-1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x+1" << std::endl;
-					}else player.moveFront(-0.01);
+					}else{
+						if(player.moveFront(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+						}
+					}
 				}
 				else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 					if(grid[(player.getCubePosition().z +1)*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x] !=0) {
 						player.blockZ(player.getPosition().z);
 						std::cout << "collision z+1" << std::endl;
-					}else player.moveFront(-0.01);
+					}else{
+						if(player.moveFront(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 				else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 					if(grid[player.getCubePosition().z*grid.width()*grid.height() + player.getCubePosition().y*grid.width() + player.getCubePosition().x+1] !=0) {
 						player.blockX(player.getPosition().x);
 						std::cout << "collision x-1" << std::endl;
-					}else player.moveFront(-0.01);
+					}else{
+						if(player.moveFront(-0.01)){
+							std::cout << "changeGrid !!" << std::endl;
+							rend.writeAllFiles();
+						}
+					}
 				}
 			}
 		
