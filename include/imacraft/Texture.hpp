@@ -15,7 +15,6 @@ struct Texture{
 		//~ GLint m_textureIndex;
 		
 		void sendTextureToGPU(GLuint &texture_gluint);
-		GLuint getFormat(SDL_Surface* surface);
 		void getUniformSamplerLocation();
 		
 	public:
@@ -35,6 +34,7 @@ struct Texture{
 		void debindTexture();
 		
 		static GLint textureIndex;
+		static GLuint getFormat(SDL_Surface* surface);
 };
 
 }
