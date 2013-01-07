@@ -14,17 +14,15 @@ namespace imacraft{
 	}
 	
 	void LightManager::addLight(const DirectionalLight& light){
-		std::cout<<"//-> The current directionnal light will be replace"<<std::endl;
 		m_dirLight = light;
 	}
 	
 	void LightManager::addLight(const PointLight& light){
 		if(m_currentPtLightCount >= MAX_POINT_LIGHT_COUNT){
-			throw std::out_of_range("You can't add another point light.");
+			return;
 		}else{
 			m_ptLights[m_currentPtLightCount] = light;
 			m_currentPtLightCount++;
-			std::cout<<"//-> nb point lights : "<<m_currentPtLightCount<<std::endl;
 		}
 	}
 	

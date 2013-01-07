@@ -116,7 +116,6 @@ int main(int argc, char** argv) {
     imacraft::Texture stoneTexture("textures/stone.png", program);
     
     std::vector<imacraft::Texture> vecTextures(2, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    //~ std::cout << vecTextures.size() << std::endl;
     vecTextures[1] = stoneTexture; // then assign 
     
     /* Renderer stuff */
@@ -134,8 +133,6 @@ int main(int argc, char** argv) {
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
-    lMage.addLight(torch);
-    torch.lPos.z = -1.f;
     lMage.addLight(torch);
 
     

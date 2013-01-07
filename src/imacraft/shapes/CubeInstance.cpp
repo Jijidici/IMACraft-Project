@@ -223,6 +223,12 @@ namespace imacraft{
 		cubeTexture.debindTexture();
 	}
 	
+	void CubeInstance::draw(){
+		glBindVertexArray(vao);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+		glBindVertexArray(0);
+	}
+	
 	void CubeInstance::setTexture(Texture &texture){
 		cubeTexture = texture;
 	}
