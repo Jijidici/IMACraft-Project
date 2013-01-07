@@ -10,6 +10,7 @@
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/MatrixStack.hpp"
 #include "imacraft/Texture.hpp"
+#include "imacraft/Skybox.hpp"
 
 #define CUBE_SIZE 0.015625
 
@@ -19,9 +20,10 @@ namespace imacraft{
 			CubeInstance* m_pCubeModel;
 			std::vector<TerrainGrid*> m_vecGrid;
 			std::vector<Texture> m_vecTextures;
+			Skybox m_sky;
 		
 		public:
-			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures);
+			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky);
 			~Renderer();
 			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation);
 			bool writeAllFiles();

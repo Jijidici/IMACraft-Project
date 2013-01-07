@@ -11,6 +11,9 @@ namespace imacraft{
 
 GLint Texture::textureIndex = 0;
 
+Texture::Texture(){
+}
+
 Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(textureIndex){
 	//~ std::cout << m_path << std::endl;
 	m_textureIndex = textureIndex;

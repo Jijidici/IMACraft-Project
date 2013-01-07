@@ -19,6 +19,7 @@ struct Texture{
 		void getUniformSamplerLocation();
 		
 	public:
+		Texture();
 		Texture(const char* path, GLuint &program);
 		~Texture();
 		

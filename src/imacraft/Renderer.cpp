@@ -10,12 +10,11 @@
 #include "imacraft/MatrixStack.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
 #include "imacraft/TerrainGrid.hpp"
+#include "imacraft/Skybox.hpp"
 
 namespace imacraft{
-	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures){
-		m_pCubeModel = cubeModel;
-		m_vecGrid = vecGrid;
-		m_vecTextures = vecTextures;
+	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky): 
+		m_pCubeModel(cubeModel), m_vecGrid(vecGrid), m_vecTextures(vecTextures), m_sky(inSky){
 	}
 	
 	Renderer::~Renderer(){

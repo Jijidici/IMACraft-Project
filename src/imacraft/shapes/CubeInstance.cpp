@@ -207,6 +207,7 @@ namespace imacraft{
 	//DESTRUCTOR
 	CubeInstance::~CubeInstance(){
 		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &MVvbo);
 		glDeleteVertexArrays(1, &vao);
 	}
 	

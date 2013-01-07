@@ -17,7 +17,7 @@
 
 // load correct grids NESW...
 bool loadGrids(int northPos, int eastPos, std::vector<imacraft::TerrainGrid*> &vecGrid){
-	char basePath[80] = "terrain_imacraft_";
+	//char basePath[80] = "terrain_imacraft_";
 	char centerPath[80] = "terrain_imacraft_";
 	char northPath[80] = "terrain_imacraft_";
 	char southPath[80] = "terrain_imacraft_";
