@@ -15,7 +15,6 @@
 namespace imacraft{
 	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky): 
 		m_pCubeModel(cubeModel), m_vecGrid(vecGrid), m_vecTextures(vecTextures), m_sky(inSky){
-		m_sky.load();
 	}
 	
 	Renderer::~Renderer(){
@@ -82,13 +81,17 @@ namespace imacraft{
 		
 		/* Draw the blocs */
 		// here, assign textures to the matching set of blocks
-		(*m_pCubeModel).setTexture(m_vecTextures[0]); // assign corresponding texture
+		m_pCubeModel->setTexture(m_vecTextures[0]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount1, MVMatrices1);
 		
-		(*m_pCubeModel).setTexture(m_vecTextures[1]); // assign corresponding texture
+		m_pCubeModel->setTexture(m_vecTextures[1]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount2, MVMatrices2);
 		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
+		
+		//draw the skybox
+		m_pCubeModel->setTexture(m_vecTextures[2]); // assign corresponding texture
+		m_sky.draw();
 	} // end render()
 }

@@ -3,22 +3,21 @@
 
 #include <string>
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 #include "imacraft/Player.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
 
 namespace imacraft{
 	class Skybox{
 		private:
-			GLuint m_textureObj;
-			std::string m_filenames[6];
 			GLuint m_program;
-			CubeInstance m_model;
+			CubeInstance* m_pModel;
 			Player* m_pCamera;
 		
 		public:
-			Skybox(const std::string& imgDirectory, Player* player, CubeInstance& model);
+			Skybox(GLuint program, Player* player, CubeInstance* pModel);
 			~Skybox();
-			void load();
+			void draw();
 	};
 }
 
