@@ -10,12 +10,11 @@
 namespace imacraft{
 	class Skybox{
 		private:
-			GLuint m_program;
 			CubeInstance* m_pModel;
 			Player* m_pCamera;
 		
 		public:
-			Skybox(GLuint program, Player* player, CubeInstance* pModel);
+			Skybox(Player* player, CubeInstance* pModel);
 			~Skybox();
 			void draw();
 	};

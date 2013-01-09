@@ -19,6 +19,8 @@ namespace imacraft{
 			void removeLight(int idx);
 			void sendLights(GLuint program, const glm::mat4& viewMatrix);
 			void updatePtLightsPosition(int exitSide);
+			const int getNbPointLight() const;
+			const glm::vec3 getPointLightPos(const int idx) const;
 			
 		private:
 			DirectionalLight m_dirLight;

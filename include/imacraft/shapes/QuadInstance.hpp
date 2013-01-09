@@ -30,12 +30,12 @@ namespace imacraft{
 			GLuint vertexCount;
 			Texture quadTexture;
 			
-		private:
+		public:
 			QuadInstance(Texture& texture);
 			~QuadInstance();
 			
 			void draw(uint32_t nbInstance, glm::mat4* MVMatrices);
-			void setTexture(Texture& texture);	
+			void setTexture(Texture *texture);	
 	};
 }
 

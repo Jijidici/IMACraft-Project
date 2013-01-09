@@ -94,7 +94,7 @@ namespace imacraft{
 		quadTexture.debindTexture();
 	}
 	
-	void QuadInstance::setTexture(Texture &texture){
-		quadTexture = texture;
+	void QuadInstance::setTexture(Texture *texture){
+		quadTexture = (*texture);
 	}
 }

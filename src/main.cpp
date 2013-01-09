@@ -18,6 +18,7 @@
 #include "imacraft/Renderer.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/shapes/QuadInstance.hpp"
 #include "imacraft/lighting/Material.hpp"
 #include "imacraft/lighting/Lights.hpp"
 #include "imacraft/lighting/LightManager.hpp"
@@ -144,12 +145,6 @@ int main(int argc, char** argv) {
     /*      TESTS      */
     /*******************/
     
-    /* Renderer stuff */
-    imacraft::Texture defaultTexture("textures/sand.jpg", program);
-    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
-    imacraft::Skybox sky(program, &player, &model_cube);
-    imacraft::Renderer rend(&model_cube, vecGrid, texturePtVector, sky);
-    
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
     imacraft::MaterialUniform cubeMatUniform;
@@ -160,7 +155,13 @@ int main(int argc, char** argv) {
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
-
+    
+    /* Renderer stuff */
+    imacraft::Texture defaultTexture("textures/sand.jpg", program);
+    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
+    imacraft::QuadInstance model_quad(defaultTexture);
+    imacraft::Skybox sky(&player, &model_cube);
+    imacraft::Renderer rend(&model_cube, &model_quad, vecGrid, texturePtVector, sky);
     
     //variable d'events
 	bool is_lKeyPressed = false;
@@ -196,7 +197,7 @@ int main(int argc, char** argv) {
 		viewStack.push();
 			lMage.sendLights(program, viewStack.top());
 			
-			rend.render(P, viewStack, PLocation, player);
+			rend.render(program, P, viewStack, PLocation, player, lMage);
 		viewStack.pop();
 		
         // Mise à jour de l'affichage

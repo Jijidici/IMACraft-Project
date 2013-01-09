@@ -87,4 +87,12 @@ namespace imacraft{
 				break;
 		}
 	}
+	
+	const int LightManager::getNbPointLight() const{
+		return m_currentPtLightCount;
+	}
+	
+	const glm::vec3 LightManager::getPointLightPos(const int idx) const{
+		return glm::vec3(m_ptLights[idx].lPos.x, m_ptLights[idx].lPos.y, m_ptLights[idx].lPos.z);
+	}
 }
