@@ -18,7 +18,7 @@
 #define SKY 2
 
 namespace imacraft{
-	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky): 
+	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture*> &vecTextures, Skybox& inSky): 
 		m_pCubeModel(cubeModel), m_vecGrid(vecGrid), m_vecTextures(vecTextures), m_sky(inSky){
 	}
 	

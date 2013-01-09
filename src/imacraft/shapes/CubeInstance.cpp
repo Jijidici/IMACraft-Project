@@ -224,7 +224,7 @@ namespace imacraft{
 		cubeTexture.debindTexture();
 	}
 	
-	void CubeInstance::setTexture(Texture &texture){
-		cubeTexture = texture;
+	void CubeInstance::setTexture(Texture *texture){
+		cubeTexture = (*texture);
 	}
 }

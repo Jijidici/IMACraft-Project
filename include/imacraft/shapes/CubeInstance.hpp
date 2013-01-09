@@ -35,7 +35,7 @@ namespace imacraft{
 			~CubeInstance();
 			
 			void draw(uint32_t nbInstances, glm::mat4* MVMatrices);
-			void setTexture(Texture &texture);
+			void setTexture(Texture *texture);
 			
 	};
 	

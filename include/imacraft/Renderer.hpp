@@ -20,11 +20,11 @@ namespace imacraft{
 		private:
 			CubeInstance* m_pCubeModel;
 			std::vector<TerrainGrid*> m_vecGrid;
-			std::vector<Texture> m_vecTextures;
+			std::vector<Texture*> m_vecTextures;
 			Skybox m_sky;
 		
 		public:
-			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky);
+			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture*> &vecTextures, Skybox& inSky);
 			~Renderer();
 			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation, Player& player);
 			bool writeAllFiles();

@@ -38,10 +38,6 @@
 #define SOUTH_WEST 7
 #define NORTH_WEST 8
 
-#define GROUND 0
-#define STONE 1
-#define SKY 2
-
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;
@@ -125,11 +121,14 @@ int main(int argc, char** argv) {
     if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 		std::cout << "error while loading grids" << std::endl;
 	}
+
     
-    
-    // textures config file
+    /* Textures */ // create all the textures from the config file
+    std::vector<imacraft::Texture*> texturePtVector;
+	
+	// textures config file
     const char* configPath = "config/textures.config";
-    
+	
     std::ifstream configFile_in;
     configFile_in.open(configPath);
 		if(!configFile_in){
@@ -140,31 +139,26 @@ int main(int argc, char** argv) {
 		int texturesNumber;
 		int index;
 		configFile_in >> texturesNumber;
-		char path[texturesNumber][80];
+		char path[80];
 		
 		for(int i = 0; i < texturesNumber; ++i){
-			configFile_in >> index;
-			configFile_in >> path[index];
+			configFile_in >> index; // useless, but needed to read the index in the file
+			configFile_in >> path;
+			
+			imacraft::Texture * tempTexture = new imacraft::Texture(path, program);
+			texturePtVector.push_back(tempTexture);
 		}	
     configFile_in.close();
     
-    
-    /* Textures */ // create all the textures
-    imacraft::Texture defaultTexture("textures/sand.jpg", program);
-    imacraft::Texture groundTexture(path[GROUND], program);
-    imacraft::Texture stoneTexture(path[STONE], program);
-    imacraft::Texture skyTexture(path[SKY], program);
-    
-    // didn't find how to change number of textures and assign them dynamically...
-    std::vector<imacraft::Texture> vecTextures(3, defaultTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    vecTextures[GROUND] = groundTexture;
-    vecTextures[STONE] = stoneTexture;
-    vecTextures[SKY] = skyTexture;
+    /*******************/
+    /*      TESTS      */
+    /*******************/
     
     /* Renderer stuff */
+    imacraft::Texture defaultTexture("textures/sand.jpg", program);
     imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
     imacraft::Skybox sky(program, &player, &model_cube);
-    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
+    imacraft::Renderer rend(&model_cube, vecGrid, texturePtVector, sky);
     
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
