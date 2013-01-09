@@ -125,11 +125,9 @@ int main(int argc, char** argv) {
     
     /* Lights */
     imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.5f, 1.5f, 1.5f));
-    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(0.8f, 0.8f, 0.8f));
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
-    lMage.addLight(torch);
 
     
     //variable d'events
@@ -207,11 +205,17 @@ int main(int argc, char** argv) {
 							case SDLK_s:
 								is_dKeyPressed = true;
 								break;
-
+							
+							//jump
 							case SDLK_SPACE:
 								player.jump();
 								break;
-						
+							
+							//turn off the older light
+							case SDLK_o:
+								lMage.removeLight(0);
+								break;
+							
 							default:
 								break;
 						}
@@ -334,7 +338,20 @@ int main(int argc, char** argv) {
 									}
 								}
 								break;
-						
+							
+							//put a torch
+							case SDL_BUTTON_MIDDLE:
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									glm::vec3 camFrontVector = player.getFrontVector();
+									float step = CUBE_SIZE/8.;
+									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
+									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
+									imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1 +CUBE_SIZE/2., previousCube.y*CUBE_SIZE-1 +CUBE_SIZE/2., previousCube.z*CUBE_SIZE-1 +CUBE_SIZE/2., 1.f), glm::vec3(0.001f, 0.001f, 0.001f));
+									lMage.addLight(tmpTorch);
+								}
+								break;
+							
 							default:
 								break;
 						}

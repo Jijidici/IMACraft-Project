@@ -19,18 +19,20 @@ namespace imacraft{
 	
 	void LightManager::addLight(const PointLight& light){
 		if(m_currentPtLightCount >= MAX_POINT_LIGHT_COUNT){
-			return;
-		}else{
-			m_ptLights[m_currentPtLightCount] = light;
-			m_currentPtLightCount++;
+			removeLight(0);
 		}
+		
+		m_ptLights[m_currentPtLightCount] = light;
+		m_currentPtLightCount++;
 	}
 	
 	void LightManager::removeLight(int idx){
-		for(int i=idx;i<m_currentPtLightCount-1;++i){
-			m_ptLights[i] = m_ptLights[i+1];
+		if(m_currentPtLightCount != 0){
+			for(int i=idx;i<m_currentPtLightCount-1;++i){
+				m_ptLights[i] = m_ptLights[i+1];
+			}
+			m_currentPtLightCount--;
 		}
-		m_currentPtLightCount--;
 	}
 	
 	void LightManager::sendLights(GLuint program, const glm::mat4& viewMatrix){

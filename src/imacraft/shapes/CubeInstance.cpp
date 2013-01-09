@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/shapes/CommonInstance.hpp"
 #include "imacraft/Texture.hpp"
 
 namespace imacraft{
