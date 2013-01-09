@@ -12,7 +12,7 @@
 
 namespace imacraft{
 
-	Player::Player() : m_nearDistance(0.1), m_farDistance(100.), m_verticalFieldOfView(90.0){
+	Player::Player() : m_nearDistance(0.01), m_farDistance(1.), m_verticalFieldOfView(90.0){
 		m_Position = glm::vec3(0.f, 5*CUBE_SIZE, 0.f);
 		m_fPhi = PI;
 		m_fTheta = 0;
@@ -75,7 +75,7 @@ namespace imacraft{
 		
 	}
 	
-	bool Player::frustumTest(uint16_t i, uint16_t j, uint16_t k){
+	bool Player::frustumTest(uint16_t i, uint16_t j, uint16_t k, int northPos, int eastPos){
 		
 		//~ if(glm::dot(m_frustumNearPlaneNormal, (m_frustumNearPlanePoint - glm::vec3(i*CUBE_SIZE + CUBE_SIZE*0.5, j*CUBE_SIZE + CUBE_SIZE*0.5, k*CUBE_SIZE + CUBE_SIZE*0.5))) < 0.){
 			//~ return false;
@@ -102,10 +102,22 @@ namespace imacraft{
 		//~ if(glm::dot(m_frustumNearPlaneNormal, (m_frustumNearPlanePoint - glm::vec3((i - 63)*CUBE_SIZE + CUBE_SIZE*0.5, j*CUBE_SIZE + CUBE_SIZE*0.5, (k - 63)*CUBE_SIZE + CUBE_SIZE*0.5))) < 0.){
 			//~ return false;
 		//~ }
-		if(glm::dot(m_frustumLeftPlaneNormal, (glm::vec3((i - 64)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64)*CUBE_SIZE) - m_frustumLeftPlanePoint)) < 0.){
+		if(glm::dot(m_frustumLeftPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumLeftPlanePoint)) < 0.){
 			return false;
 		}
-		if(glm::dot(m_frustumRightPlaneNormal, (glm::vec3((i - 64)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64)*CUBE_SIZE) - m_frustumRightPlanePoint)) < 0.){
+		if(glm::dot(m_frustumRightPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumRightPlanePoint)) < 0.){
+			return false;
+		}
+		if(glm::dot(m_frustumNearPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumNearPlanePoint)) < 0.){
+			return false;
+		}
+		if(glm::dot(m_frustumFarPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumFarPlanePoint)) < 0.){
+			return false;
+		}
+		if(glm::dot(m_frustumTopPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumTopPlanePoint)) < 0.){
+			return false;
+		}
+		if(glm::dot(m_frustumBottomPlaneNormal, (glm::vec3((i - 64 - 128*eastPos)*CUBE_SIZE, (j - 64)*CUBE_SIZE, (k - 64 + 128*northPos)*CUBE_SIZE) - m_frustumBottomPlanePoint)) < 0.){
 			return false;
 		}
 		
