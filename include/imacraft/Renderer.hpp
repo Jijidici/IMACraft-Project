@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/Player.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/MatrixStack.hpp"
 #include "imacraft/Texture.hpp"
@@ -23,7 +24,7 @@ namespace imacraft{
 		public:
 			Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures);
 			~Renderer();
-			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation);
+			void render(glm::mat4& P, MatrixStack& vs, GLuint PLocation, Player& player);
 			bool writeAllFiles();
 	};
 }

@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "imacraft/MatrixStack.hpp"
+#include "imacraft/Player.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
 #include "imacraft/TerrainGrid.hpp"
 
@@ -29,7 +30,7 @@ namespace imacraft{
 		return true;
 	}
 	
-	void Renderer::render(glm::mat4& P, MatrixStack& vs, GLuint PLocation){
+	void Renderer::render(glm::mat4& P, MatrixStack& vs, GLuint PLocation, Player& player){
 		glUniformMatrix4fv(PLocation, 1, GL_FALSE, glm::value_ptr(P));
 	
 		std::vector<glm::mat4> vecModelMatrix1;
@@ -48,18 +49,21 @@ namespace imacraft{
 						uint32_t currentCube = k*currentGrid->width()*currentGrid->height() + j*currentGrid->width() + i;
 						/* If there is a bloc */
 						if((*currentGrid)[currentCube] != 0){
-							vs.push();
-								/* Compute the MV matrix*/
-								vs.translate(glm::vec3(CUBE_SIZE*i-1. - 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
-								vs.scale(glm::vec3(CUBE_SIZE));
-								
-								if(k%2){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file
-									vecModelMatrix1.push_back(vs.top());
-								}else{
-									vecModelMatrix2.push_back(vs.top());
-								}
-								
-							vs.pop();
+							//~ if(player.frustumTest(i + (*currentGrid).getNorthPos(), j + (*currentGrid).getEastPos(), k)){
+							if(player.frustumTest(i, j, k)){
+								vs.push();
+									/* Compute the MV matrix*/
+									vs.translate(glm::vec3(CUBE_SIZE*i-1. - 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
+									vs.scale(glm::vec3(CUBE_SIZE));
+									
+									if(k%2){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file
+										vecModelMatrix1.push_back(vs.top());
+									}else{
+										vecModelMatrix2.push_back(vs.top());
+									}
+									
+								vs.pop();
+							}
 						}
 					}
 				}
