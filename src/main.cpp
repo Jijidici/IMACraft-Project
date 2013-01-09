@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 #include <SDL/SDL.h>
@@ -37,6 +38,10 @@
 #define SOUTH_WEST 7
 #define NORTH_WEST 8
 
+#define GROUND 0
+#define STONE 1
+#define SKY 2
+
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;
@@ -46,6 +51,14 @@ int main(int argc, char** argv) {
     /********************************************************************
      * INITIALISATION DU PROGRAMME
      ********************************************************************/
+    
+    /*************/
+    /* Conf file */
+    /*************/
+    
+    
+    //~ std::cout << value << std::endl;
+    //~ std::cout << text << std::endl;
     
     // Initialisation de la SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -114,17 +127,42 @@ int main(int argc, char** argv) {
 	}
     
     
-    /* Textures */ // create all the textures
-    imacraft::Texture brickTexture("textures/ground.jpg", program);
-    imacraft::Texture stoneTexture("textures/stone.jpg", program);
-    imacraft::Texture skyTexture("textures/sky.jpg", program);
+    // textures config file
+    const char* configPath = "config/textures.config";
     
-    std::vector<imacraft::Texture> vecTextures(3, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    vecTextures[1] = stoneTexture;
-    vecTextures[2] = skyTexture;
+    std::ifstream configFile_in;
+    configFile_in.open(configPath);
+		if(!configFile_in){
+			std::cout << "Unable to open textures config file" << std::endl;
+			return(EXIT_FAILURE);
+		}
+    
+		int texturesNumber;
+		int index;
+		configFile_in >> texturesNumber;
+		char path[texturesNumber][80];
+		
+		for(int i = 0; i < texturesNumber; ++i){
+			configFile_in >> index;
+			configFile_in >> path[index];
+		}	
+    configFile_in.close();
+    
+    
+    /* Textures */ // create all the textures
+    imacraft::Texture defaultTexture("textures/sand.jpg", program);
+    imacraft::Texture groundTexture(path[GROUND], program);
+    imacraft::Texture stoneTexture(path[STONE], program);
+    imacraft::Texture skyTexture(path[SKY], program);
+    
+    // didn't find how to change number of textures and assign them dynamically...
+    std::vector<imacraft::Texture> vecTextures(3, defaultTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
+    vecTextures[GROUND] = groundTexture;
+    vecTextures[STONE] = stoneTexture;
+    vecTextures[SKY] = skyTexture;
     
     /* Renderer stuff */
-    imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replaced by a default texture
+    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
     imacraft::Skybox sky(program, &player, &model_cube);
     imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
     
@@ -574,7 +612,7 @@ int main(int argc, char** argv) {
 		
 	} // end events
 		
-		
+	//~ rend.writeAllFiles(); // auto save !
     
     SDL_Quit();
     

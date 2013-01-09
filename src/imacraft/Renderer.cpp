@@ -13,6 +13,10 @@
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/Skybox.hpp"
 
+#define GROUND 0
+#define STONE 1
+#define SKY 2
+
 namespace imacraft{
 	Renderer::Renderer(CubeInstance* cubeModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture> &vecTextures, Skybox& inSky): 
 		m_pCubeModel(cubeModel), m_vecGrid(vecGrid), m_vecTextures(vecTextures), m_sky(inSky){
@@ -68,6 +72,8 @@ namespace imacraft{
 			}
 			
 		} // end for
+		
+		
 		uint32_t drawedCubeCount1 = vecModelMatrix1.size();
 		glm::mat4* MVMatrices1 = new glm::mat4[drawedCubeCount1];
 		
@@ -84,17 +90,17 @@ namespace imacraft{
 		
 		/* Draw the blocs */
 		// here, assign textures to the matching set of blocks
-		m_pCubeModel->setTexture(m_vecTextures[0]); // assign corresponding texture
+		m_pCubeModel->setTexture(m_vecTextures[GROUND]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount1, MVMatrices1);
 		
-		m_pCubeModel->setTexture(m_vecTextures[1]); // assign corresponding texture
+		m_pCubeModel->setTexture(m_vecTextures[STONE]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount2, MVMatrices2);
 		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
 		
 		//draw the skybox
-		m_pCubeModel->setTexture(m_vecTextures[2]); // assign corresponding texture
+		m_pCubeModel->setTexture(m_vecTextures[SKY]); // assign corresponding texture
 		m_sky.draw();
 	} // end render()
 }
