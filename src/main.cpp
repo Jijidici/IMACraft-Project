@@ -115,9 +115,9 @@ int main(int argc, char** argv) {
     
     
     /* Textures */ // create all the textures
-    imacraft::Texture brickTexture("textures/brique.png", program);
-    imacraft::Texture stoneTexture("textures/stone.png", program);
-    imacraft::Texture skyTexture("textures/sky.png", program);
+    imacraft::Texture brickTexture("textures/ground.jpg", program);
+    imacraft::Texture stoneTexture("textures/stone.jpg", program);
+    imacraft::Texture skyTexture("textures/sky.jpg", program);
     
     std::vector<imacraft::Texture> vecTextures(3, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
     vecTextures[1] = stoneTexture;
