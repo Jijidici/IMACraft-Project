@@ -14,6 +14,7 @@ namespace imacraft{
 		m_fPhi = 0;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
+		m_SeenCubePosition = glm::ivec3(-1.,-1.,-1.);
 		m_currentNorthPosition = 0;
 		m_currentEastPosition = 0;
 
@@ -171,5 +172,15 @@ namespace imacraft{
 	}
 	int Player::getCurrentEastPosition(){
 		return m_currentEastPosition;
+	}
+	
+	//view target
+	const glm::vec3 Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
+		float viewLimit = 20*CUBE_SIZE;
+		
+		glm::ivec3 tmp = TerrainGrid::getCubeIntegerPosition(glm::vec3(0.,-1.,0.));
+		std::cout<<"//-> guess integer pos (0.,-1.,0.) : ["<<tmp.x<<"|"<<tmp.y<<"|"<<tmp.z<<"]"<<std::endl;
+		
+		return glm::vec3(10., 10., 10.);
 	}
 }

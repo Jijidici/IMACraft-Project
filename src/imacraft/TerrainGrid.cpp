@@ -1,10 +1,11 @@
+#include "imacraft/TerrainGrid.hpp"
+
 #include <iostream>
 #include <cstdlib>
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-
-#include"imacraft/TerrainGrid.hpp"
+#include <glm/glm.hpp>
 
 namespace imacraft{
 	
@@ -161,6 +162,14 @@ namespace imacraft{
 		m_eastRelativePosition = east;
 	}
 	
+	
+	//STATIC METHOD
+	glm::ivec3 TerrainGrid::getCubeIntegerPosition(const glm::vec3 position){
+		int i = (position.x+1.f)/2.f * TERRAIN_WIDTH;
+		int j = (position.y+1.f)/2.f * TERRAIN_HEIGHT;
+		int k = (position.z+1.f)/2.f * TERRAIN_WIDTH;
+		return glm::ivec3(i, j, k);
+	}
 }
 
 

@@ -1,10 +1,16 @@
 #ifndef __TERRAINGRID_HPP__
 #define __TERRAINGRID_HPP__
 
+#include <stdint.h>
+#include <glm/glm.hpp>
+
 namespace imacraft{
 
 	struct TerrainGrid{
+		static const uint16_t TERRAIN_WIDTH = 128;
 		static const uint16_t TERRAIN_HEIGHT = 128;
+		//STATIC METHOD
+		static glm::ivec3 getCubeIntegerPosition(const glm::vec3 position);
 		
 		private:
 			uint8_t *m_data;

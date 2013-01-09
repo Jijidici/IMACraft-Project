@@ -260,8 +260,11 @@ int main(int argc, char** argv) {
 						if(ffC_angleY >= 30) ffC_angleY = 30;
 						if(ffC_angleY <= -40) ffC_angleY = -40;
 						player.rotateUp(ffC_angleY);
+						
+						//Manage the view target
+						player.whatCubeTargeted(vecGrid);
 						break;
-							
+						
 					default:
 						break;
 				}
@@ -502,7 +505,7 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-		
+			
 			// Gestion compteur
 			end = SDL_GetTicks();
 			ellapsedTime = end - start;

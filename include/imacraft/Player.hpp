@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 #include <stdint.h>
+#include <vector>
+#include "imacraft/TerrainGrid.hpp"
 
 namespace imacraft{
 
@@ -12,6 +14,7 @@ class Player{
 		float m_fPhi;
 		float m_fTheta;
 		glm::ivec3 m_CubePosition;
+		glm::ivec3 m_SeenCubePosition;
 		glm::vec3 m_FrontVector;
 		glm::vec3 m_LeftVector;
 		glm::vec3 m_UpVector;
@@ -42,6 +45,9 @@ class Player{
 		int getCurrentNorthPosition();
 		int getCurrentEastPosition();
 		
+		//view target
+		//set the targeted cube with a special texture - return the floating position in the targeted cube
+		const glm::vec3 whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids);
 };
 
 }
