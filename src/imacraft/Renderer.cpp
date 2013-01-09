@@ -114,6 +114,7 @@ namespace imacraft{
 			vs.push();
 				/* Compute the MVMatrix */
 				vs.translate(lMage.getPointLightPos(idx));
+				vs.set(getBillboardedMatrix(vs.top()));
 				vs.scale(glm::vec3(CUBE_SIZE/4.));
 				MVMatricesTorches[idx] = vs.top();
 			vs.pop();
@@ -129,4 +130,18 @@ namespace imacraft{
 		//set the ligthed flag to false
 		glUniform1i(LightedLocation, 0);
 	} // end render()
+	
+	
+	glm::mat4 Renderer::getBillboardedMatrix(glm::mat4 matrix){
+		for(int i=0;i<3;++i){
+			for(int j=0;j<3;++j){
+				if(i==j){
+					matrix[i][j]=1;
+				}else{
+					matrix[i][j]=0;
+				}
+			}
+		}
+		return matrix;
+	}
 }

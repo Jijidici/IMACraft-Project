@@ -9,7 +9,7 @@
 namespace imacraft{
 
 class Player{
-	static const uint8_t VIEW_LIMIT = 16;
+	static const uint8_t VIEW_LIMIT = 6;
 
 	private:
 		glm::vec3 m_Position;

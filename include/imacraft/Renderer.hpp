@@ -23,6 +23,8 @@ namespace imacraft{
 			std::vector<TerrainGrid*> m_vecGrid;
 			std::vector<Texture*> m_vecTextures;
 			Skybox m_sky;
+			
+			glm::mat4 getBillboardedMatrix(glm::mat4 matrix);
 		
 		public:
 			Renderer(CubeInstance* cubeModel, QuadInstance* quadModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture*> &vecTextures, Skybox& inSky);
