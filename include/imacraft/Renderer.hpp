@@ -12,8 +12,6 @@
 #include "imacraft/Texture.hpp"
 #include "imacraft/Skybox.hpp"
 
-#define CUBE_SIZE 0.015625
-
 namespace imacraft{
 	struct Renderer{
 		private:

@@ -170,6 +170,13 @@ namespace imacraft{
 		int k = (position.z+1.f)/2.f * TERRAIN_WIDTH;
 		return glm::ivec3(i, j, k);
 	}
+	
+	glm::vec3 TerrainGrid::getCubeFloatPosition(const glm::ivec3 cube){
+		float x = (cube.x*CUBE_SIZE)-1.;
+		float y = (cube.y*CUBE_SIZE)-1.;
+		float z = (cube.z*CUBE_SIZE)-1.;
+		return glm::vec3(x, y, z);
+	}
 }
 
 

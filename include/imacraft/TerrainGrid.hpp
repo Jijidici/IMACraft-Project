@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <glm/glm.hpp>
 
+#define CUBE_SIZE 0.015625
+
 namespace imacraft{
 
 	struct TerrainGrid{
@@ -11,6 +13,7 @@ namespace imacraft{
 		static const uint16_t TERRAIN_HEIGHT = 128;
 		//STATIC METHOD
 		static glm::ivec3 getCubeIntegerPosition(const glm::vec3 position);
+		static glm::vec3 getCubeFloatPosition(const glm::ivec3 cube);
 		
 		private:
 			uint8_t *m_data;

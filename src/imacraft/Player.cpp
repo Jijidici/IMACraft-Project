@@ -178,8 +178,8 @@ namespace imacraft{
 	const glm::vec3 Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
 		float viewLimit = 20*CUBE_SIZE;
 		
-		glm::ivec3 tmp = TerrainGrid::getCubeIntegerPosition(glm::vec3(0.,-1.,0.));
-		std::cout<<"//-> guess integer pos (0.,-1.,0.) : ["<<tmp.x<<"|"<<tmp.y<<"|"<<tmp.z<<"]"<<std::endl;
+		glm::vec3 tmp = TerrainGrid::getCubeFloatPosition(glm::ivec3(65,65,65));
+		std::cout<<"//-> guess float pos (65,65,65) : ["<<tmp.x<<"|"<<tmp.y<<"|"<<tmp.z<<"]"<<std::endl;
 		
 		return glm::vec3(10., 10., 10.);
 	}
