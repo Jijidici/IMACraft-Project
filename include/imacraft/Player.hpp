@@ -46,6 +46,7 @@ class Player{
 		void printCurrentNEPosition();
 		int getCurrentNorthPosition();
 		int getCurrentEastPosition();
+		const glm::vec3 getSeenPosInCube() const;
 		
 		//view target
 		//set the targeted cube with a special texture - return the grid index where the targeted cube is

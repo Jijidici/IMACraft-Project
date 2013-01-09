@@ -174,6 +174,10 @@ namespace imacraft{
 		return m_currentEastPosition;
 	}
 	
+	const glm::vec3 Player::getSeenPosInCube() const{
+		return m_seenPosInCube;
+	}
+	
 	//view target
 	const int Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
 		float viewLimit = VIEW_LIMIT*CUBE_SIZE;
@@ -212,10 +216,8 @@ namespace imacraft{
 				m_seenPosInCube = currentPos;			
 				return idxGrid;
 			}
-		}		
-		
-		m_seenPosInCube = glm::vec3(-10, -10, -10);
+		}
 		//this position is to far from the camera
-		return idxGrid;
+		return -1;
 	}
 }

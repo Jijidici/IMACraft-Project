@@ -253,8 +253,19 @@ int main(int argc, char** argv) {
 						break;
 					
 					case SDL_MOUSEBUTTONDOWN:
-						//Manage the view target
-						player.whatCubeTargeted(vecGrid);
+						int idxGrid;
+						switch(e.button.button){
+							case SDL_BUTTON_LEFT:
+								//destroy a cube
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+								}
+								break;
+						
+							default:
+								break;
+						}
 						break;
 					
 					default:

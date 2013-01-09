@@ -162,6 +162,11 @@ namespace imacraft{
 		m_eastRelativePosition = east;
 	}
 	
+	void TerrainGrid::removeCube(glm::vec3 fPos){
+		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = 0;
+	}
+	
 	
 	//STATIC METHOD
 	glm::ivec3 TerrainGrid::getCubeIntegerPosition(const glm::vec3 position){
