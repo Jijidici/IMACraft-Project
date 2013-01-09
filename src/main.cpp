@@ -146,8 +146,11 @@ int main(int argc, char** argv) {
 	bool is_rKeyPressed = false;
 	bool is_uKeyPressed = false;
 	bool is_dKeyPressed = false;
-	float ffC_angleX = 0;
 	float ffC_angleY = 0;
+	float old_positionX = 0.;
+	float new_positionX = 0.;
+	float new_positionY = 0.;
+	float gravity = 0.01;
     
     // Boucle principale
     bool done = false;
@@ -158,10 +161,10 @@ int main(int argc, char** argv) {
 		Uint32 ellapsedTime = 0;
 		start = SDL_GetTicks();
     
-        // Nettoyage de la fenêtre
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        MatrixStack viewStack;
-        viewStack.set(player.getViewMatrix());
+    // Nettoyage de la fenêtre
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    MatrixStack viewStack;
+    viewStack.set(player.getViewMatrix());
 		
 		sendMaterial(cubeMat, cubeMatUniform);
 		
@@ -176,9 +179,11 @@ int main(int argc, char** argv) {
         SDL_GL_SwapBuffers();
         
         //affichage position du perso i,j,k
-		player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
-		//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
-        
+				player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
+
+				SDL_WM_GrabInput(SDL_GRAB_ON);
+				SDL_ShowCursor(SDL_DISABLE);
+
         // Boucle de gestion des évenements
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
@@ -211,9 +216,6 @@ int main(int argc, char** argv) {
 
 							case SDLK_SPACE:
 								player.jump();
-								if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] ==0){
-									player.fall(CUBE_SIZE);
-								}
 								break;
 						
 							default:
@@ -254,11 +256,11 @@ int main(int argc, char** argv) {
 						break;
 					
 					case SDL_MOUSEMOTION:
-						ffC_angleX = 0.6f*(WINDOW_WIDTH/2. - e.motion.x);
+						new_positionX = e.motion.x;
+						new_positionY = e.motion.y;
 						ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
-						if(ffC_angleX < 180 && ffC_angleX > -180) player.rotateLeft(ffC_angleX); //empêcher le perso de faire un tour sur lui même
-						if(ffC_angleY >= 30) ffC_angleY = 30;
-						if(ffC_angleY <= -40) ffC_angleY = -40;
+						if(ffC_angleY >= 90) ffC_angleY = 90;
+						if(ffC_angleY <= -70) ffC_angleY = -70;
 						player.rotateUp(ffC_angleY);
 						break;
 							
@@ -266,7 +268,12 @@ int main(int argc, char** argv) {
 						break;
 				}
 		      }
-		      
+
+			//Gestion of gravity
+			if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y-1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+				player.fall(gravity);
+			}
+    
 		  //IDLE - GESTION DES COLLISIONS
 			//GAUCHE
 		  if(is_lKeyPressed){
@@ -502,7 +509,19 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-		
+				//Gestion rotation
+				if(new_positionX >= WINDOW_WIDTH-1){
+					SDL_WarpMouse(0, new_positionY);
+					old_positionX = 0-(old_positionX - new_positionX);
+					new_positionX = 0;
+				}else if(new_positionX <= 0){
+					SDL_WarpMouse(WINDOW_WIDTH, new_positionY);
+					old_positionX = WINDOW_WIDTH+(old_positionX - new_positionX);
+					new_positionX = WINDOW_WIDTH;
+				}
+				player.rotateLeft((old_positionX - new_positionX)*0.6);
+				old_positionX = new_positionX;
+
 			// Gestion compteur
 			end = SDL_GetTicks();
 			ellapsedTime = end - start;
