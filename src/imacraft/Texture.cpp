@@ -9,15 +9,9 @@
 
 namespace imacraft{
 
-GLint Texture::textureIndex = 0;
-
 Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(0){
-	//~ std::cout << m_path << std::endl;
-	m_textureIndex = textureIndex;
-	//~ std::cout << m_textureIndex << std::endl;
 	sendTextureToGPU();
 	getUniformSamplerLocation();
-	++textureIndex;
 }
 	
 SDL_Surface* Texture::loadImage(){
@@ -34,7 +28,7 @@ Texture::~Texture(){
 }
 
 void Texture::print_test(){
-	//~ std::cout << textureIndex << std::endl;
+	std::cout << m_path << std::endl;
 }
 
 void Texture::sendTextureToGPU(){
@@ -63,36 +57,16 @@ void Texture::sendTextureToGPU(){
 }
 
 void Texture::getUniformSamplerLocation(){
-	//~ std::cout << m_textureIndex << std::endl;
-	//~ if(m_textureIndex == 0){
-		//~ glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), m_textureIndex); // !!! 0 à changer pour textureIndex ??
-	//~ }
-	//~ if(m_textureIndex == 1){
-		//~ glUniform1i(glGetUniformLocation(m_program, "uTextureSampler1"), m_textureIndex); // !!! 0 à changer pour textureIndex ??
-	//~ }
 	glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), 0); // !!! 0 à changer pour textureIndex ??
 	
 }
 
 void Texture::bindTexture(){
-	//~ if(m_textureIndex == 0){
-		//~ glActiveTexture(GL_TEXTURE0);
-	//~ }
-	//~ if(m_textureIndex == 1){
-		//~ glActiveTexture(GL_TEXTURE1);
-	//~ }
-	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_texture_gluint);
 }
 
 void Texture::debindTexture(){
-	//~ if(m_textureIndex == 0){
-		//~ glActiveTexture(GL_TEXTURE0);
-	//~ }
-	//~ if(m_textureIndex == 1){
-		//~ glActiveTexture(GL_TEXTURE1);
-	//~ }
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -104,7 +78,6 @@ GLuint Texture::getFormat(SDL_Surface* surface){
 	}
     if(surface->format->BytesPerPixel == 3){
 		format = GL_RGB;
-		//~ std::cout << format << std::endl;
 	}
 	if(surface->format->BytesPerPixel == 4){
 		format = GL_RGBA;

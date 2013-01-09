@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 #include <SDL/SDL.h>
@@ -36,6 +37,14 @@ int main(int argc, char** argv) {
     /********************************************************************
      * INITIALISATION DU PROGRAMME
      ********************************************************************/
+    
+    /*************/
+    /* Conf file */
+    /*************/
+    
+    
+    //~ std::cout << value << std::endl;
+    //~ std::cout << text << std::endl;
     
     // Initialisation de la SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -102,21 +111,44 @@ int main(int argc, char** argv) {
     if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 		std::cout << "error while loading grids" << std::endl;
 	}
+
     
+    /* Textures */ // create all the textures from the config file
+    std::vector<imacraft::Texture*> texturePtVector;
+	
+	// textures config file
+    const char* configPath = "config/textures.config";
+	
+    std::ifstream configFile_in;
+    configFile_in.open(configPath);
+		if(!configFile_in){
+			std::cout << "Unable to open textures config file" << std::endl;
+			return(EXIT_FAILURE);
+		}
     
-    /* Textures */ // create all the textures
-    imacraft::Texture brickTexture("textures/ground.jpg", program);
-    imacraft::Texture stoneTexture("textures/stone.jpg", program);
-    imacraft::Texture skyTexture("textures/sky.jpg", program);
+		int texturesNumber;
+		int index;
+		configFile_in >> texturesNumber;
+		char path[80];
+		
+		for(int i = 0; i < texturesNumber; ++i){
+			configFile_in >> index; // useless, but needed to read the index in the file
+			configFile_in >> path;
+			
+			imacraft::Texture * tempTexture = new imacraft::Texture(path, program);
+			texturePtVector.push_back(tempTexture);
+		}	
+    configFile_in.close();
     
-    std::vector<imacraft::Texture> vecTextures(3, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    vecTextures[1] = stoneTexture;
-    vecTextures[2] = skyTexture;
+    /*******************/
+    /*      TESTS      */
+    /*******************/
     
     /* Renderer stuff */
-    imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replaced by a default texture
+    imacraft::Texture defaultTexture("textures/sand.jpg", program);
+    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
     imacraft::Skybox sky(program, &player, &model_cube);
-    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
+    imacraft::Renderer rend(&model_cube, vecGrid, texturePtVector, sky);
     
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
@@ -660,7 +692,7 @@ int main(int argc, char** argv) {
 		
 	} // end events
 		
-		
+	//~ rend.writeAllFiles(); // auto save !
     
     SDL_Quit();
     
