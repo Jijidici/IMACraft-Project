@@ -1,10 +1,11 @@
+#include "imacraft/TerrainGrid.hpp"
+
 #include <iostream>
 #include <cstdlib>
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
-
-#include"imacraft/TerrainGrid.hpp"
+#include <glm/glm.hpp>
 
 namespace imacraft{
 	
@@ -170,6 +171,31 @@ namespace imacraft{
 		m_eastRelativePosition = east;
 	}
 	
+	void TerrainGrid::removeCube(glm::vec3 fPos){
+		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = 0;
+	}
+	
+	void TerrainGrid::addCube(glm::vec3 fPos, uint8_t cubeType){
+		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = cubeType;
+	}
+	
+	
+	//STATIC METHOD
+	glm::ivec3 TerrainGrid::getCubeIntegerPosition(const glm::vec3 position){
+		int i = (position.x+1.f)/2.f * TERRAIN_WIDTH;
+		int j = (position.y+1.f)/2.f * TERRAIN_HEIGHT;
+		int k = (position.z+1.f)/2.f * TERRAIN_WIDTH;
+		return glm::ivec3(i, j, k);
+	}
+	
+	glm::vec3 TerrainGrid::getCubeFloatPosition(const glm::ivec3 cube){
+		float x = (cube.x*CUBE_SIZE)-1.;
+		float y = (cube.y*CUBE_SIZE)-1.;
+		float z = (cube.z*CUBE_SIZE)-1.;
+		return glm::vec3(x, y, z);
+	}
 }
 
 

@@ -27,16 +27,6 @@
 #define PI 3.14159265
 #define CUBE_SIZE 0.015625
 
-#define CENTER 0
-#define NORTH 1
-#define EAST 3
-#define SOUTH 2
-#define WEST 4
-#define NORTH_EAST 5
-#define SOUTH_EAST 6
-#define SOUTH_WEST 7
-#define NORTH_WEST 8
-
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;
@@ -129,12 +119,12 @@ int main(int argc, char** argv) {
     imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
+    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
     /* Lights */
-    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.5f, 1.5f, 1.5f));
     imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(0.2f, 0.2f, 0.2f));
     
     imacraft::LightManager lMage;
@@ -304,7 +294,52 @@ int main(int argc, char** argv) {
 						player.rotateUp(ffC_angleY);
 						
 						break;
+					
+					case SDL_MOUSEBUTTONDOWN:
+						int idxGrid;
+						switch(e.button.button){
+							case SDL_BUTTON_LEFT:
+								//destroy a cube
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+								}
+								break;
 							
+							case SDL_BUTTON_RIGHT:
+								//create a cube
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									glm::ivec3 camPos = player.getCubePosition();
+									glm::vec3 camFrontVector = player.getFrontVector();
+									float step = CUBE_SIZE/8.;
+									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
+									//manage the grid changing
+									if(previousPos.x > 1){
+										previousPos.x = -1;
+										
+									}else if(previousPos.x < -1){
+										previousPos.x = 1;
+										
+									}else if(previousPos.z > 1){
+										previousPos.z = -1;
+										
+									}else if(previousPos.z < -1){
+										previousPos.z = 1;
+									}
+									
+									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
+									if(previousCube != camPos){
+										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(1)); //replace 1 by the type of cube
+									}
+								}
+								break;
+						
+							default:
+								break;
+						}
+						break;
+					
 					default:
 						break;
 			}

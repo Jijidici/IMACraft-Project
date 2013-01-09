@@ -54,9 +54,9 @@ namespace imacraft{
 									vs.translate(glm::vec3(CUBE_SIZE*i-1. - 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
 									vs.scale(glm::vec3(CUBE_SIZE));
 									
-									if(k%2){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file
+									if((*currentGrid)[currentCube] == 1){ // condition to define different sets of blocks (determines the texture too) => replace by types written in the binary file
 										vecModelMatrix1.push_back(vs.top());
-									}else{
+									}else if((*currentGrid)[currentCube] == 2){
 										vecModelMatrix2.push_back(vs.top());
 									}
 									
