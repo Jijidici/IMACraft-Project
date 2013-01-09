@@ -26,16 +26,6 @@
 
 #define PI 3.14159265
 
-#define CENTER 0
-#define NORTH 1
-#define EAST 3
-#define SOUTH 2
-#define WEST 4
-#define NORTH_EAST 5
-#define SOUTH_EAST 6
-#define SOUTH_WEST 7
-#define NORTH_WEST 8
-
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 static const size_t BYTES_PER_PIXEL = 32;

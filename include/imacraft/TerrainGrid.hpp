@@ -5,6 +5,15 @@
 #include <glm/glm.hpp>
 
 #define CUBE_SIZE 0.015625
+#define CENTER 0
+#define NORTH 1
+#define EAST 3
+#define SOUTH 2
+#define WEST 4
+#define NORTH_EAST 5
+#define SOUTH_EAST 6
+#define SOUTH_WEST 7
+#define NORTH_WEST 8
 
 namespace imacraft{
 

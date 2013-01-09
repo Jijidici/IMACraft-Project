@@ -180,10 +180,11 @@ namespace imacraft{
 		glm::vec3 currentPos = m_Position;
 		float step = CUBE_SIZE/8;
 		float distanceRoamed = 0;
+		int idxGrid = CENTER;
 		
 		//hide the previous seenCube
 		if(m_seenCube != -1){
-			(*vecGrids[0])[m_seenCube] = 1;
+			(*vecGrids[idxGrid])[m_seenCube] = 1;
 			m_seenCube = -1;
 		}
 		
@@ -191,17 +192,37 @@ namespace imacraft{
 			currentPos = currentPos + step * m_FrontVector;
 			distanceRoamed += step;
 			
+			//manage the grid changing
+			if(currentPos.x > 1){
+				currentPos.x = -1+CUBE_SIZE;
+				idxGrid = WEST;
+				
+			}else if(currentPos.x <= -1){
+				currentPos.x = 1;
+				idxGrid = EAST;
+				
+			}else if(currentPos.z > 1){
+				currentPos.z = -1+CUBE_SIZE;
+				idxGrid = NORTH;
+				
+			}else if(currentPos.z <= -1){
+				currentPos.z = 1;
+				idxGrid = SOUTH;
+			}
+			
 			glm::ivec3 currentCube = TerrainGrid::getCubeIntegerPosition(currentPos);
 			int inGridPos = currentCube.z*TerrainGrid::TERRAIN_HEIGHT*TerrainGrid::TERRAIN_WIDTH + currentCube.y*TerrainGrid::TERRAIN_WIDTH + currentCube.x;
-			if((*vecGrids[0])[inGridPos]!= 0){
+			
+			if((*vecGrids[idxGrid])[inGridPos]!= 0){
 				//we see a fill cube
 				m_seenCube = inGridPos;
-				(*vecGrids[0])[m_seenCube] = 2;				
+				(*vecGrids[idxGrid])[m_seenCube] = 2;				
 				
 				return currentPos;
 			}
 		}		
 		
+		std::cout<< "//pos no-bloc seen : ["<<currentPos.x<<"|"<<currentPos.y<<"|"<<currentPos.z<<"]"<<std::endl;
 		//this position is to far from the camera
 		return currentPos;
 	}
