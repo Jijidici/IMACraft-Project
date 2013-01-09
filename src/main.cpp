@@ -260,11 +260,13 @@ int main(int argc, char** argv) {
 						if(ffC_angleY >= 30) ffC_angleY = 30;
 						if(ffC_angleY <= -40) ffC_angleY = -40;
 						player.rotateUp(ffC_angleY);
-						
+						break;
+					
+					case SDL_MOUSEBUTTONDOWN:
 						//Manage the view target
 						player.whatCubeTargeted(vecGrid);
 						break;
-						
+					
 					default:
 						break;
 				}

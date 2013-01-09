@@ -14,10 +14,10 @@ namespace imacraft{
 		m_fPhi = 0;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
-		m_SeenCubePosition = glm::ivec3(-1.,-1.,-1.);
+		m_seenCube = -1;
 		m_currentNorthPosition = 0;
 		m_currentEastPosition = 0;
-
+		
 		computeDirectionVectors();
 	}
 
@@ -176,11 +176,33 @@ namespace imacraft{
 	
 	//view target
 	const glm::vec3 Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
-		float viewLimit = 20*CUBE_SIZE;
+		float viewLimit = VIEW_LIMIT*CUBE_SIZE;
+		glm::vec3 currentPos = m_Position;
+		float step = CUBE_SIZE/8;
+		float distanceRoamed = 0;
 		
-		glm::vec3 tmp = TerrainGrid::getCubeFloatPosition(glm::ivec3(65,65,65));
-		std::cout<<"//-> guess float pos (65,65,65) : ["<<tmp.x<<"|"<<tmp.y<<"|"<<tmp.z<<"]"<<std::endl;
+		//hide the previous seenCube
+		if(m_seenCube != -1){
+			(*vecGrids[0])[m_seenCube] = 1;
+			m_seenCube = -1;
+		}
 		
-		return glm::vec3(10., 10., 10.);
+		while(distanceRoamed < viewLimit){
+			currentPos = currentPos + step * m_FrontVector;
+			distanceRoamed += step;
+			
+			glm::ivec3 currentCube = TerrainGrid::getCubeIntegerPosition(currentPos);
+			int inGridPos = currentCube.z*TerrainGrid::TERRAIN_HEIGHT*TerrainGrid::TERRAIN_WIDTH + currentCube.y*TerrainGrid::TERRAIN_WIDTH + currentCube.x;
+			if((*vecGrids[0])[inGridPos]!= 0){
+				//we see a fill cube
+				m_seenCube = inGridPos;
+				(*vecGrids[0])[m_seenCube] = 2;				
+				
+				return currentPos;
+			}
+		}		
+		
+		//this position is to far from the camera
+		return currentPos;
 	}
 }

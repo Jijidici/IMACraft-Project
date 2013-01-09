@@ -9,16 +9,18 @@
 namespace imacraft{
 
 class Player{
+	static const uint8_t VIEW_LIMIT = 16;
+
 	private:
 		glm::vec3 m_Position;
 		float m_fPhi;
 		float m_fTheta;
 		glm::ivec3 m_CubePosition;
-		glm::ivec3 m_SeenCubePosition;
 		glm::vec3 m_FrontVector;
 		glm::vec3 m_LeftVector;
 		glm::vec3 m_UpVector;
-
+		
+		int m_seenCube;
 		int m_currentNorthPosition;
 		int m_currentEastPosition;
 
