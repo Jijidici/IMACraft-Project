@@ -31,8 +31,8 @@ class Player{
 		
 	public:
 		Player();
-		bool moveLeft(float const t);
-		bool moveFront(float const t);
+		int moveLeft(float const t);
+		int moveFront(float const t);
 		void rotateLeft(float degree);
 		void rotateUp(float degree);
 		glm::mat4 getViewMatrix() const;

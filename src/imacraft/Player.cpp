@@ -12,7 +12,7 @@
 
 namespace imacraft{
 
-	Player::Player() : m_nearDistance(0.0001), m_farDistance(1.), m_verticalFieldOfView(90.0){
+	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.5), m_verticalFieldOfView(90.0){
 		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
 		m_fPhi = PI;
 		m_fTheta = 0;
@@ -101,36 +101,36 @@ namespace imacraft{
 		return true;
 	}
 	
-	bool Player::moveLeft(float const t){
-		bool changeGrid = false;
+	int Player::moveLeft(float const t){
+		int changeGrid = 0;
 		
 		if(m_Position.x > 1){
 			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
 			std::cout << "east++" << std::endl;
-			changeGrid = true;
+			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
 			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
 			std::cout << "east--" << std::endl;
-			changeGrid = true;
+			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
 			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
 			std::cout << "north++" << std::endl;
-			changeGrid = true;
+			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
 			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
 			std::cout << "north--" << std::endl;
-			changeGrid = true;
+			changeGrid = 2;
 		}
 		m_Position += t * m_LeftVector;
 		computeFrustumPlanes();
@@ -138,36 +138,36 @@ namespace imacraft{
 		return changeGrid;
 	}
 
-	bool Player::moveFront(float const t){
-		bool changeGrid = false;
+	int Player::moveFront(float const t){
+		int changeGrid = 0;
 		
 		if(m_Position.x >= 1){
 			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
 			std::cout << "east++" << std::endl;
-			changeGrid = true;
+			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
 			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
 			std::cout << "east--" << std::endl;
-			changeGrid = true;
+			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
 			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
 			std::cout << "north++" << std::endl;
-			changeGrid = true;
+			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
 			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
 			std::cout << "north--" << std::endl;
-			changeGrid = true;
+			changeGrid = 2;
 		}
 		m_Position.x += t * m_FrontVector.x;
 		m_Position.z += t * m_FrontVector.z;

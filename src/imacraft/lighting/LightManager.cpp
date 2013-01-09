@@ -26,6 +26,13 @@ namespace imacraft{
 		}
 	}
 	
+	void LightManager::removeLight(int idx){
+		for(int i=idx;i<m_currentPtLightCount-1;++i){
+			m_ptLights[i] = m_ptLights[i+1];
+		}
+		m_currentPtLightCount--;
+	}
+	
 	void LightManager::sendLights(GLuint program, const glm::mat4& viewMatrix){
 		DirectionalLightUniform dlUniform;
 		dlUniform.getLocations("uDirLight", program);
@@ -45,6 +52,37 @@ namespace imacraft{
 			viewPointLight.lPos = viewMatrix * m_ptLights[i-1].lPos;
 			viewPointLight.i = m_ptLights[i-1].i;
 			sendPointLight(viewPointLight, plUniform);
+		}
+	}
+	
+	void LightManager::updatePtLightsPosition(int exitSide){
+		switch(exitSide){
+			case EAST:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.x -= 2.; 
+				}
+				break;
+			
+			case WEST:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.x += 2.; 
+				}
+				break;
+				
+			case NORTH:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.z -= 2.; 
+				}
+				break;
+				
+			case SOUTH:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.z += 2.; 
+				}
+				break;
+			
+			default:
+				break;
 		}
 	}
 }
