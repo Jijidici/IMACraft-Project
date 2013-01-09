@@ -63,7 +63,7 @@ void main() {
 		//compute the reflection of all the point light
 		for(int i=0;i<uPointLightCount;++i){
 			vec4 p_LightDir = createVector(uPointLights[i].lPos, vPosition);
-			float p_lengLightDir = dot(p_LightDir, p_LightDir);
+			float p_lengLightDir = 1.5*length(p_LightDir);
 			vec4 p_normalizedLD = normalize(p_LightDir);
 			vec4 p_reflectLightDir = normalize(reflect(p_normalizedLD, vNormal));
 			
@@ -71,12 +71,16 @@ void main() {
 			float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
 			
 			color += uPointLights[i].i * (ambColor + diffColor*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
-			
 		}
 		
 		fFragColor = vec4(color, 1.f);
 	}else{
-		fFragColor = texture(uTextureSampler0, vTexCoords);
+		vec4 texel = texture(uTextureSampler0, vTexCoords);
+		if(texel.a <0.5){
+			discard;
+		}
+		
+		fFragColor = texel;
 	}
 }
 

@@ -63,9 +63,6 @@ int main(int argc, char** argv) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glClearColor(0.5f, 0.5f, 0.5f, 1.f);
-    glEnable(GL_BLEND);
-    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-	glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
     
     // Creation des ressources OpenGL    
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
@@ -383,7 +380,7 @@ int main(int argc, char** argv) {
 									float step = CUBE_SIZE/8.;
 									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
 									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
-									imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1 +CUBE_SIZE/2., previousCube.y*CUBE_SIZE-1 +CUBE_SIZE/2., previousCube.z*CUBE_SIZE-1 +CUBE_SIZE/2., 1.f), glm::vec3(0.001f, 0.001f, 0.001f));
+									imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1, previousCube.y*CUBE_SIZE-1, previousCube.z*CUBE_SIZE-1, 1.f), glm::vec3(0.05f, 0.05f, 0.05f));
 									lMage.addLight(tmpTorch);
 								}
 								break;
