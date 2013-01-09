@@ -19,8 +19,8 @@ class Player{
 		glm::vec3 m_FrontVector;
 		glm::vec3 m_LeftVector;
 		glm::vec3 m_UpVector;
+		glm::vec3 m_seenPosInCube;
 		
-		int m_seenCube;
 		int m_currentNorthPosition;
 		int m_currentEastPosition;
 
@@ -48,8 +48,8 @@ class Player{
 		int getCurrentEastPosition();
 		
 		//view target
-		//set the targeted cube with a special texture - return the floating position in the targeted cube
-		const glm::vec3 whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids);
+		//set the targeted cube with a special texture - return the grid index where the targeted cube is
+		const int whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids);
 };
 
 }
