@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -ansi -pedantic -I include
+CFLAGS = -Wall -ansi -pedantic -Wno-long-long -I include
 LDFLAGS = -lSDL -lSDL_image -lGL
 
 SRC_PATH = src

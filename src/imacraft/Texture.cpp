@@ -11,11 +11,11 @@ namespace imacraft{
 
 GLint Texture::textureIndex = 0;
 
-Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(textureIndex){
+Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(program), m_texture_gluint(0){
 	//~ std::cout << m_path << std::endl;
 	m_textureIndex = textureIndex;
 	//~ std::cout << m_textureIndex << std::endl;
-	sendTextureToGPU(m_texture_gluint);
+	sendTextureToGPU();
 	getUniformSamplerLocation();
 	++textureIndex;
 }
@@ -37,13 +37,11 @@ void Texture::print_test(){
 	//~ std::cout << textureIndex << std::endl;
 }
 
-void Texture::sendTextureToGPU(GLuint &texture_gluint){
+void Texture::sendTextureToGPU(){
 	SDL_Surface* image = loadImage();
 	
-	//~ std::cout << "test" << texture_gluint << std::endl;
-	
-	glGenTextures(1, &texture_gluint);
-	glBindTexture(GL_TEXTURE_2D, texture_gluint);
+	glGenTextures(1, &m_texture_gluint);
+	glBindTexture(GL_TEXTURE_2D, m_texture_gluint);
 	
 		glTexImage2D(
 			GL_TEXTURE_2D,
@@ -83,6 +81,7 @@ void Texture::bindTexture(){
 	//~ if(m_textureIndex == 1){
 		//~ glActiveTexture(GL_TEXTURE1);
 	//~ }
+	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_texture_gluint);
 }

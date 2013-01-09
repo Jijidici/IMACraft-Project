@@ -21,6 +21,7 @@
 #include "imacraft/lighting/Lights.hpp"
 #include "imacraft/lighting/LightManager.hpp"
 #include "imacraft/Texture.hpp"
+#include "imacraft/Skybox.hpp"
 #include "imacraft/tools.hpp"
 
 #define PI 3.14159265
@@ -60,6 +61,7 @@ int main(int argc, char** argv) {
     }
     
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     glClearColor(0.5f, 0.5f, 0.5f, 1.f);
     
     // Creation des ressources OpenGL    
@@ -115,14 +117,16 @@ int main(int argc, char** argv) {
     /* Textures */ // create all the textures
     imacraft::Texture brickTexture("textures/brique.png", program);
     imacraft::Texture stoneTexture("textures/stone.png", program);
+    imacraft::Texture skyTexture("textures/sky.png", program);
     
-    std::vector<imacraft::Texture> vecTextures(2, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    //~ std::cout << vecTextures.size() << std::endl;
-    vecTextures[1] = stoneTexture; // then assign 
+    std::vector<imacraft::Texture> vecTextures(3, brickTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
+    vecTextures[1] = stoneTexture;
+    vecTextures[2] = skyTexture;
     
     /* Renderer stuff */
     imacraft::CubeInstance model_cube(brickTexture); // texture needed in argument, could be replaced by a default texture
-    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures);
+    imacraft::Skybox sky(program, &player, &model_cube);
+    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
     
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
@@ -131,12 +135,10 @@ int main(int argc, char** argv) {
     
     /* Lights */
     imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(1.f, 1.f, 1.f));
+    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(0.2f, 0.2f, 0.2f));
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
-    lMage.addLight(torch);
-    torch.lPos.z = -1.f;
     lMage.addLight(torch);
 
     

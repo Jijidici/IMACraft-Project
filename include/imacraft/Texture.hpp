@@ -8,14 +8,13 @@ namespace imacraft{
 	
 struct Texture{
 	private:
-		//~ const char* m_path;
+		const char* m_path;
 		GLuint m_program;
-		//~ GLuint m_texture_gluint;
-		SDL_Surface* loadImage();
-		//~ GLint m_textureIndex;
+		GLuint m_texture_gluint;
+		GLint m_textureIndex;
 		
-		void sendTextureToGPU(GLuint &texture_gluint);
-		GLuint getFormat(SDL_Surface* surface);
+		SDL_Surface* loadImage();
+		void sendTextureToGPU();
 		void getUniformSamplerLocation();
 		
 	public:
@@ -23,9 +22,6 @@ struct Texture{
 		~Texture();
 		
 		/**/
-		GLint m_textureIndex;
-		GLuint m_texture_gluint;
-		const char* m_path;
 		/**/
 		
 		void print_test();
@@ -34,6 +30,7 @@ struct Texture{
 		void debindTexture();
 		
 		static GLint textureIndex;
+		static GLuint getFormat(SDL_Surface* surface);
 };
 
 }
