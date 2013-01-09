@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
 	float new_positionY = 0.;
 	float gravity = 0.01;
     
-    float moveStep = 0.002;
+    float moveStep = 0.005;
     
     // Boucle principale
     bool done = false;
@@ -183,10 +183,10 @@ int main(int argc, char** argv) {
         SDL_GL_SwapBuffers();
         
         //affichage position du perso i,j,k
-			player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
+		player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
 
-			SDL_WM_GrabInput(SDL_GRAB_ON);
-			SDL_ShowCursor(SDL_DISABLE);
+		SDL_WM_GrabInput(SDL_GRAB_ON);
+		SDL_ShowCursor(SDL_DISABLE);
 
         // Boucle de gestion des évenements
         SDL_Event e;
@@ -324,7 +324,7 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveLeft(0.01)){
+					if(player.moveLeft(moveStep)){
 						std::cout << "changeGrid !!" << std::endl;
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){

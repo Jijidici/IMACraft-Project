@@ -48,7 +48,7 @@ namespace imacraft{
 						uint32_t currentCube = k*currentGrid->width()*currentGrid->height() + j*currentGrid->width() + i;
 						/* If there is a bloc */
 						if((*currentGrid)[currentCube] != 0){
-							//~ if(player.frustumTest(i, j, k, (*currentGrid).getNorthPos(), (*currentGrid).getEastPos())){
+							if(player.frustumTest(i, j, k, (*currentGrid).width(), (*currentGrid).getNorthPos(), (*currentGrid).getEastPos())){
 								vs.push();
 									/* Compute the MV matrix*/
 									vs.translate(glm::vec3(CUBE_SIZE*i-1. - 2*(*currentGrid).getEastPos(), CUBE_SIZE*j-1., CUBE_SIZE*k-1. + 2*(*currentGrid).getNorthPos())); // offset (north & east positions)
@@ -61,7 +61,7 @@ namespace imacraft{
 									}
 									
 								vs.pop();
-							//~ }
+							}
 						}
 					}
 				}

@@ -76,19 +76,28 @@ namespace imacraft{
 		if(NULL == rDataFile){
 			std::cout << "[!] > Unable to read the terrain_data file : " << path << std::endl;
 			return EXIT_FAILURE;
+			/****************************************************/
+			/*													*/
+			/*	Mettre la fonction pour générer le 				*/
+			/*  terrain aléatoire à la place du EXIT_FAILURE	*/
+			/* 	Garder un return false si la gen échoue			*/
+			/*													*/
+			/****************************************************/
+		}else{
+			size_t test_fic = 0;
+			
+			test_fic = fread(&m_width, sizeof(uint16_t), 1, rDataFile);
+			
+			m_data = new uint8_t[m_width*m_width*TERRAIN_HEIGHT];
+			test_fic = fread(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
+		
+			fclose(rDataFile);
+
+			if(!test_fic) return false;
+			else return true;
 		}
-
-		size_t test_fic = 0;
 		
-		test_fic = fread(&m_width, sizeof(uint16_t), 1, rDataFile);
-		
-		m_data = new uint8_t[m_width*m_width*TERRAIN_HEIGHT];
-		test_fic = fread(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
-	
-		fclose(rDataFile);
-
-		if(!test_fic) return false;
-		else return true;
+		return true;
 	}
 
 	bool TerrainGrid::writeFile(const char* fileName){

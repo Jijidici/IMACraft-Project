@@ -40,7 +40,7 @@ class Player{
 		void jump();
 		void fall(float end);
 		
-		bool frustumTest(uint16_t i, uint16_t j, uint16_t k, int northPos, int eastPos);
+		bool frustumTest(uint16_t i, uint16_t j, uint16_t k, uint16_t gridWidth, int northPos, int eastPos);
 		
 		glm::vec3 m_FrontVector;
 		
