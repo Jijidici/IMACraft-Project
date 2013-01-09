@@ -147,8 +147,11 @@ int main(int argc, char** argv) {
 	bool is_rKeyPressed = false;
 	bool is_uKeyPressed = false;
 	bool is_dKeyPressed = false;
-	float ffC_angleX = 0;
 	float ffC_angleY = 0;
+	float old_positionX = 0.;
+	float new_positionX = 0.;
+	float new_positionY = 0.;
+	float gravity = 0.01;
     
     float moveStep = 0.002;
     
@@ -162,10 +165,10 @@ int main(int argc, char** argv) {
 		Uint32 ellapsedTime = 0;
 		start = SDL_GetTicks();
     
-        // Nettoyage de la fenêtre
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        MatrixStack viewStack;
-        viewStack.set(player.getViewMatrix());
+    // Nettoyage de la fenêtre
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    MatrixStack viewStack;
+    viewStack.set(player.getViewMatrix());
 		
 		sendMaterial(cubeMat, cubeMatUniform);
 		
@@ -180,14 +183,11 @@ int main(int argc, char** argv) {
         SDL_GL_SwapBuffers();
         
         //affichage position du perso i,j,k
-		player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
-		//std::cout << "i : " << player.getCubePosition().x << " /// j : " << player.getCubePosition().y << " /// k : " << player.getCubePosition().z << std::endl;
-        
-        
-        // TEST
-		SDL_WM_GrabInput(SDL_GRAB_ON);
-        //~ SDL_ShowCursor(SDL_DISABLE);
-        
+			player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
+
+			SDL_WM_GrabInput(SDL_GRAB_ON);
+			SDL_ShowCursor(SDL_DISABLE);
+
         // Boucle de gestion des évenements
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
@@ -220,9 +220,6 @@ int main(int argc, char** argv) {
 
 							case SDLK_SPACE:
 								player.jump();
-								if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] ==0){
-									player.fall(CUBE_SIZE);
-								}
 								break;
 						
 							default:
@@ -298,23 +295,13 @@ int main(int argc, char** argv) {
 						break;
 					
 					case SDL_MOUSEMOTION:
-						//~ ffC_angleX = 0.6f*(WINDOW_WIDTH/2. - e.motion.x);
-						//~ ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
-						//~ if(ffC_angleX < 180 && ffC_angleX > -180) player.rotateLeft(ffC_angleX); //empêcher le perso de faire un tour sur lui même
-						
-						ffC_angleX -= 0.6f*(e.motion.xrel);
-						ffC_angleY -= 0.6f*(e.motion.yrel);
-						player.rotateLeft(ffC_angleX);
-						
-						if(ffC_angleY >= 30) ffC_angleY = 30;
-						if(ffC_angleY <= -40) ffC_angleY = -40;
+						new_positionX = e.motion.x;
+						new_positionY = e.motion.y;
+						ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
+						if(ffC_angleY >= 90) ffC_angleY = 90;
+						if(ffC_angleY <= -70) ffC_angleY = -70;
+
 						player.rotateUp(ffC_angleY);
-						
-						if(e.motion.x == 0 || e.motion.x == WINDOW_WIDTH-1 || e.motion.y == 0 || e.motion.y == WINDOW_HEIGHT - 1){
-							SDL_EventState(SDL_MOUSEMOTION, SDL_DISABLE);
-							SDL_WarpMouse(WINDOW_WIDTH >> 1, WINDOW_HEIGHT >> 1);
-							SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
-						}
 						
 						break;
 							
@@ -324,15 +311,20 @@ int main(int argc, char** argv) {
 		}
 		
 		
+		//Gestion of gravity
+		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y-1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+			player.fall(gravity);
+		}
+    
 		//IDLE - GESTION DES COLLISIONS
 		//GAUCHE
 		if(is_lKeyPressed){
-			//~ if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveLeft(moveStep)){
+					if(player.moveLeft(0.01)){
 						std::cout << "changeGrid !!" << std::endl;
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -340,8 +332,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+			}
+			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
@@ -354,8 +346,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+			}
+			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
@@ -368,8 +360,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+			}
+			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
@@ -382,11 +374,11 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-		}
+			}
+		} // end left
 		//DROITE
 		if(is_rKeyPressed){
-			//~ if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
@@ -399,8 +391,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+			}
+			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
@@ -413,8 +405,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+			}
+			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
@@ -427,8 +419,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+			}
+			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
@@ -441,11 +433,11 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-		}
+			}
+		} // end right
 		//EN AVANT
 		if(is_uKeyPressed){
-			//~ if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
@@ -458,8 +450,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+			}
+			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
@@ -472,8 +464,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+			}
+			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
@@ -486,8 +478,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+			}
+			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
@@ -500,11 +492,11 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-		}
+			}
+		} // end front
 		//EN ARRIERE
 		if(is_dKeyPressed){ 
-			//~ if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
+			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
@@ -516,8 +508,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
+			}
+			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
@@ -529,8 +521,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
+			}
+			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
@@ -543,8 +535,8 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-			//~ else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
+			}
+			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
@@ -557,9 +549,22 @@ int main(int argc, char** argv) {
 						}
 					}
 				}
-			//~ }
-		}
+			}
+		} // end right
 		
+		//Gestion rotation
+		if(new_positionX >= WINDOW_WIDTH-1){
+			SDL_WarpMouse(0, new_positionY);
+			old_positionX = 0-(old_positionX - new_positionX);
+			new_positionX = 0;
+		}else if(new_positionX <= 0){
+			SDL_WarpMouse(WINDOW_WIDTH, new_positionY);
+			old_positionX = WINDOW_WIDTH+(old_positionX - new_positionX);
+			new_positionX = WINDOW_WIDTH;
+		}
+		player.rotateLeft((old_positionX - new_positionX)*0.6);
+		old_positionX = new_positionX;
+
 		// Gestion compteur
 		end = SDL_GetTicks();
 		ellapsedTime = end - start;

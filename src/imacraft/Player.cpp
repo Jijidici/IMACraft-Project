@@ -13,7 +13,7 @@
 namespace imacraft{
 
 	Player::Player() : m_nearDistance(0.01), m_farDistance(1.), m_verticalFieldOfView(90.0){
-		m_Position = glm::vec3(0.f, 5*CUBE_SIZE, 0.f);
+		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
 		m_fPhi = PI;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
@@ -200,7 +200,13 @@ namespace imacraft{
 	}
 
 	void Player::rotateLeft(float degree){
-		m_fPhi = glm::radians(degree);
+		m_fPhi += glm::radians(degree);
+		while(m_fPhi > PI){
+			m_fPhi -= 2*PI;
+		}
+		while(m_fPhi < -PI){
+			m_fPhi += 2*PI;
+		}
 		computeDirectionVectors();
 		computeFrustumPlanes();
 	}
@@ -243,21 +249,11 @@ namespace imacraft{
 	}
 
 	void Player::jump(){
-		float cpt = 0.0;
-		while(cpt<=CUBE_SIZE){
-			moveFront(0.001);
-			m_Position.y += 0.001;
-			cpt+=0.001;
-		}
+			m_Position.y += 0.03;
 	}
 
-	void Player::fall(float end){
-		float cpt = 0.0;
-		while(cpt<=end){
-			moveFront(0.001);
-			m_Position.y -= 0.001;
-			cpt+= 0.001;
-		}
+	void Player::fall(float gravity){
+			m_Position.y -= gravity;
 	}
 	
 	void Player::setCurrentNEPosition(int &north, int &east){
