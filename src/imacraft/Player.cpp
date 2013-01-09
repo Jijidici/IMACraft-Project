@@ -115,7 +115,11 @@ namespace imacraft{
 	glm::vec3 Player::getPosition() const{
 		return m_Position;
 	}
-
+	
+	const glm::vec3 Player::getFrontVector() const{
+		return m_FrontVector;
+	}
+	
 	void Player::computeCubePosition(uint16_t terrainWidth, uint16_t terrainHeight){
 		int i = (m_Position.x+1)*terrainWidth/2;
 		int j = (m_Position.y+1)*terrainHeight/2-1;
@@ -192,18 +196,18 @@ namespace imacraft{
 			
 			//manage the grid changing
 			if(currentPos.x > 1){
-				currentPos.x = -1+CUBE_SIZE;
+				currentPos.x = -1;
 				idxGrid = WEST;
 				
-			}else if(currentPos.x <= -1){
+			}else if(currentPos.x < -1){
 				currentPos.x = 1;
 				idxGrid = EAST;
 				
 			}else if(currentPos.z > 1){
-				currentPos.z = -1+CUBE_SIZE;
+				currentPos.z = -1;
 				idxGrid = NORTH;
 				
-			}else if(currentPos.z <= -1){
+			}else if(currentPos.z < -1){
 				currentPos.z = 1;
 				idxGrid = SOUTH;
 			}

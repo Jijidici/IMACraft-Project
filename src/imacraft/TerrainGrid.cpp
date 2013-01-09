@@ -167,6 +167,11 @@ namespace imacraft{
 		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = 0;
 	}
 	
+	void TerrainGrid::addCube(glm::vec3 fPos, uint8_t cubeType){
+		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = cubeType;
+	}
+	
 	
 	//STATIC METHOD
 	glm::ivec3 TerrainGrid::getCubeIntegerPosition(const glm::vec3 position){

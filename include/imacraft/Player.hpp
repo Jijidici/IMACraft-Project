@@ -34,6 +34,7 @@ class Player{
 		void rotateUp(float degree);
 		glm::mat4 getViewMatrix() const;
 		glm::vec3 getPosition() const;
+		const glm::vec3 getFrontVector() const;
 		void computeCubePosition(uint16_t, uint16_t);
 		glm::ivec3 getCubePosition() const;
 		float getViewAngle() const;

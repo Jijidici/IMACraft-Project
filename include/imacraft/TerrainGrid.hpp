@@ -45,6 +45,7 @@ namespace imacraft{
 			int getEastPos() const;
 			void setGridRelativePosition(int north, int east);
 			void removeCube(glm::vec3 fPos);
+			void addCube(glm::vec3 fPos, uint8_t cubeType);
 	};
 
 }
