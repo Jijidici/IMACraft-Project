@@ -14,12 +14,18 @@ namespace imacraft{
 			Mix_Chunk* destroyCube;
 			Mix_Chunk* putTorch;
 			Mix_Chunk* changeBloc;
+			Mix_Chunk* jump;
 			
 		public:
 			SoundPlayer();
 			~SoundPlayer();
 			void init();
 			void playMusic();
+			void playPutCube();
+			void playDestroyCube();
+			void playPutTorch();
+			void playChangeBloc();
+			void playJump();
 	};
 }
 

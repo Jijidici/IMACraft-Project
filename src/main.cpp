@@ -241,6 +241,7 @@ int main(int argc, char** argv) {
 									gravity = CUBE_SIZE;
 									jump = true;
 									onTheGround = false;
+									sp.playJump();
 								}
 								break;
 							
@@ -308,6 +309,7 @@ int main(int argc, char** argv) {
 									int idxCubeToDestroy = iPosCube.z*imacraft::TerrainGrid::TERRAIN_HEIGHT*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.y*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.x;
 									if((*vecGrid[idxGridClicked])[idxCubeToDestroy] != 4){
 										(*vecGrid[idxGridClicked]).removeCube(player.getSeenPosInCube());
+										sp.playDestroyCube();
 									}
 								}
 								break;
@@ -337,6 +339,7 @@ int main(int argc, char** argv) {
 									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
 									if(previousCube != camPos){
 										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(player.getBlocTex()+1)); 
+										sp.playPutCube();
 									}
 								}
 								break;
@@ -344,10 +347,12 @@ int main(int argc, char** argv) {
 							//increase and decreas the field of view
 							case SDL_BUTTON_WHEELUP:
 								player.changeBlocTex(true);
+								sp.playChangeBloc();
 								break;
 								
 							case SDL_BUTTON_WHEELDOWN:
 								player.changeBlocTex(false);
+								sp.playChangeBloc();
 								break;
 							
 							default:
@@ -367,6 +372,7 @@ int main(int argc, char** argv) {
 										glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
 										imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1, previousCube.y*CUBE_SIZE-1, previousCube.z*CUBE_SIZE-1, 1.f), glm::vec3(0.05f, 0.05f, 0.05f));
 										lMage.addLight(tmpTorch);
+										sp.playPutTorch();
 									}
 									break;
 							
