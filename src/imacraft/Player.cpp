@@ -308,9 +308,9 @@ namespace imacraft{
 		}
 		//warp
 		if(m_blocTex<0){
-			m_blocTex = 2;
+			m_blocTex = 3;
 		}
-		if(m_blocTex>2){
+		if(m_blocTex>3){
 			m_blocTex = 0;
 		}
 	}
