@@ -102,31 +102,27 @@ namespace imacraft{
 		int changeGrid = 0;
 		
 		if(m_Position.x > 1){
-			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
-			std::cout << "east++" << std::endl;
+			std::cout << std::endl << "went east" << std::endl;
 			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
-			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
-			std::cout << "east--" << std::endl;
+			std::cout << std::endl << "went west" << std::endl;
 			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
-			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
-			std::cout << "north++" << std::endl;
+			std::cout << std::endl << "went north" << std::endl;
 			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
-			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
-			std::cout << "north--" << std::endl;
+			std::cout << std::endl << "went south" << std::endl;
 			changeGrid = 2;
 		}
 		m_Position += t * m_LeftVector;
@@ -139,31 +135,27 @@ namespace imacraft{
 		int changeGrid = 0;
 		
 		if(m_Position.x >= 1){
-			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
-			std::cout << "east++" << std::endl;
+			std::cout << std::endl << "went east" << std::endl;
 			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
-			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
-			std::cout << "east--" << std::endl;
+			std::cout << std::endl << "went west" << std::endl;
 			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
-			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
-			std::cout << "north++" << std::endl;
+			std::cout << std::endl << "went north" << std::endl;
 			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
-			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
-			std::cout << "north--" << std::endl;
+			std::cout << std::endl << "went south" << std::endl;
 			changeGrid = 2;
 		}
 		m_Position.x += t * m_FrontVector.x;
@@ -298,7 +290,7 @@ namespace imacraft{
 				return idxGrid;
 			}
 		}
-		//this position is to far from the camera
+		//this position is too far from the camera
 		return -1;
 	}
 }
