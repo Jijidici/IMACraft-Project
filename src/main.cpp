@@ -385,6 +385,15 @@ int main(int argc, char** argv) {
 								}
 								break;
 							
+							//increase and decreas the field of view
+							case SDL_BUTTON_WHEELUP:
+								player.changeFrustumFar(0.05);
+								break;
+								
+							case SDL_BUTTON_WHEELDOWN:
+								player.changeFrustumFar(-0.05);
+								break;
+							
 							default:
 								break;
 						}

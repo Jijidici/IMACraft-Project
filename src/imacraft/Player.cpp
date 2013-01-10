@@ -12,7 +12,7 @@
 
 namespace imacraft{
 
-	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.5), m_verticalFieldOfView(90.0){
+	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.0), m_verticalFieldOfView(90.0){
 		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
 		m_fPhi = PI;
 		m_fTheta = 0;
@@ -74,6 +74,12 @@ namespace imacraft{
 		m_frustumLeftPlanePoint = m_Position;
 		m_frustumLeftPlaneNormal = glm::normalize(glm::cross((m_frustumNearPlanePoint + m_LeftVector*nearHalfHeight) - m_Position, m_UpVector));
 		
+	}
+	
+	void Player::changeFrustumFar(float amount){
+		if(m_farDistance + amount > 0.1){
+			m_farDistance += amount;
+		}
 	}
 	
 	bool Player::frustumTest(uint16_t i, uint16_t j, uint16_t k, uint16_t gridWidth, int northPos, int eastPos){
