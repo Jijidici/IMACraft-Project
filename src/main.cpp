@@ -326,7 +326,7 @@ int main(int argc, char** argv) {
 									
 									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
 									if(previousCube != camPos){
-										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(1)); //replace 1 by the type of cube
+										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(player.getBlocTex()+1)); 
 									}
 								}
 								break;
@@ -346,9 +346,11 @@ int main(int argc, char** argv) {
 							
 							//increase and decreas the field of view
 							case SDL_BUTTON_WHEELUP:
+								player.changeBlocTex(true);
 								break;
 								
 							case SDL_BUTTON_WHEELDOWN:
+								player.changeBlocTex(false);
 								break;
 							
 							default:

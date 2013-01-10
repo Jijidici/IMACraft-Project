@@ -17,6 +17,7 @@
 //Textures define
 #define GROUND 0
 #define STONE 1
+#define SAND 2
 #define SKY 3
 #define TORCH 4
 #define CURSOR 5
@@ -52,6 +53,7 @@ namespace imacraft{
 		
 		std::vector<glm::mat4> vecModelMatrix1;
 		std::vector<glm::mat4> vecModelMatrix2;
+		std::vector<glm::mat4> vecModelMatrix3;
 		
 		TerrainGrid *currentGrid = m_vecGrid[0];
 		
@@ -74,6 +76,8 @@ namespace imacraft{
 										vecModelMatrix1.push_back(vs.top());
 									}else if((*currentGrid)[currentCube] == 2){
 										vecModelMatrix2.push_back(vs.top());
+									}else if((*currentGrid)[currentCube] == 3){
+										vecModelMatrix3.push_back(vs.top());
 									}
 									
 								vs.pop();
@@ -92,12 +96,19 @@ namespace imacraft{
 		uint32_t drawedCubeCount2 = vecModelMatrix2.size();
 		glm::mat4* MVMatrices2 = new glm::mat4[drawedCubeCount2];
 		
+		uint32_t drawedCubeCount3 = vecModelMatrix3.size();
+		glm::mat4* MVMatrices3 = new glm::mat4[drawedCubeCount3];
+		
 		for(uint32_t i=0;i<drawedCubeCount1;++i){
 			MVMatrices1[i] = vecModelMatrix1[i];
 		}
 		
 		for(uint32_t i=0;i<drawedCubeCount2;++i){
 			MVMatrices2[i] = vecModelMatrix2[i];
+		}
+		
+		for(uint32_t i=0;i<drawedCubeCount3;++i){
+			MVMatrices3[i] = vecModelMatrix3[i];
 		}
 		
 		/* Draw the blocs */
@@ -108,8 +119,12 @@ namespace imacraft{
 		m_pCubeModel->setTexture(m_vecTextures[STONE]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount2, MVMatrices2);
 		
+		m_pCubeModel->setTexture(m_vecTextures[SAND]); // assign corresponding texture
+		m_pCubeModel->draw(drawedCubeCount3, MVMatrices3);
+		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
+		delete[] MVMatrices3;
 		
 		
 		/* Draw the hand */
