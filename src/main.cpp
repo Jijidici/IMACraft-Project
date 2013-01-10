@@ -245,11 +245,11 @@ int main(int argc, char** argv) {
 							
 							//Change the far plane of the frustum
 							case SDLK_p:
-								player.changeFrustumFar(0.05);
+								player.changeFrustumFar(0.1);
 								break;
 								
 							case SDLK_m:
-								player.changeFrustumFar(-0.05);
+								player.changeFrustumFar(-0.1);
 								break;
 							
 							default:
