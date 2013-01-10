@@ -243,6 +243,15 @@ int main(int argc, char** argv) {
 								lMage.removeLight(0);
 								break;
 							
+							//Change the far plane of the frustum
+							case SDLK_p:
+								player.changeFrustumFar(0.05);
+								break;
+								
+							case SDLK_m:
+								player.changeFrustumFar(-0.05);
+								break;
+							
 							default:
 								break;
 						}
@@ -337,11 +346,9 @@ int main(int argc, char** argv) {
 							
 							//increase and decreas the field of view
 							case SDL_BUTTON_WHEELUP:
-								player.changeFrustumFar(0.05);
 								break;
 								
 							case SDL_BUTTON_WHEELDOWN:
-								player.changeFrustumFar(-0.05);
 								break;
 							
 							default:
