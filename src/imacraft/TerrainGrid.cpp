@@ -84,13 +84,13 @@ namespace imacraft{
 			/*													*/
 			/****************************************************/
 			
-			/****** TEST ******/
+			/****** TEST ******/ // terrain plat ! A la place, mettre la génération aléatoire
 			delete[] m_data;
 			m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
 			for(int i = 0; i < TERRAIN_WIDTH; ++i){
 				for(int j = 0; j < TERRAIN_WIDTH; ++j){
 					for(int k = 0; k < TERRAIN_HEIGHT; ++k){
-						if(j == 0){
+						if(j <= 16){
 							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 1;
 						}else{
 							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 0;
@@ -98,6 +98,7 @@ namespace imacraft{
 					}
 				}
 			}
+			/****** FIN TEST ******/
 			
 		}else{
 			size_t test_fic = 0;
