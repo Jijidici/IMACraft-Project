@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -Wall -ansi -pedantic -Wno-long-long -I include
-LDFLAGS = -lSDL -lSDL_image -lGL
+LDFLAGS = -lSDL -lSDL_image -lSDL_mixer -lGL
 
 SRC_PATH = src
 BIN_PATH = bin

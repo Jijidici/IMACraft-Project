@@ -6,6 +6,8 @@
 
 namespace imacraft{
 	class SoundPlayer{
+		static const int VOLUME = 32;
+	
 		private:
 			Mix_Music* bo;
 			Mix_Chunk* putCube;
@@ -16,7 +18,7 @@ namespace imacraft{
 		public:
 			SoundPlayer();
 			~SoundPlayer();
-			void init(std::string& filename);
+			void init();
 			void playMusic();
 	};
 }

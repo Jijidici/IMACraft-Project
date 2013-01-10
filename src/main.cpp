@@ -25,6 +25,7 @@
 #include "imacraft/Texture.hpp"
 #include "imacraft/Skybox.hpp"
 #include "imacraft/tools.hpp"
+#include "imacraft/SoundPlayer.hpp"
 
 #define PI 3.14159265
 
@@ -151,6 +152,11 @@ int main(int argc, char** argv) {
     imacraft::Skybox sky(&player, &model_cube);
     imacraft::Renderer rend(&model_cube, &model_quad, vecGrid, texturePtVector, sky);
     
+    /* Sound */
+    imacraft::SoundPlayer sp;
+    sp.init();
+    sp.playMusic();
+    
     //variable d'events
 	bool is_lKeyPressed = false;
 	bool is_rKeyPressed = false;
@@ -164,7 +170,7 @@ int main(int argc, char** argv) {
 	bool onTheGround = false;
 	bool jump = false;
     int idxGridClicked = -1;
-    float moveStep = 0.005;
+    float moveStep = 0.009;
     
     // Boucle principale
     bool done = false;
