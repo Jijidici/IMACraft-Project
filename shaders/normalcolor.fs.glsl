@@ -62,19 +62,19 @@ void main() {
 		vec4 d_reflectLightDir = normalize(reflect(d_LightDir, vNormal));
 		
 		float d_coefDiffus = max(0, dot(vNormal, -d_LightDir));
-		float d_coefSpecular = pow(max(0, dot(-vPosition, d_reflectLightDir)), uMaterial.shininess);
+		float d_coefSpecular = pow(max(0, dot(normalize(-vPosition), d_reflectLightDir)), uMaterial.shininess);
 		
 		vec3 color =  uDirLight.i *(ambColor + diffColor*d_coefDiffus + uMaterial.Ks*d_coefSpecular);
 		
 		//compute the reflection of all the point light
 		for(int i=0;i<uPointLightCount;++i){
 			vec4 p_LightDir = createVector(uPointLights[i].lPos, vPosition);
-			float p_lengLightDir = 10*dot(p_LightDir, p_LightDir);
-			vec4 p_normalizedLD = normalize(p_LightDir);
+			float p_lengLightDir = length(p_LightDir);
+			vec4 p_normalizedLD = p_LightDir/p_lengLightDir;
 			vec4 p_reflectLightDir = normalize(reflect(p_normalizedLD, vNormal));
 			
 			float p_coefDiffus = max(0, dot(vNormal, -p_normalizedLD)) / p_lengLightDir;
-			float p_coefSpecular = pow(max(0, dot(-vPosition, p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
+			float p_coefSpecular = pow(max(0, dot(normalize(-vPosition), p_reflectLightDir)), uMaterial.shininess) / p_lengLightDir;
 			
 			color += uPointLights[i].i * (ambColor + diffColor*p_coefDiffus + uMaterial.Ks*p_coefSpecular);
 		}

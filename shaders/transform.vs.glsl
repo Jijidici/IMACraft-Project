@@ -21,7 +21,7 @@ out vec2 vTexCoords;
 void main(){
 	if(render_type == LIGHTED || render_type == BILLBOARD){
 		vNormal = normalize(transpose(inverse(MVMatrix)) * vec4(normal, 0.f));
-		vPosition = normalize(MVMatrix * vec4(position, 1.f));
+		vPosition = MVMatrix * vec4(position, 1.f);
 		vTexCoords = texture;
 		
 		gl_Position = uPMatrix * (MVMatrix * vec4(position, 1.f));

@@ -47,12 +47,12 @@ namespace imacraft{
 		
 		PointLightUniform plUniform;
 		PointLight viewPointLight;
-		for(int i=1;i<=m_currentPtLightCount;++i){
+		for(int i=0;i<m_currentPtLightCount;++i){
 			std::stringstream uniformName;
 			uniformName<<"uPointLights["<<i<<"]";
 			plUniform.getLocations(uniformName.str().c_str(), program);
-			viewPointLight.lPos = viewMatrix * m_ptLights[i-1].lPos;
-			viewPointLight.i = m_ptLights[i-1].i;
+			viewPointLight.lPos = viewMatrix * m_ptLights[i].lPos;
+			viewPointLight.i = m_ptLights[i].i;
 			sendPointLight(viewPointLight, plUniform);
 		}
 	}

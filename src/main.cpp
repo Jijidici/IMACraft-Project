@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
 	float gravity = -0.02;
 	bool onTheGround = false;
 	bool jump = false;
-    
+    int idxGridClicked = -1;
     float moveStep = 0.005;
     
     // Boucle principale
@@ -292,25 +292,24 @@ int main(int argc, char** argv) {
 						break;
 					
 					case SDL_MOUSEBUTTONDOWN:
-						int idxGrid;
 						switch(e.button.button){
 							case SDL_BUTTON_LEFT:
 								//destroy a cube
-								idxGrid = player.whatCubeTargeted(vecGrid);
-								if(idxGrid != -1){
+								idxGridClicked = player.whatCubeTargeted(vecGrid);
+								if(idxGridClicked != -1){
 									//inhib destruction on iron cube
 									glm::ivec3 iPosCube = imacraft::TerrainGrid::getCubeIntegerPosition(player.getSeenPosInCube());
 									int idxCubeToDestroy = iPosCube.z*imacraft::TerrainGrid::TERRAIN_HEIGHT*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.y*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.x;
-									if((*vecGrid[idxGrid])[idxCubeToDestroy] != 4){
-										(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+									if((*vecGrid[idxGridClicked])[idxCubeToDestroy] != 4){
+										(*vecGrid[idxGridClicked]).removeCube(player.getSeenPosInCube());
 									}
 								}
 								break;
 							
 							case SDL_BUTTON_RIGHT:
 								//create a cube
-								idxGrid = player.whatCubeTargeted(vecGrid);
-								if(idxGrid != -1){
+								idxGridClicked = player.whatCubeTargeted(vecGrid);
+								if(idxGridClicked != -1){
 									glm::ivec3 camPos = player.getCubePosition();
 									glm::vec3 camFrontVector = player.getFrontVector();
 									float step = CUBE_SIZE/16.;
@@ -336,19 +335,6 @@ int main(int argc, char** argv) {
 								}
 								break;
 							
-							//put a torch
-							case SDL_BUTTON_MIDDLE:
-								idxGrid = player.whatCubeTargeted(vecGrid);
-								if(idxGrid != -1){
-									glm::vec3 camFrontVector = player.getFrontVector();
-									float step = CUBE_SIZE/8.;
-									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
-									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
-									imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1, previousCube.y*CUBE_SIZE-1, previousCube.z*CUBE_SIZE-1, 1.f), glm::vec3(0.05f, 0.05f, 0.05f));
-									lMage.addLight(tmpTorch);
-								}
-								break;
-							
 							//increase and decreas the field of view
 							case SDL_BUTTON_WHEELUP:
 								player.changeBlocTex(true);
@@ -362,7 +348,27 @@ int main(int argc, char** argv) {
 								break;
 						}
 						break;
-					
+						
+						case SDL_MOUSEBUTTONUP:
+							switch(e.button.button){
+								//put a torch
+								case SDL_BUTTON_MIDDLE:
+									idxGridClicked = player.whatCubeTargeted(vecGrid);
+									if(idxGridClicked != -1){
+										glm::vec3 camFrontVector = player.getFrontVector();
+										float step = CUBE_SIZE/8.;
+										glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
+										glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
+										imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1, previousCube.y*CUBE_SIZE-1, previousCube.z*CUBE_SIZE-1, 1.f), glm::vec3(0.05f, 0.05f, 0.05f));
+										lMage.addLight(tmpTorch);
+									}
+									break;
+							
+								default:
+									break;
+							}
+							break;
+						
 					default:
 						break;
 			}

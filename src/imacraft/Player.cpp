@@ -41,32 +41,33 @@ namespace imacraft{
 	}
 
 	void Player::computeDirectionVectors(){
-		m_FrontVector = glm::vec3(glm::cos(m_fTheta)*glm::sin(m_fPhi), glm::sin(m_fTheta), glm::cos(m_fTheta)*glm::cos(m_fPhi));
+		m_FrontVector = glm::normalize(glm::vec3(glm::cos(m_fTheta)*glm::sin(m_fPhi), glm::sin(m_fTheta), glm::cos(m_fTheta)*glm::cos(m_fPhi)));
 		m_LeftVector = glm::vec3(glm::sin(m_fPhi+(PI/2.)), 0.f, glm::cos(m_fPhi+(PI/2.)));
 		m_UpVector = glm::cross(m_FrontVector, m_LeftVector);
 	}
 	
 	//frustum culling
 	void Player::computeFrustumPlanes(){
-		m_frustumNearPlanePoint = m_Position + (m_FrontVector*m_nearDistance);
-		m_frustumNearPlaneNormal = glm::normalize(m_frustumNearPlanePoint - m_Position);
+		glm::vec3 frustumPos = glm::vec3(m_Position.x - CUBE_SIZE*m_FrontVector.x, m_Position.y - CUBE_SIZE*m_FrontVector.y, m_Position.z - CUBE_SIZE*m_FrontVector.z);
+		m_frustumNearPlanePoint = frustumPos + (m_FrontVector*m_nearDistance);
+		m_frustumNearPlaneNormal = glm::normalize(m_frustumNearPlanePoint - frustumPos);
 		
-		m_frustumFarPlanePoint = m_Position + (m_FrontVector*m_farDistance);
-		m_frustumFarPlaneNormal = glm::normalize(m_Position - m_frustumFarPlanePoint);
+		m_frustumFarPlanePoint = frustumPos + (m_FrontVector*m_farDistance);
+		m_frustumFarPlaneNormal = glm::normalize(frustumPos - m_frustumFarPlanePoint);
 		
 		float nearHalfHeight = tan(m_verticalFieldOfView/2.) * m_nearDistance;
 		
-		m_frustumTopPlanePoint = m_Position;
-		m_frustumTopPlaneNormal = glm::normalize(glm::cross(m_LeftVector, (m_frustumNearPlanePoint + m_UpVector*nearHalfHeight) - m_Position));
+		m_frustumTopPlanePoint = frustumPos;
+		m_frustumTopPlaneNormal = glm::normalize(glm::cross(m_LeftVector, (m_frustumNearPlanePoint + m_UpVector*nearHalfHeight) - frustumPos));
 		
-		m_frustumRightPlanePoint = m_Position;
-		m_frustumRightPlaneNormal = glm::normalize(glm::cross(m_UpVector, (m_frustumNearPlanePoint - m_LeftVector*nearHalfHeight) - m_Position));
+		m_frustumRightPlanePoint = frustumPos;
+		m_frustumRightPlaneNormal = glm::normalize(glm::cross(m_UpVector, (m_frustumNearPlanePoint - m_LeftVector*nearHalfHeight) - frustumPos));
 		
-		m_frustumBottomPlanePoint = m_Position;
-		m_frustumBottomPlaneNormal = glm::normalize(glm::cross((m_frustumNearPlanePoint - m_UpVector*nearHalfHeight) - m_Position, m_LeftVector));
+		m_frustumBottomPlanePoint = frustumPos;
+		m_frustumBottomPlaneNormal = glm::normalize(glm::cross((m_frustumNearPlanePoint - m_UpVector*nearHalfHeight) - frustumPos, m_LeftVector));
 		
-		m_frustumLeftPlanePoint = m_Position;
-		m_frustumLeftPlaneNormal = glm::normalize(glm::cross((m_frustumNearPlanePoint + m_LeftVector*nearHalfHeight) - m_Position, m_UpVector));
+		m_frustumLeftPlanePoint = frustumPos;
+		m_frustumLeftPlaneNormal = glm::normalize(glm::cross((m_frustumNearPlanePoint + m_LeftVector*nearHalfHeight) - frustumPos, m_UpVector));
 		
 	}
 	
