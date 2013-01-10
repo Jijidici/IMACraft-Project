@@ -14,10 +14,18 @@
 #include "imacraft/Skybox.hpp"
 #include "imacraft/lighting/LightManager.hpp"
 
+//Textures define
 #define GROUND 0
 #define STONE 1
 #define SKY 2
 #define TORCH 4
+#define CURSOR 5
+
+//Render Type
+#define LIGHTED 0
+#define INTERFACE 1
+#define BILLBOARD 2
+#define SKYBOX 3
 
 namespace imacraft{
 	Renderer::Renderer(CubeInstance* cubeModel, QuadInstance* quadModel, std::vector<TerrainGrid*> &vecGrid, std::vector<Texture*> &vecTextures, Skybox& inSky): 
@@ -37,7 +45,11 @@ namespace imacraft{
 	
 	void Renderer::render(GLuint program, glm::mat4& P, MatrixStack& vs, GLuint PLocation, Player& player, LightManager& lMage){
 		glUniformMatrix4fv(PLocation, 1, GL_FALSE, glm::value_ptr(P));
-	
+		
+		//get the checker location
+		GLuint RenderTypeLocation = glGetUniformLocation(program, "render_type");
+		glUniform1i(RenderTypeLocation, LIGHTED);
+		
 		std::vector<glm::mat4> vecModelMatrix1;
 		std::vector<glm::mat4> vecModelMatrix2;
 		
@@ -100,12 +112,9 @@ namespace imacraft{
 		delete[] MVMatrices2;
 		
 		
-		/* ALL UNLIGHTED ELEMENTS */ 
-		//get the checker location
-		GLuint LightedLocation = glGetUniformLocation(program, "is_not_lighted");
-		//set the ligthed flag to true
-		glUniform1i(LightedLocation, 1);
-		
+		/* ALL UNLIGHTED ELEMENTS */
+		glUniform1i(RenderTypeLocation, BILLBOARD);
+				
 		/* Draw the torchs */
 		glm::mat4 MVMatricesTorches[16];
 		for(uint16_t idx=0;idx<lMage.getNbPointLight();++idx){
@@ -120,13 +129,22 @@ namespace imacraft{
 		m_pQuadModel->setTexture(m_vecTextures[TORCH]);
 		m_pQuadModel->draw(lMage.getNbPointLight(), MVMatricesTorches);
 		
+		/* draw the cursor */
+		glUniform1i(RenderTypeLocation, INTERFACE);
+		/* Compute the MVMatrix */
+		vs.push();
+			vs.set(glm::mat4(1.f));
+			vs.scale(glm::vec3(CUBE_SIZE));
+			glm::mat4 cursorMVM = vs.top();
+		vs.pop();
+		
+		m_pQuadModel->setTexture(m_vecTextures[CURSOR]);
+		m_pQuadModel->draw(1, &cursorMVM);
 		
 		//draw the skybox
+		glUniform1i(RenderTypeLocation, SKYBOX);
 		m_pCubeModel->setTexture(m_vecTextures[SKY]); // assign corresponding texture
 		m_sky.draw();
-		
-		//set the ligthed flag to false
-		glUniform1i(LightedLocation, 0);
 	} // end render()
 	
 	

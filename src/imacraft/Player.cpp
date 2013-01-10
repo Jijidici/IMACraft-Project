@@ -10,7 +10,7 @@
 namespace imacraft{
 
 	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.0), m_verticalFieldOfView(90.0){
-		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
+		m_Position = glm::vec3(1+CUBE_SIZE/2, 5*CUBE_SIZE, 1+CUBE_SIZE/2);
 		m_fPhi = PI;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
@@ -141,6 +141,7 @@ namespace imacraft{
 			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
+
 			m_Position.x = 1;
 			++m_currentEastPosition;
 			std::cout << std::endl << "went west" << std::endl;
@@ -153,6 +154,7 @@ namespace imacraft{
 			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
+
 			m_Position.z = 1;
 			--m_currentNorthPosition;
 			std::cout << std::endl << "went south" << std::endl;
@@ -222,12 +224,8 @@ namespace imacraft{
 		m_Position.y = posY;
 	}
 
-	void Player::jump(){
-			m_Position.y += 0.03;
-	}
-
 	void Player::fall(float gravity){
-			m_Position.y -= gravity;
+			m_Position.y += gravity;
 	}
 	
 	void Player::setCurrentNEPosition(int &north, int &east){
@@ -255,7 +253,7 @@ namespace imacraft{
 	const int Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
 		float viewLimit = VIEW_LIMIT*CUBE_SIZE;
 		glm::vec3 currentPos = m_Position;
-		float step = CUBE_SIZE/8;
+		float step = CUBE_SIZE/16.;
 		float distanceRoamed = 0;
 		int idxGrid = CENTER;
 		
