@@ -17,9 +17,11 @@
 //Textures define
 #define GROUND 0
 #define STONE 1
-#define SKY 2
-#define TORCH 4
-#define CURSOR 5
+#define SAND 2
+#define IRON 3
+#define SKY 4
+#define TORCH 5
+#define CURSOR 6
 
 //Render Type
 #define LIGHTED 0
@@ -50,8 +52,10 @@ namespace imacraft{
 		GLuint RenderTypeLocation = glGetUniformLocation(program, "render_type");
 		glUniform1i(RenderTypeLocation, LIGHTED);
 		
-		std::vector<glm::mat4> vecModelMatrix1;
-		std::vector<glm::mat4> vecModelMatrix2;
+		std::vector<glm::mat4> vecModelMatrix1; //GROUND
+		std::vector<glm::mat4> vecModelMatrix2; //STONE
+		std::vector<glm::mat4> vecModelMatrix3; //SAND
+		std::vector<glm::mat4> vecModelMatrix4; //IRON
 		
 		TerrainGrid *currentGrid = m_vecGrid[0];
 		
@@ -74,6 +78,10 @@ namespace imacraft{
 										vecModelMatrix1.push_back(vs.top());
 									}else if((*currentGrid)[currentCube] == 2){
 										vecModelMatrix2.push_back(vs.top());
+									}else if((*currentGrid)[currentCube] == 3){
+										vecModelMatrix3.push_back(vs.top());
+									}else if((*currentGrid)[currentCube] == 4){
+										vecModelMatrix4.push_back(vs.top());
 									}
 									
 								vs.pop();
@@ -92,12 +100,26 @@ namespace imacraft{
 		uint32_t drawedCubeCount2 = vecModelMatrix2.size();
 		glm::mat4* MVMatrices2 = new glm::mat4[drawedCubeCount2];
 		
+		uint32_t drawedCubeCount3 = vecModelMatrix3.size();
+		glm::mat4* MVMatrices3 = new glm::mat4[drawedCubeCount3];
+		
+		uint32_t drawedCubeCount4 = vecModelMatrix4.size();
+		glm::mat4* MVMatrices4 = new glm::mat4[drawedCubeCount4];
+		
 		for(uint32_t i=0;i<drawedCubeCount1;++i){
 			MVMatrices1[i] = vecModelMatrix1[i];
 		}
 		
 		for(uint32_t i=0;i<drawedCubeCount2;++i){
 			MVMatrices2[i] = vecModelMatrix2[i];
+		}
+		
+		for(uint32_t i=0;i<drawedCubeCount3;++i){
+			MVMatrices3[i] = vecModelMatrix3[i];
+		}
+		
+		for(uint32_t i=0;i<drawedCubeCount4;++i){
+			MVMatrices4[i] = vecModelMatrix4[i];
 		}
 		
 		/* Draw the blocs */
@@ -108,8 +130,27 @@ namespace imacraft{
 		m_pCubeModel->setTexture(m_vecTextures[STONE]); // assign corresponding texture
 		m_pCubeModel->draw(drawedCubeCount2, MVMatrices2);
 		
+		m_pCubeModel->setTexture(m_vecTextures[SAND]); // assign corresponding texture
+		m_pCubeModel->draw(drawedCubeCount3, MVMatrices3);
+		
+		m_pCubeModel->setTexture(m_vecTextures[IRON]); // assign corresponding texture
+		m_pCubeModel->draw(drawedCubeCount4, MVMatrices4);
+		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
+		delete[] MVMatrices3;
+		delete[] MVMatrices4;
+		
+		
+		/* Draw the hand */
+		vs.push();
+			vs.set(glm::mat4(1.f));
+			vs.translate(glm::vec3(CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE));
+			vs.scale(glm::vec3(CUBE_SIZE/2.f));
+			glm::mat4 handMVM = vs.top();
+		vs.pop();
+		m_pCubeModel->setTexture(m_vecTextures[player.getBlocTex()]);
+		m_pCubeModel->draw(1, &handMVM);
 		
 		
 		/* ALL UNLIGHTED ELEMENTS */

@@ -134,12 +134,12 @@ int main(int argc, char** argv) {
     
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
+    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
     /* Lights */
-    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.5f, 1.5f, 1.5f));
+    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
@@ -243,6 +243,15 @@ int main(int argc, char** argv) {
 								lMage.removeLight(0);
 								break;
 							
+							//Change the far plane of the frustum
+							case SDLK_p:
+								player.changeFrustumFar(0.05);
+								break;
+								
+							case SDLK_m:
+								player.changeFrustumFar(-0.05);
+								break;
+							
 							default:
 								break;
 						}
@@ -289,7 +298,12 @@ int main(int argc, char** argv) {
 								//destroy a cube
 								idxGrid = player.whatCubeTargeted(vecGrid);
 								if(idxGrid != -1){
-									(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+									//inhib destruction on iron cube
+									glm::ivec3 iPosCube = imacraft::TerrainGrid::getCubeIntegerPosition(player.getSeenPosInCube());
+									int idxCubeToDestroy = iPosCube.z*imacraft::TerrainGrid::TERRAIN_HEIGHT*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.y*imacraft::TerrainGrid::TERRAIN_WIDTH + iPosCube.x;
+									if((*vecGrid[idxGrid])[idxCubeToDestroy] != 4){
+										(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+									}
 								}
 								break;
 							
@@ -317,7 +331,7 @@ int main(int argc, char** argv) {
 									
 									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
 									if(previousCube != camPos){
-										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(1)); //replace 1 by the type of cube
+										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(player.getBlocTex()+1)); 
 									}
 								}
 								break;
@@ -337,11 +351,11 @@ int main(int argc, char** argv) {
 							
 							//increase and decreas the field of view
 							case SDL_BUTTON_WHEELUP:
-								player.changeFrustumFar(0.05);
+								player.changeBlocTex(true);
 								break;
 								
 							case SDL_BUTTON_WHEELDOWN:
-								player.changeFrustumFar(-0.05);
+								player.changeBlocTex(false);
 								break;
 							
 							default:
