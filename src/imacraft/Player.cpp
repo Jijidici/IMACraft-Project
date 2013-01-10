@@ -229,6 +229,10 @@ namespace imacraft{
 		m_Position.z = posZ;
 	}
 
+	void Player::blockY(float posY){
+		m_Position.y = posY;
+	}
+
 	void Player::jump(){
 			m_Position.y += 0.03;
 	}

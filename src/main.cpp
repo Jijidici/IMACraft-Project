@@ -173,6 +173,7 @@ int main(int argc, char** argv) {
 	float new_positionX = 0.;
 	float new_positionY = 0.;
 	float gravity = 0.01;
+	bool jump = false;
     
     float moveStep = 0.005;
     
@@ -241,7 +242,10 @@ int main(int argc, char** argv) {
 							
 							//jump
 							case SDLK_SPACE:
-								player.jump();
+								if(!jump && (*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+									jump = true;
+									player.jump();
+								}
 								break;
 							
 							//turn off the older light
@@ -399,7 +403,11 @@ int main(int argc, char** argv) {
 		//Gestion of gravity
 		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y-1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
 			player.fall(gravity);
+		}else jump = false;
+		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] != 0){									
+		  player.blockY(player.getCubePosition().y);
 		}
+
     
 		//IDLE - GESTION DES COLLISIONS
 		//GAUCHE
@@ -407,7 +415,6 @@ int main(int argc, char** argv) {
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x+1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
@@ -423,7 +430,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z-1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
@@ -439,7 +445,6 @@ int main(int argc, char** argv) {
 			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x-1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
@@ -455,7 +460,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z+1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide){
@@ -474,7 +478,6 @@ int main(int argc, char** argv) {
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x+1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
@@ -490,7 +493,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z+1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z+1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
@@ -506,7 +508,6 @@ int main(int argc, char** argv) {
 			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x-1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
@@ -522,7 +523,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z-1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z-1" << std::endl;
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
@@ -541,7 +541,6 @@ int main(int argc, char** argv) {
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z+1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
@@ -557,7 +556,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x-1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
@@ -573,7 +571,6 @@ int main(int argc, char** argv) {
 			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z-1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
@@ -589,7 +586,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x+1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
@@ -608,7 +604,6 @@ int main(int argc, char** argv) {
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z-1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
@@ -624,7 +619,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= PI/4 && player.getViewAngle() < 3*PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x+1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
@@ -640,7 +634,6 @@ int main(int argc, char** argv) {
 			else if((player.getViewAngle() >= 3*PI/4 && player.getViewAngle() < PI)||(player.getViewAngle() >= -PI && player.getViewAngle() < -3*PI/4)){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
 					player.blockZ(player.getPosition().z);
-					std::cout << "collision z+1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
@@ -656,7 +649,6 @@ int main(int argc, char** argv) {
 			else if(player.getViewAngle() >= -3*PI/4 && player.getViewAngle() < -PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
 					player.blockX(player.getPosition().x);
-					std::cout << "collision x-1" << std::endl;
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
