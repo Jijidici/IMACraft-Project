@@ -1,5 +1,5 @@
-#ifndef __CUBE_INSTANCE_HPP__
-#define __CUBE_INSTANCE_HPP__
+#ifndef __QUAD_INSTANCE_HPP__
+#define __QUAD_INSTANCE_HPP__
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -7,7 +7,7 @@
 #include "imacraft/Texture.hpp"
 
 namespace imacraft{
-	struct CubeInstance{
+	struct QuadInstance{
 		static const GLint POSITION_NUM_COMPONENTS = 3;
 		static const GLint NORMAL_NUM_COMPONENTS = 3;
 		static const GLint TEXCOORDS_NUM_COMPONENTS = 2;
@@ -28,15 +28,14 @@ namespace imacraft{
 			GLuint MVvbo;
 			GLuint vao;
 			GLuint vertexCount;
-			Texture cubeTexture;
+			Texture quadTexture;
 			
 		public:
-			CubeInstance(Texture &texture);
-			~CubeInstance();
+			QuadInstance(Texture& texture);
+			~QuadInstance();
 			
-			void draw(uint32_t nbInstances, glm::mat4* MVMatrices);
-			void setTexture(Texture *texture);
-			
+			void draw(uint32_t nbInstance, glm::mat4* MVMatrices);
+			void setTexture(Texture *texture);	
 	};
 }
 

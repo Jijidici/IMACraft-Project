@@ -19,10 +19,19 @@ namespace imacraft{
 	
 	void LightManager::addLight(const PointLight& light){
 		if(m_currentPtLightCount >= MAX_POINT_LIGHT_COUNT){
-			return;
-		}else{
-			m_ptLights[m_currentPtLightCount] = light;
-			m_currentPtLightCount++;
+			removeLight(0);
+		}
+		
+		m_ptLights[m_currentPtLightCount] = light;
+		m_currentPtLightCount++;
+	}
+	
+	void LightManager::removeLight(int idx){
+		if(m_currentPtLightCount != 0){
+			for(int i=idx;i<m_currentPtLightCount-1;++i){
+				m_ptLights[i] = m_ptLights[i+1];
+			}
+			m_currentPtLightCount--;
 		}
 	}
 	
@@ -46,5 +55,44 @@ namespace imacraft{
 			viewPointLight.i = m_ptLights[i-1].i;
 			sendPointLight(viewPointLight, plUniform);
 		}
+	}
+	
+	void LightManager::updatePtLightsPosition(int exitSide){
+		switch(exitSide){
+			case EAST:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.x -= 2.; 
+				}
+				break;
+			
+			case WEST:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.x += 2.; 
+				}
+				break;
+				
+			case NORTH:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.z -= 2.; 
+				}
+				break;
+				
+			case SOUTH:
+				for(int idx=0;idx<m_currentPtLightCount;++idx){
+					m_ptLights[idx].lPos.z += 2.; 
+				}
+				break;
+			
+			default:
+				break;
+		}
+	}
+	
+	const int LightManager::getNbPointLight() const{
+		return m_currentPtLightCount;
+	}
+	
+	const glm::vec3 LightManager::getPointLightPos(const int idx) const{
+		return glm::vec3(m_ptLights[idx].lPos.x, m_ptLights[idx].lPos.y, m_ptLights[idx].lPos.z);
 	}
 }

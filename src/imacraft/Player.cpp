@@ -12,11 +12,12 @@
 
 namespace imacraft{
 
-	Player::Player() : m_nearDistance(0.01), m_farDistance(1.), m_verticalFieldOfView(90.0){
+	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.5), m_verticalFieldOfView(90.0){
 		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
 		m_fPhi = PI;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
+		m_seenPosInCube = glm::vec3(-10, -10, -10);
 		m_currentNorthPosition = 0;
 		m_currentEastPosition = 0;
 
@@ -100,36 +101,36 @@ namespace imacraft{
 		return true;
 	}
 	
-	bool Player::moveLeft(float const t){
-		bool changeGrid = false;
+	int Player::moveLeft(float const t){
+		int changeGrid = 0;
 		
 		if(m_Position.x > 1){
 			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
 			std::cout << "east++" << std::endl;
-			changeGrid = true;
+			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
 			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
 			std::cout << "east--" << std::endl;
-			changeGrid = true;
+			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
 			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
 			std::cout << "north++" << std::endl;
-			changeGrid = true;
+			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
 			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
 			std::cout << "north--" << std::endl;
-			changeGrid = true;
+			changeGrid = 2;
 		}
 		m_Position += t * m_LeftVector;
 		computeFrustumPlanes();
@@ -137,36 +138,36 @@ namespace imacraft{
 		return changeGrid;
 	}
 
-	bool Player::moveFront(float const t){
-		bool changeGrid = false;
+	int Player::moveFront(float const t){
+		int changeGrid = 0;
 		
 		if(m_Position.x >= 1){
 			std::cout << "testX1" << std::endl;
 			m_Position.x = -1+CUBE_SIZE;
 			--m_currentEastPosition;
 			std::cout << "east++" << std::endl;
-			changeGrid = true;
+			changeGrid = 3;
 		}
 		if(m_Position.x <= -1){
 			std::cout << "testX2" << std::endl;
 			m_Position.x = 1;
 			++m_currentEastPosition;
 			std::cout << "east--" << std::endl;
-			changeGrid = true;
+			changeGrid = 4;
 		}
 		if(m_Position.z >= 1){
 			std::cout << "testZ1" << std::endl;
 			m_Position.z = -1+CUBE_SIZE;
 			++m_currentNorthPosition;
 			std::cout << "north++" << std::endl;
-			changeGrid = true;
+			changeGrid = 1;
 		}
 		if(m_Position.z <= -1){
 			std::cout << "testZ2" << std::endl;
 			m_Position.z = 1;
 			--m_currentNorthPosition;
 			std::cout << "north--" << std::endl;
-			changeGrid = true;
+			changeGrid = 2;
 		}
 		m_Position.x += t * m_FrontVector.x;
 		m_Position.z += t * m_FrontVector.z;
@@ -200,7 +201,11 @@ namespace imacraft{
 	glm::vec3 Player::getPosition() const{
 		return m_Position;
 	}
-
+	
+	const glm::vec3 Player::getFrontVector() const{
+		return m_FrontVector;
+	}
+	
 	void Player::computeCubePosition(uint16_t terrainWidth, uint16_t terrainHeight){
 		int i = (m_Position.x+1)*terrainWidth/2;
 		int j = (m_Position.y+1)*terrainHeight/2-1;
@@ -247,5 +252,52 @@ namespace imacraft{
 	}
 	int Player::getCurrentEastPosition(){
 		return m_currentEastPosition;
+	}
+	
+	const glm::vec3 Player::getSeenPosInCube() const{
+		return m_seenPosInCube;
+	}
+	
+	//view target
+	const int Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
+		float viewLimit = VIEW_LIMIT*CUBE_SIZE;
+		glm::vec3 currentPos = m_Position;
+		float step = CUBE_SIZE/8;
+		float distanceRoamed = 0;
+		int idxGrid = CENTER;
+		
+		while(distanceRoamed < viewLimit){
+			currentPos = currentPos + step * m_FrontVector;
+			distanceRoamed += step;
+			
+			//manage the grid changing
+			if(currentPos.x > 1){
+				currentPos.x = -1;
+				idxGrid = WEST;
+				
+			}else if(currentPos.x < -1){
+				currentPos.x = 1;
+				idxGrid = EAST;
+				
+			}else if(currentPos.z > 1){
+				currentPos.z = -1;
+				idxGrid = NORTH;
+				
+			}else if(currentPos.z < -1){
+				currentPos.z = 1;
+				idxGrid = SOUTH;
+			}
+			
+			glm::ivec3 currentCube = TerrainGrid::getCubeIntegerPosition(currentPos);
+			int inGridPos = currentCube.z*TerrainGrid::TERRAIN_HEIGHT*TerrainGrid::TERRAIN_WIDTH + currentCube.y*TerrainGrid::TERRAIN_WIDTH + currentCube.x;
+			
+			if((*vecGrids[idxGrid])[inGridPos]!= 0){
+				//we see a fill cube
+				m_seenPosInCube = currentPos;			
+				return idxGrid;
+			}
+		}
+		//this position is to far from the camera
+		return -1;
 	}
 }

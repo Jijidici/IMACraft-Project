@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/shapes/CommonInstance.hpp"
 #include "imacraft/Texture.hpp"
 
 namespace imacraft{
@@ -224,7 +225,7 @@ namespace imacraft{
 		cubeTexture.debindTexture();
 	}
 	
-	void CubeInstance::setTexture(Texture &texture){
-		cubeTexture = texture;
+	void CubeInstance::setTexture(Texture *texture){
+		cubeTexture = (*texture);
 	}
 }

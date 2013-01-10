@@ -21,15 +21,11 @@ struct Texture{
 		Texture(const char* path, GLuint &program);
 		~Texture();
 		
-		/**/
-		/**/
-		
 		void print_test();
 		
 		void bindTexture();
 		void debindTexture();
 		
-		static GLint textureIndex;
 		static GLuint getFormat(SDL_Surface* surface);
 };
 

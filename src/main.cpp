@@ -18,6 +18,7 @@
 #include "imacraft/Renderer.hpp"
 #include "imacraft/TerrainGrid.hpp"
 #include "imacraft/shapes/CubeInstance.hpp"
+#include "imacraft/shapes/QuadInstance.hpp"
 #include "imacraft/lighting/Material.hpp"
 #include "imacraft/lighting/Lights.hpp"
 #include "imacraft/lighting/LightManager.hpp"
@@ -27,20 +28,6 @@
 
 #define PI 3.14159265
 #define CUBE_SIZE 0.015625
-
-#define CENTER 0
-#define NORTH 1
-#define EAST 3
-#define SOUTH 2
-#define WEST 4
-#define NORTH_EAST 5
-#define SOUTH_EAST 6
-#define SOUTH_WEST 7
-#define NORTH_WEST 8
-
-#define GROUND 0
-#define STONE 1
-#define SKY 2
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
@@ -125,11 +112,14 @@ int main(int argc, char** argv) {
     if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 		std::cout << "error while loading grids" << std::endl;
 	}
+
     
-    
-    // textures config file
+    /* Textures */ // create all the textures from the config file
+    std::vector<imacraft::Texture*> texturePtVector;
+	
+	// textures config file
     const char* configPath = "config/textures.config";
-    
+	
     std::ifstream configFile_in;
     configFile_in.open(configPath);
 		if(!configFile_in){
@@ -140,45 +130,38 @@ int main(int argc, char** argv) {
 		int texturesNumber;
 		int index;
 		configFile_in >> texturesNumber;
-		char path[texturesNumber][80];
+		char path[80];
 		
 		for(int i = 0; i < texturesNumber; ++i){
-			configFile_in >> index;
-			configFile_in >> path[index];
+			configFile_in >> index; // useless, but needed to read the index in the file
+			configFile_in >> path;
+			
+			imacraft::Texture * tempTexture = new imacraft::Texture(path, program);
+			texturePtVector.push_back(tempTexture);
 		}	
     configFile_in.close();
     
-    
-    /* Textures */ // create all the textures
-    imacraft::Texture defaultTexture("textures/sand.jpg", program);
-    imacraft::Texture groundTexture(path[GROUND], program);
-    imacraft::Texture stoneTexture(path[STONE], program);
-    imacraft::Texture skyTexture(path[SKY], program);
-    
-    // didn't find how to change number of textures and assign them dynamically...
-    std::vector<imacraft::Texture> vecTextures(3, defaultTexture); // create the vector with the number of textures and a texture model, because push_back() method causes allocation issues
-    vecTextures[GROUND] = groundTexture;
-    vecTextures[STONE] = stoneTexture;
-    vecTextures[SKY] = skyTexture;
-    
-    /* Renderer stuff */
-    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
-    imacraft::Skybox sky(program, &player, &model_cube);
-    imacraft::Renderer rend(&model_cube, vecGrid, vecTextures, sky);
+    /*******************/
+    /*      TESTS      */
+    /*******************/
     
     /* Material */
-    imacraft::Material cubeMat(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
+    imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
     imacraft::MaterialUniform cubeMatUniform;
     cubeMatUniform.getLocations("uMaterial", program);
     
     /* Lights */
-    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-    imacraft::PointLight torch(glm::vec4(0.f, 0.5f, 1.f, 1.f), glm::vec3(0.2f, 0.2f, 0.2f));
+    imacraft::DirectionalLight sun(glm::vec4(1.f, -1.f, 1.f, 0.f), glm::vec3(1.5f, 1.5f, 1.5f));
     
     imacraft::LightManager lMage;
     lMage.addLight(sun);
-    lMage.addLight(torch);
-
+    
+    /* Renderer stuff */
+    imacraft::Texture defaultTexture("textures/sand.jpg", program);
+    imacraft::CubeInstance model_cube(defaultTexture); // texture needed in argument, could be replaced by a default texture
+    imacraft::QuadInstance model_quad(defaultTexture);
+    imacraft::Skybox sky(&player, &model_cube);
+    imacraft::Renderer rend(&model_cube, &model_quad, vecGrid, texturePtVector, sky);
     
     //variable d'events
 	bool is_lKeyPressed = false;
@@ -214,7 +197,7 @@ int main(int argc, char** argv) {
 		viewStack.push();
 			lMage.sendLights(program, viewStack.top());
 			
-			rend.render(P, viewStack, PLocation, player);
+			rend.render(program, P, viewStack, PLocation, player, lMage);
 		viewStack.pop();
 		
         // Mise à jour de l'affichage
@@ -255,11 +238,17 @@ int main(int argc, char** argv) {
 							case SDLK_s:
 								is_dKeyPressed = true;
 								break;
-
+							
+							//jump
 							case SDLK_SPACE:
 								player.jump();
 								break;
-						
+							
+							//turn off the older light
+							case SDLK_o:
+								lMage.removeLight(0);
+								break;
+							
 							default:
 								break;
 						}
@@ -342,7 +331,65 @@ int main(int argc, char** argv) {
 						player.rotateUp(ffC_angleY);
 						
 						break;
+					
+					case SDL_MOUSEBUTTONDOWN:
+						int idxGrid;
+						switch(e.button.button){
+							case SDL_BUTTON_LEFT:
+								//destroy a cube
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									(*vecGrid[idxGrid]).removeCube(player.getSeenPosInCube());
+								}
+								break;
 							
+							case SDL_BUTTON_RIGHT:
+								//create a cube
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									glm::ivec3 camPos = player.getCubePosition();
+									glm::vec3 camFrontVector = player.getFrontVector();
+									float step = CUBE_SIZE/8.;
+									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
+									//manage the grid changing
+									if(previousPos.x > 1){
+										previousPos.x = -1;
+										
+									}else if(previousPos.x < -1){
+										previousPos.x = 1;
+										
+									}else if(previousPos.z > 1){
+										previousPos.z = -1;
+										
+									}else if(previousPos.z < -1){
+										previousPos.z = 1;
+									}
+									
+									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
+									if(previousCube != camPos){
+										(*vecGrid[CENTER]).addCube(previousPos, uint8_t(1)); //replace 1 by the type of cube
+									}
+								}
+								break;
+							
+							//put a torch
+							case SDL_BUTTON_MIDDLE:
+								idxGrid = player.whatCubeTargeted(vecGrid);
+								if(idxGrid != -1){
+									glm::vec3 camFrontVector = player.getFrontVector();
+									float step = CUBE_SIZE/8.;
+									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
+									glm::ivec3 previousCube = imacraft::TerrainGrid::getCubeIntegerPosition(previousPos);
+									imacraft::PointLight tmpTorch(glm::vec4(previousCube.x*CUBE_SIZE-1, previousCube.y*CUBE_SIZE-1, previousCube.z*CUBE_SIZE-1, 1.f), glm::vec3(0.05f, 0.05f, 0.05f));
+									lMage.addLight(tmpTorch);
+								}
+								break;
+							
+							default:
+								break;
+						}
+						break;
+					
 					default:
 						break;
 			}
@@ -362,8 +409,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveLeft(moveStep)){
+					int exitSide = player.moveLeft(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -376,8 +425,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
 				}else{
-					if(player.moveLeft(moveStep)){
+					int exitSide = player.moveLeft(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -390,8 +441,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
 				}else{
-					if(player.moveLeft(moveStep)){
+					int exitSide = player.moveLeft(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -404,8 +457,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
 				}else{
-					if(player.moveLeft(moveStep)){
+					int exitSide = player.moveLeft(moveStep);
+					if(exitSide){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -421,8 +476,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveLeft(-moveStep)){
+					int exitSide = player.moveLeft(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -435,8 +492,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
 				}else{
-					if(player.moveLeft(-moveStep)){
+					int exitSide = player.moveLeft(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -449,8 +508,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
 				}else{
-					if(player.moveLeft(-moveStep)){
+					int exitSide = player.moveLeft(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -463,8 +524,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
 				}else{
-					if(player.moveLeft(-moveStep)){
+					int exitSide = player.moveLeft(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -480,8 +543,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
 				}else{
-					if(player.moveFront(moveStep)){
+					int exitSide = player.moveFront(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -494,8 +559,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
 				}else{
-					if(player.moveFront(moveStep)){
+					int exitSide = player.moveFront(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -508,8 +575,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
 				}else{
-					if(player.moveFront(moveStep)){
+					int exitSide = player.moveFront(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -522,8 +591,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveFront(moveStep)){
+					int exitSide = player.moveFront(moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -539,8 +610,11 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z-1" << std::endl;
 				}else{
-					if(player.moveFront(-moveStep)){
+					int exitSide = player.moveFront(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
+						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
 						}
@@ -552,8 +626,11 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x+1" << std::endl;
 				}else{
-					if(player.moveFront(-moveStep)){
+					int exitSide = player.moveFront(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
+						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
 						}
@@ -565,8 +642,10 @@ int main(int argc, char** argv) {
 					player.blockZ(player.getPosition().z);
 					std::cout << "collision z+1" << std::endl;
 				}else{
-					if(player.moveFront(-moveStep)){
+					int exitSide = player.moveFront(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
@@ -579,8 +658,10 @@ int main(int argc, char** argv) {
 					player.blockX(player.getPosition().x);
 					std::cout << "collision x-1" << std::endl;
 				}else{
-					if(player.moveFront(-moveStep)){
+					int exitSide = player.moveFront(-moveStep);
+					if(exitSide != 0){
 						std::cout << "changeGrid !!" << std::endl;
+						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
 							std::cout << "error while loading grids" << std::endl;
