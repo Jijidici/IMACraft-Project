@@ -71,25 +71,17 @@ int main(int argc, char** argv) {
     
     /* Physical terrain */
     imacraft::TerrainGrid grid0;
-    grid0.readFile("default.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("default.data");
     imacraft::TerrainGrid grid2;
-    grid2.readFile("default.data");
     imacraft::TerrainGrid grid3;
-    grid3.readFile("default.data");
     imacraft::TerrainGrid grid4;
-    grid4.readFile("default.data");
     imacraft::TerrainGrid grid5;
-    grid5.readFile("default.data");
     imacraft::TerrainGrid grid6;
-    grid6.readFile("default.data");
     imacraft::TerrainGrid grid7;
-    grid7.readFile("default.data");
     imacraft::TerrainGrid grid8;
-    grid8.readFile("default.data");
     
     std::vector<imacraft::TerrainGrid*> vecGrid(9);
+    
     vecGrid[CENTER] = &grid0;
     vecGrid[NORTH] = &grid1;
     vecGrid[SOUTH] = &grid2;
