@@ -43,6 +43,7 @@ class Player{
 		float getViewAngle() const;
 		void blockX(float);
 		void blockZ(float);
+		void blockY(float);
 		void jump();
 		void fall(float end);
 		
