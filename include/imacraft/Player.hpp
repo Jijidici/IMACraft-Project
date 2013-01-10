@@ -9,7 +9,7 @@
 namespace imacraft{
 
 class Player{
-	static const uint8_t VIEW_LIMIT = 6;
+	static const uint8_t VIEW_LIMIT = 3;
 
 	private:
 		glm::vec3 m_Position;
@@ -44,7 +44,6 @@ class Player{
 		void blockX(float);
 		void blockZ(float);
 		void blockY(float);
-		void jump();
 		void fall(float end);
 		
 		void changeFrustumFar(float amount);

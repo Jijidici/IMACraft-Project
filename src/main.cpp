@@ -160,7 +160,8 @@ int main(int argc, char** argv) {
 	float old_positionX = 0.;
 	float new_positionX = 0.;
 	float new_positionY = 0.;
-	float gravity = 0.01;
+	float gravity = -0.02;
+	bool onTheGround = false;
 	bool jump = false;
     
     float moveStep = 0.005;
@@ -230,9 +231,10 @@ int main(int argc, char** argv) {
 							
 							//jump
 							case SDLK_SPACE:
-								if(!jump && (*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+								if(onTheGround){
+									gravity = CUBE_SIZE;
 									jump = true;
-									player.jump();
+									onTheGround = false;
 								}
 								break;
 							
@@ -297,7 +299,7 @@ int main(int argc, char** argv) {
 								if(idxGrid != -1){
 									glm::ivec3 camPos = player.getCubePosition();
 									glm::vec3 camFrontVector = player.getFrontVector();
-									float step = CUBE_SIZE/8.;
+									float step = CUBE_SIZE/16.;
 									glm::vec3 previousPos = player.getSeenPosInCube() - step * camFrontVector;
 									//manage the grid changing
 									if(previousPos.x > 1){
@@ -352,17 +354,33 @@ int main(int argc, char** argv) {
 			}
 		}
 		
+		//IDLE
 		
-		//Gestion of gravity
-		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y-1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+		//Gravity Managing
+		if(!onTheGround){
 			player.fall(gravity);
-		}else jump = false;
-		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] != 0){									
-		  player.blockY(player.getCubePosition().y);
 		}
+		
+		if(jump){
+			gravity -= 0.0075;
+			if(gravity < -0.02){
+				gravity = -0.02;
+				jump = false;
+			}
+		}
+		
+		if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y-1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] == 0){
+			onTheGround = false;
+		}else{
+			onTheGround = true;
+		}
+		
+		/*if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] != 0){									
+		  player.blockY(player.getCubePosition().y);
+		}*/
 
     
-		//IDLE - GESTION DES COLLISIONS
+		//GESTION DES COLLISIONS
 		//GAUCHE
 		if(is_lKeyPressed){
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){

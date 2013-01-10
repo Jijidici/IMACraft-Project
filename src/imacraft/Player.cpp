@@ -224,12 +224,8 @@ namespace imacraft{
 		m_Position.y = posY;
 	}
 
-	void Player::jump(){
-			m_Position.y += 0.03;
-	}
-
 	void Player::fall(float gravity){
-			m_Position.y -= gravity;
+			m_Position.y += gravity;
 	}
 	
 	void Player::setCurrentNEPosition(int &north, int &east){
@@ -257,7 +253,7 @@ namespace imacraft{
 	const int Player::whatCubeTargeted(std::vector<imacraft::TerrainGrid*>& vecGrids){
 		float viewLimit = VIEW_LIMIT*CUBE_SIZE;
 		glm::vec3 currentPos = m_Position;
-		float step = CUBE_SIZE/8;
+		float step = CUBE_SIZE/16.;
 		float distanceRoamed = 0;
 		int idxGrid = CENTER;
 		
