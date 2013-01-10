@@ -10,7 +10,7 @@
 namespace imacraft{
 
 	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.0), m_verticalFieldOfView(90.0){
-		m_Position = glm::vec3(0.5*CUBE_SIZE, 5*CUBE_SIZE, 0.5*CUBE_SIZE);
+		m_Position = glm::vec3(1+CUBE_SIZE/2, 5*CUBE_SIZE, 1+CUBE_SIZE/2);
 		m_fPhi = PI;
 		m_fTheta = 0;
 		m_CubePosition = glm::ivec3(0,0,0);
@@ -147,7 +147,7 @@ namespace imacraft{
 		}
 		if(m_Position.x <= -1){
 			std::cout << "testX2" << std::endl;
-			m_Position.x = 1;
+			m_Position.x = 1-CUBE_SIZE;
 			++m_currentEastPosition;
 			std::cout << "east--" << std::endl;
 			changeGrid = 4;
@@ -161,7 +161,7 @@ namespace imacraft{
 		}
 		if(m_Position.z <= -1){
 			std::cout << "testZ2" << std::endl;
-			m_Position.z = 1;
+			m_Position.z = 1-CUBE_SIZE;
 			--m_currentNorthPosition;
 			std::cout << "north--" << std::endl;
 			changeGrid = 2;

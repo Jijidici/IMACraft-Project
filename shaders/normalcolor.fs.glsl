@@ -1,6 +1,12 @@
 #version 330
 #define MAX_POINT_LIGHT_COUNT 16
 
+//Render Type
+#define LIGHTED 0
+#define INTERFACE 1
+#define BILLBOARD 2
+#define SKYBOX 3
+
 //STRUCTURES
 struct Material{
 	vec3 Ka;
@@ -31,7 +37,7 @@ uniform PointLight uPointLights[MAX_POINT_LIGHT_COUNT];
 uniform int uPointLightCount = 0;
 
 uniform sampler2D uTextureSampler0;
-uniform int is_not_lighted = 0;
+uniform int render_type = 0;
 
 out vec4 fFragColor;
 
@@ -43,7 +49,7 @@ vec4 createVector(vec4 p1, vec4 p2){
 //END
 
 void main() {
-	if(is_not_lighted == 0){
+	if(render_type == LIGHTED){
 		//compute the ambiant color
 		vec3 ambColor = texture(uTextureSampler0, vTexCoords).xyz*uMaterial.Ka;
 	
@@ -63,7 +69,7 @@ void main() {
 		//compute the reflection of all the point light
 		for(int i=0;i<uPointLightCount;++i){
 			vec4 p_LightDir = createVector(uPointLights[i].lPos, vPosition);
-			float p_lengLightDir = 1.5*length(p_LightDir);
+			float p_lengLightDir = 10*dot(p_LightDir, p_LightDir);
 			vec4 p_normalizedLD = normalize(p_LightDir);
 			vec4 p_reflectLightDir = normalize(reflect(p_normalizedLD, vNormal));
 			

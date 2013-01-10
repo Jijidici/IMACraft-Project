@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 			
 			imacraft::Texture * tempTexture = new imacraft::Texture(path, program);
 			texturePtVector.push_back(tempTexture);
-		}	
+		}
     configFile_in.close();
     
     
