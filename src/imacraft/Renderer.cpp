@@ -17,7 +17,7 @@
 //Textures define
 #define GROUND 0
 #define STONE 1
-#define SKY 2
+#define SKY 3
 #define TORCH 4
 #define CURSOR 5
 
@@ -110,6 +110,17 @@ namespace imacraft{
 		
 		delete[] MVMatrices1;
 		delete[] MVMatrices2;
+		
+		
+		/* Draw the hand */
+		vs.push();
+			vs.set(glm::mat4(1.f));
+			vs.translate(glm::vec3(CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE));
+			vs.scale(glm::vec3(CUBE_SIZE/2.f));
+			glm::mat4 handMVM = vs.top();
+		vs.pop();
+		m_pCubeModel->setTexture(m_vecTextures[player.getBlocTex()]);
+		m_pCubeModel->draw(1, &handMVM);
 		
 		
 		/* ALL UNLIGHTED ELEMENTS */

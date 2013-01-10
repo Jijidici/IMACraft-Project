@@ -35,6 +35,9 @@ namespace imacraft{
 
 		computeDirectionVectors();
 		computeFrustumPlanes();
+		
+		//Inventory
+		m_blocTex = 0;
 	}
 
 	void Player::computeDirectionVectors(){
@@ -290,5 +293,25 @@ namespace imacraft{
 		}
 		//this position is too far from the camera
 		return -1;
+	}
+	
+	//Inventory
+	const int Player::getBlocTex(){
+		return m_blocTex;
+	}
+	
+	void Player::changeBlocTex(bool next){
+		if(next){
+			m_blocTex++;
+		}else{
+			m_blocTex--;
+		}
+		//warp
+		if(m_blocTex<0){
+			m_blocTex = 2;
+		}
+		if(m_blocTex>2){
+			m_blocTex = 0;
+		}
 	}
 }
