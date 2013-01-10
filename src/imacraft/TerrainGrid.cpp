@@ -11,7 +11,6 @@ namespace imacraft{
 	
 	TerrainGrid::TerrainGrid(){
 		m_data = NULL;
-		m_width = 0;
 		m_northPosition = 0;
 		m_eastPosition = 0;
 		m_northRelativePosition = 0;
@@ -76,7 +75,7 @@ namespace imacraft{
 		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
 			std::cout << "[!] > Unable to read the terrain_data file : " << path << std::endl;
-			return EXIT_FAILURE;
+			//~ return EXIT_FAILURE;
 			/****************************************************/
 			/*													*/
 			/*	Mettre la fonction pour générer le 				*/
@@ -84,13 +83,32 @@ namespace imacraft{
 			/* 	Garder un return false si la gen échoue			*/
 			/*													*/
 			/****************************************************/
+			
+			/****** TEST ******/
+			delete[] m_data;
+			m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
+			for(int i = 0; i < TERRAIN_WIDTH; ++i){
+				for(int j = 0; j < TERRAIN_WIDTH; ++j){
+					for(int k = 0; k < TERRAIN_HEIGHT; ++k){
+						if(j == 0){
+							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 1;
+						}else{
+							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 0;
+						}
+					}
+				}
+			}
+			
 		}else{
 			size_t test_fic = 0;
 			
-			test_fic = fread(&m_width, sizeof(uint16_t), 1, rDataFile);
+			uint16_t tempFAKE;
 			
-			m_data = new uint8_t[m_width*m_width*TERRAIN_HEIGHT];
-			test_fic = fread(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
+			test_fic = fread(&tempFAKE, sizeof(uint16_t), 1, rDataFile);
+			
+			delete[] m_data;
+			m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
+			test_fic = fread(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
 		
 			fclose(rDataFile);
 
@@ -129,15 +147,13 @@ namespace imacraft{
 
 		size_t test_fic = 0;
 		
-		//~ for(int i = 0; i < m_width*m_width*TERRAIN_HEIGHT; ++i){
-			//~ if(m_data[i] != 0)
-				//~ std::cout << m_data[i] << std::endl;
-		//~ }
 
-		test_fic = fwrite(&m_width, sizeof(uint16_t), 1, wDataFile);
+		uint16_t tempFAKE = TERRAIN_WIDTH;
+
+		test_fic = fwrite(&tempFAKE, sizeof(uint16_t), 1, wDataFile);
 		std::cout << "written elelments : " << test_fic << std::endl;
 		
-		test_fic = fwrite(m_data, m_width*m_width*TERRAIN_HEIGHT*sizeof(uint8_t), 1, wDataFile);
+		test_fic = fwrite(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, wDataFile);
 		std::cout << "written elelments : " << test_fic << std::endl;
 		
 		fclose(wDataFile);
@@ -147,11 +163,11 @@ namespace imacraft{
 	}
 	
 	uint32_t TerrainGrid::length() const{
-		return m_width*m_width*TERRAIN_HEIGHT;
+		return TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT;
 	}
 	
 	uint16_t TerrainGrid::width() const{
-		return m_width;
+		return TERRAIN_WIDTH;
 	}
 	
 	uint16_t TerrainGrid::height() const{

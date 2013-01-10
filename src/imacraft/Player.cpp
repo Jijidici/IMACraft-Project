@@ -5,10 +5,7 @@
 
 #include "imacraft/Player.hpp"
 
-#define CUBE_SIZE 0.015625
 #define PI 3.14159265
-
-//~ static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 
 namespace imacraft{
 
@@ -54,13 +51,7 @@ namespace imacraft{
 		m_frustumFarPlanePoint = m_Position + (m_FrontVector*m_farDistance);
 		m_frustumFarPlaneNormal = glm::normalize(m_Position - m_frustumFarPlanePoint);
 		
-		//~ float ratio = WINDOW_WIDTH / WINDOW_HEIGHT; // ratio between height and width
-		
 		float nearHalfHeight = tan(m_verticalFieldOfView/2.) * m_nearDistance;
-		//~ float nearHalfWidth = nearHalfHeight * ratio;
-		
-		//~ float farHalfHeight = tan(m_verticalFieldOfView/2.) * m_farDistance;
-		//~ float farHalfWidth = farHalfHeight * ratio;
 		
 		m_frustumTopPlanePoint = m_Position;
 		m_frustumTopPlaneNormal = glm::normalize(glm::cross(m_LeftVector, (m_frustumNearPlanePoint + m_UpVector*nearHalfHeight) - m_Position));

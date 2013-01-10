@@ -16,7 +16,7 @@ class Player{
 		float m_fPhi;
 		float m_fTheta;
 		glm::ivec3 m_CubePosition;
-		//~ glm::vec3 m_FrontVector;
+		glm::vec3 m_FrontVector;
 		glm::vec3 m_LeftVector;
 		glm::vec3 m_UpVector;
 		glm::vec3 m_seenPosInCube;
@@ -47,8 +47,6 @@ class Player{
 		void fall(float end);
 		
 		bool frustumTest(uint16_t i, uint16_t j, uint16_t k, uint16_t gridWidth, int northPos, int eastPos);
-		
-		glm::vec3 m_FrontVector;
 		
 		glm::vec3 m_frustumNearPlanePoint;
 		glm::vec3 m_frustumFarPlanePoint;

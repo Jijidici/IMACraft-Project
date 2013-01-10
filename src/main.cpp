@@ -27,7 +27,6 @@
 #include "imacraft/tools.hpp"
 
 #define PI 3.14159265
-#define CUBE_SIZE 0.015625
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
 static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
@@ -38,15 +37,7 @@ int main(int argc, char** argv) {
     /********************************************************************
      * INITIALISATION DU PROGRAMME
      ********************************************************************/
-    
-    /*************/
-    /* Conf file */
-    /*************/
-    
-    
-    //~ std::cout << value << std::endl;
-    //~ std::cout << text << std::endl;
-    
+     
     // Initialisation de la SDL
     SDL_Init(SDL_INIT_VIDEO);
     
@@ -80,23 +71,23 @@ int main(int argc, char** argv) {
     
     /* Physical terrain */
     imacraft::TerrainGrid grid0;
-    grid0.readFile("terrain_imacraft_.data");
+    grid0.readFile("default.data");
     imacraft::TerrainGrid grid1;
-    grid1.readFile("terrain_imacraft_.data");
+    grid1.readFile("default.data");
     imacraft::TerrainGrid grid2;
-    grid2.readFile("terrain_imacraft_.data");
+    grid2.readFile("default.data");
     imacraft::TerrainGrid grid3;
-    grid3.readFile("terrain_imacraft_.data");
+    grid3.readFile("default.data");
     imacraft::TerrainGrid grid4;
-    grid4.readFile("terrain_imacraft_.data");
+    grid4.readFile("default.data");
     imacraft::TerrainGrid grid5;
-    grid5.readFile("terrain_imacraft_.data");
+    grid5.readFile("default.data");
     imacraft::TerrainGrid grid6;
-    grid6.readFile("terrain_imacraft_.data");
+    grid6.readFile("default.data");
     imacraft::TerrainGrid grid7;
-    grid7.readFile("terrain_imacraft_.data");
+    grid7.readFile("default.data");
     imacraft::TerrainGrid grid8;
-    grid8.readFile("terrain_imacraft_.data");
+    grid8.readFile("default.data");
     
     std::vector<imacraft::TerrainGrid*> vecGrid(9);
     vecGrid[CENTER] = &grid0;
@@ -141,9 +132,6 @@ int main(int argc, char** argv) {
 		}	
     configFile_in.close();
     
-    /*******************/
-    /*      TESTS      */
-    /*******************/
     
     /* Material */
     imacraft::Material cubeMat(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0.54f, 0.41f, 0.078f), glm::vec3(0.f, 0.f, 0.f), 1000.f);
@@ -270,50 +258,6 @@ int main(int argc, char** argv) {
 
 							case SDLK_s:
 								is_dKeyPressed = false;
-								break;
-								
-							case SDLK_t:
-								rend.writeAllFiles();
-								//~ grid.writeFile("test");
-								break;
-								
-							case SDLK_p:
-								std::cout << grid0.height() << std::endl;
-							
-								std::cout << "front : " << std::endl;
-								std::cout << player.m_FrontVector.x << std::endl;
-								std::cout << player.m_FrontVector.y << std::endl;
-								std::cout << player.m_FrontVector.z << std::endl << std::endl;
-								
-								std::cout << "near normal : " << std::endl;
-								std::cout << player.m_frustumNearPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumNearPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumNearPlaneNormal.z << std::endl << std::endl;
-								
-								std::cout << "far normal : " << std::endl;
-								std::cout << player.m_frustumFarPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumFarPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumFarPlaneNormal.z << std::endl << std::endl;
-								
-								std::cout << "left normal : " << std::endl;
-								std::cout << player.m_frustumLeftPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumLeftPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumLeftPlaneNormal.z << std::endl << std::endl;
-								
-								std::cout << "right normal : " << std::endl;
-								std::cout << player.m_frustumRightPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumRightPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumRightPlaneNormal.z << std::endl << std::endl;
-								
-								std::cout << "top normal : " << std::endl;
-								std::cout << player.m_frustumTopPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumTopPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumTopPlaneNormal.z << std::endl << std::endl;
-								
-								std::cout << "bottom normal : " << std::endl;
-								std::cout << player.m_frustumBottomPlaneNormal.x << std::endl;
-								std::cout << player.m_frustumBottomPlaneNormal.y << std::endl;
-								std::cout << player.m_frustumBottomPlaneNormal.z << std::endl << std::endl;
 								break;
 								
 							default:
@@ -693,7 +637,7 @@ int main(int argc, char** argv) {
 		
 	} // end events
 		
-	//~ rend.writeAllFiles(); // auto save !
+	rend.writeAllFiles(); // auto save !
     
     SDL_Quit();
     

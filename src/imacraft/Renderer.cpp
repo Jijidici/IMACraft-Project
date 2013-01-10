@@ -43,8 +43,8 @@ namespace imacraft{
 		
 		TerrainGrid *currentGrid = m_vecGrid[0];
 		
-		//~ for(size_t i = 0; i < m_vecGrid.size(); ++i){
-		for(size_t i = 0; i < 3; ++i){ // remplacer par la ligne commentée au dessus
+		for(size_t i = 0; i < m_vecGrid.size(); ++i){
+		//~ for(size_t i = 0; i < 3; ++i){ // remplacer par la ligne commentée au dessus
 			
 			currentGrid = m_vecGrid[i];
 			
