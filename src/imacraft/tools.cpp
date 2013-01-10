@@ -136,15 +136,7 @@ bool loadGrids(int northPos, int eastPos, std::vector<imacraft::TerrainGrid*> &v
 
 	strcat(northWestPath,".data");
 	
-	std::cout << centerPath << std::endl;
-	std::cout << northPath << std::endl;
-	std::cout << southPath << std::endl;
-	std::cout << eastPath << std::endl;
-	std::cout << westPath << std::endl;
-	std::cout << northEastPath << std::endl;
-	std::cout << southEastPath << std::endl;
-	std::cout << southWestPath << std::endl;
-	std::cout << northWestPath << std::endl;
+	std::cout << "Loaded and created grids : " << std::endl;
 	
 	if(!(*vecGrid[CENTER]).readFile(centerPath)) return false;
 	if(!(*vecGrid[NORTH]).readFile(northPath)) return false;

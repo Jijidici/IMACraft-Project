@@ -371,7 +371,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -386,7 +385,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -401,7 +399,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -416,7 +413,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(moveStep);
 					if(exitSide){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -434,7 +430,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -449,7 +444,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -464,7 +458,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -479,7 +472,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveLeft(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -497,7 +489,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -512,7 +503,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -527,7 +517,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -542,7 +531,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -560,7 +548,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -575,7 +562,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -590,7 +576,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){
@@ -605,7 +590,6 @@ int main(int argc, char** argv) {
 				}else{
 					int exitSide = player.moveFront(-moveStep);
 					if(exitSide != 0){
-						std::cout << "changeGrid !!" << std::endl;
 						lMage.updatePtLightsPosition(exitSide);
 						rend.writeAllFiles();
 						if(loadGrids(player.getCurrentNorthPosition(), player.getCurrentEastPosition(), vecGrid) == false){

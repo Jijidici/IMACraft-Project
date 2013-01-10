@@ -47,12 +47,8 @@ namespace imacraft{
 		while(findNorth != std::string::npos){
 			findNorth = stringToCompare.find("N", findNorth+1);
 			++northCount;
-			//~ if(findNorth != std::string::npos){ // if found
-				//~ std::cout << "position N : " << findNorth << std::endl;
-			//~ }
 		}
 		m_northPosition = northCount;
-		//~ std::cout << "northCount : " << northCount << std::endl;
 		
 		while(findSouth != std::string::npos){
 			findSouth = stringToCompare.find("S", findSouth+1);
@@ -74,7 +70,7 @@ namespace imacraft{
 		
 		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
-			std::cout << "[!] > Unable to read the terrain_data file : " << path << std::endl;
+			std::cout << "Created : " << path << std::endl;
 			//~ return EXIT_FAILURE;
 			/****************************************************/
 			/*													*/
@@ -112,7 +108,9 @@ namespace imacraft{
 			test_fic = fread(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
 		
 			fclose(rDataFile);
-
+			
+			std::cout << "Read : " << path << std::endl;
+			
 			if(!test_fic) return false;
 			else return true;
 		}
@@ -152,10 +150,8 @@ namespace imacraft{
 		uint16_t tempFAKE = TERRAIN_WIDTH;
 
 		test_fic = fwrite(&tempFAKE, sizeof(uint16_t), 1, wDataFile);
-		std::cout << "written elelments : " << test_fic << std::endl;
 		
 		test_fic = fwrite(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, wDataFile);
-		std::cout << "written elelments : " << test_fic << std::endl;
 		
 		fclose(wDataFile);
 
