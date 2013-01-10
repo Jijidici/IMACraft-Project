@@ -82,18 +82,51 @@ namespace imacraft{
 			
 			/****** TEST ******/ // terrain plat ! A la place, mettre la génération aléatoire
 			delete[] m_data;
-			m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
-			for(int i = 0; i < TERRAIN_WIDTH; ++i){
-				for(int j = 0; j < TERRAIN_WIDTH; ++j){
-					for(int k = 0; k < TERRAIN_HEIGHT; ++k){
-						if(j <= 16){
-							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 1;
-						}else{
-							m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 0;
-						}
-					}
+			//~ m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
+			//~ for(int i = 0; i < TERRAIN_WIDTH; ++i){
+				//~ for(int j = 0; j < TERRAIN_WIDTH; ++j){
+					//~ for(int k = 0; k < TERRAIN_HEIGHT; ++k){
+						//~ if(j <= 16){
+							//~ m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 1;
+						//~ }else{
+							//~ m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 0;
+						//~ }
+					//~ }
+				//~ }
+			//~ }
+			
+			/********* OCEANE *********/
+			
+			int i,j,k,lift = 0;
+			// TERRAIN_WIDTH, TERRAIN_HEIGHT
+			uint16_t w = 32;
+			uint16_t h = 32;
+			m_data = new u_int8_t[w*w*h];
+
+
+			// Generate flat surface
+			j = 15;
+			for(k=0;k<=31;++k){
+				for(i=0;i<=31;++i){
+					m_data[k*w*h + j*w + i]=1;
 				}
 			}
+
+			// Randomly move the cube up or down
+			for(k=0;k<=31;++k){
+				for(i=0;i<=31;++i){
+					srand(time(NULL));
+					lift = rand() %3 - 1;
+					m_data[k*w*h + (j+lift)*w + i]=1;
+					// In case the cube moved downwards, delete previous cube from the flat surface
+					if(lift==-1){m_data[k*w*h + j*w + i]=0;}
+				}	
+			}
+			
+			/********* FIN *********/
+			
+			
+			
 			/****** FIN TEST ******/
 			
 		}else{
