@@ -9,7 +9,7 @@
 
 namespace imacraft{
 
-	Player::Player() : m_nearDistance(0.00001), m_farDistance(1.0), m_verticalFieldOfView(90.0){
+	Player::Player() : m_nearDistance(0.00001), m_farDistance(3.0), m_verticalFieldOfView(90.0){
 		m_Position = glm::vec3(1+CUBE_SIZE/2, 5*CUBE_SIZE, 1+CUBE_SIZE/2);
 		m_fPhi = PI;
 		m_fTheta = 0;
