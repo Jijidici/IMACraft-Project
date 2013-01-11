@@ -43,6 +43,8 @@ namespace imacraft{
 			~TerrainGrid();
 			uint8_t operator[](size_t idx) const;
 			uint8_t& operator[](size_t idx);
+			bool hidden(size_t idx) const;
+			void unhideArroundCubes(size_t idx);
 			bool readFile(const char*);
 			bool writeFile(const char*);
 			uint32_t length() const;

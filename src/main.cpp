@@ -302,6 +302,8 @@ int main(int argc, char** argv) {
 									if((*vecGrid[idxGridClicked])[idxCubeToDestroy] != 4){
 										(*vecGrid[idxGridClicked]).removeCube(player.getSeenPosInCube());
 										sp.playDestroyCube();
+										//set the cube arround as not hidden
+										(*vecGrid[idxGridClicked]).unhideArroundCubes(idxCubeToDestroy);
 									}
 								}
 								break;

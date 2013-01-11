@@ -67,7 +67,7 @@ namespace imacraft{
 					for(uint16_t k=0;k<currentGrid->width();++k){
 						uint32_t currentCube = k*currentGrid->width()*currentGrid->height() + j*currentGrid->width() + i;
 						/* If there is a bloc */
-						if((*currentGrid)[currentCube] != 0){
+						if((*currentGrid)[currentCube] != 0 && !(*currentGrid).hidden(currentCube)){
 							if(player.frustumTest(i, j, k, (*currentGrid).width(), (*currentGrid).getNorthPos(), (*currentGrid).getEastPos())){ // if if the camera's field of view
 								vs.push();
 									/* Compute the MV matrix*/

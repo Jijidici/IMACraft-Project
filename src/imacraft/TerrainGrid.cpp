@@ -30,6 +30,23 @@ namespace imacraft{
 		return m_data[idx].type;
 	}
 	
+	bool TerrainGrid::hidden(size_t idx) const{
+		return m_data[idx].hidden;
+	}
+	
+	void TerrainGrid::unhideArroundCubes(size_t idx){
+		int k = idx/(TERRAIN_HEIGHT*TERRAIN_WIDTH);
+		int reste = idx%(TERRAIN_HEIGHT*TERRAIN_WIDTH);
+		int j = reste/TERRAIN_WIDTH;
+		int i = reste%TERRAIN_WIDTH;
+		if(k+1 < 32){ m_data[(k+1)*TERRAIN_HEIGHT*TERRAIN_WIDTH+j*TERRAIN_WIDTH+i].hidden = false; }
+		if(k-1 >= 0){ m_data[(k-1)*TERRAIN_HEIGHT*TERRAIN_WIDTH+j*TERRAIN_WIDTH+i].hidden = false; }
+		if(j+1 < 32){ m_data[k*TERRAIN_HEIGHT*TERRAIN_WIDTH+(j+1)*TERRAIN_WIDTH+i].hidden = false; }
+		if(j-1 >= 0){ m_data[k*TERRAIN_HEIGHT*TERRAIN_WIDTH+(j-1)*TERRAIN_WIDTH+i].hidden = false; }
+		if(i+1 < 32){ m_data[k*TERRAIN_HEIGHT*TERRAIN_WIDTH+j*TERRAIN_WIDTH+i+1].hidden = false; }
+		if(i-1 >= 0){ m_data[k*TERRAIN_HEIGHT*TERRAIN_WIDTH+j*TERRAIN_WIDTH+i-1].hidden = false; }
+	}
+	
 	bool TerrainGrid::readFile(const char* fileName){
 		FILE *rDataFile = NULL;
 		char path[80] = "terrain_data/";
@@ -208,24 +225,22 @@ namespace imacraft{
 		Bloc* data = new Bloc[w*w*h];
 		srand(time(NULL));
 		
-		int nbStep = rand()%5 +1;
-		int altitude = rand()%6 +1;
-		int sign = 0;
-		if(rand()%100 <50){
-			sign = -1;
-		}else{
-			sign = 1;
-		}
-		
-		glm::vec2 upper = glm::vec2(rand()%16 + 8, rand()%16 + 8); 
-		
-		j = 15;
-		for(k=0;k<31;++k){
-			for(i=0;i<31;++i){
-				data[k*w*h + j*w + i].type = 1;
+		// Generate the cube and randomly move it up or down
+		j=15;
+		for(k=0;k<=31;++k){
+			for(i=0;i<=31;++i){
+				lift = rand() %100;
+				if(lift>98 && j<31){
+					++j;
+				}
+
+				if(lift<=1 && j>0){
+					--j;
+				}
+				data[k*w*h + j*w + i].type=1;
 			}
 		}
-
+		
 		// Fill lower cubes
 		for(k=0;k<=31;++k){
 			for(i=0;i<=31;++i){
@@ -248,7 +263,22 @@ namespace imacraft{
 				}
 			}
 		}
-
+	
+		//set the hidden property
+		for(k=1;k<31;++k){
+			for(j=1;j<31;++j){
+				for(i=1;i<31;++i){
+					if(data[(k+1)*w*h + j*w + i].type !=0 &&
+					   data[(k-1)*w*h + j*w + i].type !=0 &&
+					   data[k*w*h + (j+1)*w + i].type !=0 &&
+					   data[k*w*h + (j-1)*w + i].type !=0 &&
+					   data[k*w*h + j*w + i+1].type !=0 &&
+					   data[k*w*h + j*w + i-1].type !=0){
+						data[k*w*h + j*w + i].hidden = true;
+					}
+				}
+			}
+		}
 		return data;
 	}
 }
