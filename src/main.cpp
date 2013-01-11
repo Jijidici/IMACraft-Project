@@ -43,6 +43,9 @@ void printHelp(){
 	std::cout << "Mouse wheel up / down : change cube type" << std::endl;
 	std::cout << "Middle mouse button : place a torch" << std::endl;
 	std::cout << "O : remove first torch placed (then following)" << std::endl;
+	std::cout << "M / P : change the far frustum distance" << std::endl;
+	std::cout << std::endl;
+	std::cout << "Don't be afraid if your stucked in a cube ! Jump !" << std::endl;
 	
 	std::cout << std::endl;
 }
