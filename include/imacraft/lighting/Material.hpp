@@ -24,7 +24,7 @@ namespace imacraft{
 		void getLocations(const char* uniform, const GLuint program);
 	};
 	
-	/* Envoie du materiau a la carte graphique */
+	/* Sending to the GPU*/
 	void sendMaterial(const Material& material, const MaterialUniform& materialUniform);
 }
 

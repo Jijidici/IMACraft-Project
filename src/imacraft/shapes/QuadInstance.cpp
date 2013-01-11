@@ -1,5 +1,4 @@
 #include "imacraft/shapes/QuadInstance.hpp"
-
 #include "imacraft/shapes/CommonInstance.hpp"
 
 
@@ -35,7 +34,7 @@ namespace imacraft{
 		vertices[5].normal.x = 0.f; vertices[5].normal.y = 0.f; vertices[5].normal.z = 1.f;
 		vertices[5].texCoords.x = 0.f; vertices[5].texCoords.y = 0.f; 
 		
-		//Creation du VBO
+		//VBO creation
 		vbo = 0;
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -46,7 +45,7 @@ namespace imacraft{
 		MVvbo = 0;
 		glGenBuffers(1, &MVvbo);
 		
-		//Creation du VAO
+		//VAO creation
 		vao = 0;
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
@@ -81,7 +80,7 @@ namespace imacraft{
 		glDeleteVertexArrays(1, &vao);
 	}
 	
-	//Dessin
+	//Drawing
 	void QuadInstance::draw(uint32_t nbInstances, glm::mat4* MVMatrices){
 		glBindBuffer(GL_ARRAY_BUFFER, MVvbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4)*nbInstances, MVMatrices, GL_DYNAMIC_DRAW);

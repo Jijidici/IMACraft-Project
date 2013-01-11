@@ -89,16 +89,6 @@ namespace imacraft{
 		rDataFile = fopen(path, "rb");
 		if(NULL == rDataFile){
 			std::cout << "Created : " << path << std::endl;
-			//~ return EXIT_FAILURE;
-			/****************************************************/
-			/*													*/
-			/*	Mettre la fonction pour générer le 				*/
-			/*  terrain aléatoire à la place du EXIT_FAILURE	*/
-			/* 	Garder un return false si la gen échoue			*/
-			/*													*/
-			/****************************************************/
-			
-			/****** TEST ******/ // terrain plat ! A la place, mettre la génération aléatoire
 			delete[] m_data;
 			
 			m_data = randomGen();

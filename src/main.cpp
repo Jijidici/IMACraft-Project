@@ -13,7 +13,7 @@
 
 #include "imacraft/shader_tools.hpp"
 #include "imacraft/MatrixStack.hpp"
-#include "imacraft/cameras/FreeFlyCamera.hpp" 
+
 #include "imacraft/Player.hpp" 
 #include "imacraft/Renderer.hpp"
 #include "imacraft/TerrainGrid.hpp"
@@ -39,13 +39,13 @@ int main(int argc, char** argv) {
      * INITIALISATION DU PROGRAMME
      ********************************************************************/
      
-    // Initialisation de la SDL
+    // Initialization of the SDL
     SDL_Init(SDL_INIT_VIDEO);
     
-    // Creation de la fenêtre et d'un contexte OpenGL
+    // Creation of the OpenGL context
     SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BYTES_PER_PIXEL, SDL_OPENGL);
 	
-    // Initialisation de GLEW
+    // Initialization of GLEW
     GLenum error;
     if(GLEW_OK != (error = glewInit())) {
         std::cerr << "Impossible d'initialiser GLEW: " << glewGetErrorString(error) << std::endl;
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     glDepthFunc(GL_LEQUAL);
     glClearColor(0.5f, 0.5f, 0.5f, 1.f);
     
-    // Creation des ressources OpenGL    
+    // Creation of the openGL resources   
     GLuint program = imac2gl3::loadProgram("shaders/transform.vs.glsl", "shaders/normalcolor.fs.glsl");
     if(!program){
 		return (EXIT_FAILURE);
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     GLuint PLocation = glGetUniformLocation(program, "uPMatrix");
     glm::mat4 P = glm::perspective(90.f, WINDOW_WIDTH / (float) WINDOW_HEIGHT, 0.001f, 1000.f);
 	
-	//~ FreeFlyCamera
+  	//Player
     imacraft::Player player;
     
     /* Physical terrain */
@@ -149,57 +149,56 @@ int main(int argc, char** argv) {
     sp.init();
     sp.playMusic();
     
-    //variable d'events
-	bool is_lKeyPressed = false;
-	bool is_rKeyPressed = false;
-	bool is_uKeyPressed = false;
-	bool is_dKeyPressed = false;
-	float ffC_angleY = 0;
-	float old_positionX = 0.;
-	float new_positionX = 0.;
-	float new_positionY = 0.;
-	float gravity = -0.02;
-	bool onTheGround = false;
-	bool jump = false;
+    //Events variables
+		bool is_lKeyPressed = false;
+		bool is_rKeyPressed = false;
+		bool is_uKeyPressed = false;
+		bool is_dKeyPressed = false;
+		float ffC_angleY = 0;
+		float old_positionX = 0.;
+		float new_positionX = 0.;
+		float new_positionY = 0.;
+		float gravity = -0.02;
+		bool onTheGround = false;
+		bool jump = false;
     int idxGridClicked = -1;
     float moveStep = 0.009;
     
-    // Boucle principale
+    // Main loop
     bool done = false;
     while(!done) {
 		
-		// Initilisation compteur
+		// Count
 		Uint32 start = 0;
 		Uint32 end = 0;
 		Uint32 ellapsedTime = 0;
 		start = SDL_GetTicks();
     
-    // Nettoyage de la fenêtre
+    // Cleaning of the window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     MatrixStack viewStack;
     viewStack.set(player.getViewMatrix());
 		
 		sendMaterial(cubeMat, cubeMatUniform);
 		
-		/********* AFFICHAGE **********/
+		/********* DISPLAY **********/
 		viewStack.push();
 			lMage.sendLights(program, viewStack.top());
 			
 			rend.render(program, P, viewStack, PLocation, player, lMage);
 		viewStack.pop();
 		
-        // Mise à jour de l'affichage
-        SDL_GL_SwapBuffers();
+    //Display update
+    SDL_GL_SwapBuffers();
         
-        //affichage position du perso i,j,k
 		player.computeCubePosition( (*vecGrid[CENTER]).width(),(*vecGrid[CENTER]).height() );
 
 		SDL_WM_GrabInput(SDL_GRAB_ON);
 		SDL_ShowCursor(SDL_DISABLE);
 
-        // Boucle de gestion des évenements
-        SDL_Event e;
-        while(SDL_PollEvent(&e)) {
+    //Gestion of the events
+    SDL_Event e;
+    while(SDL_PollEvent(&e)) {
 			switch(e.type){
 				case SDL_QUIT:
 					done = true;
@@ -338,7 +337,7 @@ int main(int argc, char** argv) {
 								}
 								break;
 							
-							//increase and decreas the field of view
+							//increase and decrease the viewfield
 							case SDL_BUTTON_WHEELUP:
 								player.changeBlocTex(true);
 								sp.playChangeBloc();
@@ -401,13 +400,8 @@ int main(int argc, char** argv) {
 			onTheGround = true;
 		}
 		
-		/*if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + (player.getCubePosition().y+1)*(*vecGrid[CENTER]).width() + player.getCubePosition().x] != 0){									
-		  player.blockY(player.getCubePosition().y);
-		}*/
-
-    
-		//GESTION DES COLLISIONS
-		//GAUCHE
+		//COLLISIONS
+		//LEFT
 		if(is_lKeyPressed){
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x+1] !=0) {
@@ -466,7 +460,7 @@ int main(int argc, char** argv) {
 				}
 			}
 		} // end left
-		//DROITE
+		//RIGHT
 		if(is_rKeyPressed){
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[player.getCubePosition().z*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x-1] !=0) {
@@ -525,7 +519,7 @@ int main(int argc, char** argv) {
 				}
 			}
 		} // end right
-		//EN AVANT
+		//FRONT
 		if(is_uKeyPressed){
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z +1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
@@ -584,7 +578,7 @@ int main(int argc, char** argv) {
 				}
 			}
 		} // end front
-		//EN ARRIERE
+		//BACK
 		if(is_dKeyPressed){ 
 			if(player.getViewAngle() >= -PI/4 && player.getViewAngle() < PI/4){
 				if((*vecGrid[CENTER])[(player.getCubePosition().z -1)*(*vecGrid[CENTER]).width()*(*vecGrid[CENTER]).height() + player.getCubePosition().y*(*vecGrid[CENTER]).width() + player.getCubePosition().x] !=0) {
@@ -644,7 +638,7 @@ int main(int argc, char** argv) {
 			}
 		} // end right
 		
-		//Gestion rotation
+		//Rotation
 		if(new_positionX >= WINDOW_WIDTH-1){
 			SDL_WarpMouse(0, new_positionY);
 			old_positionX = 0-(old_positionX - new_positionX);
@@ -657,18 +651,18 @@ int main(int argc, char** argv) {
 		player.rotateLeft((old_positionX - new_positionX)*0.6);
 		old_positionX = new_positionX;
 
-		// Gestion compteur
+		//Count
 		end = SDL_GetTicks();
 		ellapsedTime = end - start;
 		if(ellapsedTime < MIN_LOOP_TIME){
 			SDL_Delay(MIN_LOOP_TIME - ellapsedTime);
 		}
 		
-	} // end events
+	} //end events
 		
 	rend.writeAllFiles(); // auto save !
     
-    SDL_Quit();
+  SDL_Quit();
     
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }

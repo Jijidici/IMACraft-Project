@@ -11,7 +11,7 @@ namespace imacraft{
 		
 		GLfloat hS = 0.5f;
 		
-		//Face avant
+		//Front face
 		vertices[0].position.x = -hS; vertices[0].position.y = -hS; vertices[0].position.z = hS;
 		vertices[0].normal.x = 0.f; vertices[0].normal.y = 0.f; vertices[0].normal.z = 1.f;
 		vertices[0].texCoords.x = 0.f; vertices[0].texCoords.y = 0.99f; 
@@ -37,7 +37,7 @@ namespace imacraft{
 		vertices[5].texCoords.x = 0.f; vertices[5].texCoords.y = 0.99f; 
 		
 		
-		//Face arriere
+		//Back face
 		vertices[6].position.x = -hS; vertices[6].position.y = -hS; vertices[6].position.z = -hS;
 		vertices[6].normal.x = 0.f; vertices[6].normal.y = 0.f; vertices[6].normal.z = -1.f;
 		vertices[6].texCoords.x = 0.16f; vertices[6].texCoords.y = 0.99f; 
@@ -63,7 +63,7 @@ namespace imacraft{
 		vertices[11].texCoords.x = 0.16f; vertices[11].texCoords.y = 0.99f; 
 		
 		
-		//Face gauche
+		//Left face
 		vertices[12].position.x = -hS; vertices[12].position.y = -hS; vertices[12].position.z = -hS;
 		vertices[12].normal.x = -1.f; vertices[12].normal.y = 0.f; vertices[12].normal.z = 0.f;
 		vertices[12].texCoords.x = 0.32f; vertices[12].texCoords.y = 0.99f; 
@@ -89,7 +89,7 @@ namespace imacraft{
 		vertices[17].texCoords.x = 0.32f; vertices[17].texCoords.y = 0.99f; 
 		
 		
-		//Face droite
+		//Right face
 		vertices[18].position.x = hS; vertices[18].position.y = -hS; vertices[18].position.z = -hS;
 		vertices[18].normal.x = 1.f; vertices[18].normal.y = 0.f; vertices[18].normal.z = 0.f;
 		vertices[18].texCoords.x = 0.48f; vertices[18].texCoords.y = 0.99f; 
@@ -115,7 +115,7 @@ namespace imacraft{
 		vertices[23].texCoords.x = 0.48f; vertices[23].texCoords.y = 0.99f;
 		
 		
-		//Face bas
+		//Down face
 		vertices[24].position.x = -hS; vertices[24].position.y = -hS; vertices[24].position.z = -hS;
 		vertices[24].normal.x = 0.f; vertices[24].normal.y = -1.f; vertices[24].normal.z = 0.f;
 		vertices[24].texCoords.x = 0.68f; vertices[24].texCoords.y = 0.99f; 
@@ -141,7 +141,7 @@ namespace imacraft{
 		vertices[29].texCoords.x = 0.68f; vertices[29].texCoords.y = 0.99f;
 		
 		
-		//Face haute
+		//Up face
 		vertices[30].position.x = -hS; vertices[30].position.y = hS; vertices[30].position.z = -hS;
 		vertices[30].normal.x = 0.f; vertices[30].normal.y = 1.f; vertices[30].normal.z = 0.f;
 		vertices[30].texCoords.x = 0.84f; vertices[30].texCoords.y = 0.99f; 
@@ -166,7 +166,7 @@ namespace imacraft{
 		vertices[35].normal.x = 0.f; vertices[35].normal.y = 1.f; vertices[35].normal.z = 0.f;
 		vertices[35].texCoords.x = 0.84f; vertices[35].texCoords.y = 0.99f;
 		
-		//Creation du VBO
+		//VBO creation
 		vbo = 0;
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -177,7 +177,7 @@ namespace imacraft{
 		MVvbo = 0;
 		glGenBuffers(1, &MVvbo);
 		
-		//Creation du VAO
+		//VAO creation
 		vao = 0;
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
@@ -212,7 +212,7 @@ namespace imacraft{
 		glDeleteVertexArrays(1, &vao);
 	}
 	
-	//Dessin
+	//Drawing
 	void CubeInstance::draw(uint32_t nbInstances, glm::mat4* MVMatrices){
 		glBindBuffer(GL_ARRAY_BUFFER, MVvbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4)*nbInstances, MVMatrices, GL_DYNAMIC_DRAW);

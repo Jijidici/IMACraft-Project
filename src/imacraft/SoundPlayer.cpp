@@ -88,19 +88,3 @@ namespace imacraft{
 		Mix_PlayChannel(-1, jump, 0);
 	}
 }
-
-/*
-		private:
-			int nbSound;
-			Mix_Music* bo;
-			Mix_Chunk* putCube;
-			Mix_Chunk* destroyCube;
-			Mix_Chunk* putTorch;
-			Mix_Chunk* changeBloc;
-			
-		public:
-			SoundPlayer();
-			~SoundPlayer();
-			void init(char* filename);
-			void playMusic();
-			void playSound(int idxSound);*/

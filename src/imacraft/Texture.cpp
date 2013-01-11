@@ -17,7 +17,7 @@ Texture::Texture(const char* path, GLuint& program) : m_path(path), m_program(pr
 SDL_Surface* Texture::loadImage(){
 	SDL_Surface* image = IMG_Load(m_path);
 	if(!image){
-		std::cout << "Impossible de charger l'image : " << m_path << std::endl;
+		std::cout << "Unable to load the image : " << m_path << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	
@@ -57,7 +57,7 @@ void Texture::sendTextureToGPU(){
 }
 
 void Texture::getUniformSamplerLocation(){
-	glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), 0); // !!! 0 à changer pour textureIndex ??
+	glUniform1i(glGetUniformLocation(m_program, "uTextureSampler0"), 0);
 	
 }
 

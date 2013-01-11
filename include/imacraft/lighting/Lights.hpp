@@ -37,7 +37,7 @@ namespace imacraft{
 		void getLocations(const char* uniform, const GLuint program);
 	};
 	
-	/* Envoie à la carte graphique */
+	/* Sending to the GPU */
 	void sendDirectionalLight(const DirectionalLight& dl, const DirectionalLightUniform& dlUniform);
 	void sendPointLight(const PointLight& dl, const PointLightUniform& dlUniform);
 }
