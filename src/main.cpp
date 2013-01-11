@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <string>
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
@@ -30,11 +31,53 @@
 #define PI 3.14159265
 
 static const Uint32 MIN_LOOP_TIME = 1000/60;
-static const size_t WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
+static const size_t WINDOW_WIDTH = 1280, WINDOW_HEIGHT = 1024;
 static const size_t BYTES_PER_PIXEL = 32;
 
+void printHelp(){
+	std::cout << std::endl << "------------- HELP --------------" << std::endl << std::endl;
+	std::cout << "ZSQD : move" << std::endl;
+	std::cout << "Space : jump" << std::endl;
+	std::cout << "Left-click : place a cube" << std::endl;
+	std::cout << "Right-click : mine a cube" << std::endl;
+	std::cout << "Mouse wheel up / down : change cube type" << std::endl;
+	std::cout << "Middle mouse button : place a torch" << std::endl;
+	std::cout << "O : remove first torch placed (then following)" << std::endl;
+	std::cout << "M / P : change the far frustum distance" << std::endl;
+	std::cout << std::endl;
+	std::cout << "Don't be afraid if your stucked in a cube ! Jump !" << std::endl;
+	
+	std::cout << std::endl;
+}
 
 int main(int argc, char** argv) {
+	
+	if(argc > 1){
+		char** imagePath = new char*[argc];
+		std::string* tabArguments = new std::string[argc];
+		
+		
+		for(uint8_t i = 0; i < argc-1; ++i){
+			tabArguments[i] = argv[i+1];
+			imagePath[i] = argv[i+1];
+			
+			// help
+			size_t findHelp = tabArguments[i].find("-help");
+			if(findHelp != std::string::npos){
+				printHelp();
+				return(EXIT_SUCCESS);
+			}
+			
+		} // end args browsing
+		
+		delete[] tabArguments;
+		delete[] imagePath;
+	}else{
+		std::cout << "--- Enter -help when launching the program to display the help ---" << std::endl << std::endl;
+	} // end OPTIONS
+	
+	
+	
     /********************************************************************
      * INITIALISATION DU PROGRAMME
      ********************************************************************/
