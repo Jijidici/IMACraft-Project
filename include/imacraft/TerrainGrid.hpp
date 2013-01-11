@@ -23,6 +23,7 @@ namespace imacraft{
 		//STATIC METHOD
 		static glm::ivec3 getCubeIntegerPosition(const glm::vec3 position);
 		static glm::vec3 getCubeFloatPosition(const glm::ivec3 cube);
+		static uint8_t* randomGen();
 		
 		private:
 			uint8_t *m_data;

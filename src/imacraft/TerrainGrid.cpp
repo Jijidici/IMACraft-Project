@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string.h>
+#include <ctime>
 #include <stdint.h>
 #include <stdio.h>
 #include <glm/glm.hpp>
@@ -82,52 +83,8 @@ namespace imacraft{
 			
 			/****** TEST ******/ // terrain plat ! A la place, mettre la génération aléatoire
 			delete[] m_data;
-			//~ m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
-			//~ for(int i = 0; i < TERRAIN_WIDTH; ++i){
-				//~ for(int j = 0; j < TERRAIN_WIDTH; ++j){
-					//~ for(int k = 0; k < TERRAIN_HEIGHT; ++k){
-						//~ if(j <= 16){
-							//~ m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 1;
-						//~ }else{
-							//~ m_data[k*TERRAIN_WIDTH*TERRAIN_HEIGHT + j*TERRAIN_WIDTH + i] = 0;
-						//~ }
-					//~ }
-				//~ }
-			//~ }
 			
-			/********* OCEANE *********/
-			
-			int i,j,k,lift = 0;
-			// TERRAIN_WIDTH, TERRAIN_HEIGHT
-			uint16_t w = 32;
-			uint16_t h = 32;
-			m_data = new u_int8_t[w*w*h];
-
-
-			// Generate flat surface
-			j = 15;
-			for(k=0;k<=31;++k){
-				for(i=0;i<=31;++i){
-					m_data[k*w*h + j*w + i]=1;
-				}
-			}
-
-			// Randomly move the cube up or down
-			for(k=0;k<=31;++k){
-				for(i=0;i<=31;++i){
-					srand(time(NULL));
-					lift = rand() %3 - 1;
-					m_data[k*w*h + (j+lift)*w + i]=1;
-					// In case the cube moved downwards, delete previous cube from the flat surface
-					if(lift==-1){m_data[k*w*h + j*w + i]=0;}
-				}	
-			}
-			
-			/********* FIN *********/
-			
-			
-			
-			/****** FIN TEST ******/
+			m_data = randomGen();
 			
 		}else{
 			size_t test_fic = 0;
@@ -241,6 +198,58 @@ namespace imacraft{
 		float y = (cube.y*CUBE_SIZE)-1.;
 		float z = (cube.z*CUBE_SIZE)-1.;
 		return glm::vec3(x, y, z);
+	}
+	
+	uint8_t* TerrainGrid::randomGen(){
+		int i,j,k,l,lift = 0;
+		// TERRAIN_WIDTH, TERRAIN_HEIGHT
+		uint16_t w = 32;
+		uint16_t h = 32;
+		uint8_t* data = new uint8_t[w*w*h];
+		srand(time(NULL));
+
+
+		// Generate the cube and randomly move it up or down
+		j=15;
+		for(k=0;k<=31;++k){
+			for(i=0;i<=31;++i){
+				lift = rand() %100;
+				if(lift>=98 && j<31){
+					++j;
+				}
+				
+				if(lift<=1 && j>0){
+					--j;
+				}
+				data[k*w*h + j*w + i]=1;
+			}
+		}
+
+
+		// Fill lower cubes
+		for(k=0;k<=31;++k){
+			for(i=0;i<=31;++i){
+				for(j=31;j>=0;--j){
+					if(data[k*w*h + j*w + i] != 0){
+						// Fill the two following cubes with type 1
+						for(l=j;l>=j-2;--l){
+							data[k*w*h + l*w + i]=1;
+						}
+						// Fill the following cubes with type 2
+						for(l=j-3;l>=0;--l){
+							if (l<=1){
+								data[k*w*h + l*w + i]=4;
+							}else{
+								data[k*w*h + l*w + i]=2;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		return data;
 	}
 }
 

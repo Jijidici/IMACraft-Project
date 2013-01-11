@@ -284,7 +284,7 @@ int main(int argc, char** argv) {
 						new_positionY = e.motion.y;
 						ffC_angleY = 0.6f*(WINDOW_HEIGHT/2. - e.motion.y);
 						if(ffC_angleY >= 90) ffC_angleY = 90;
-						if(ffC_angleY <= -70) ffC_angleY = -70;
+						if(ffC_angleY <= -90) ffC_angleY = -90;
 
 						player.rotateUp(ffC_angleY);
 						
