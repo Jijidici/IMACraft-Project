@@ -16,7 +16,12 @@
 #define NORTH_WEST 8
 
 namespace imacraft{
-
+	
+	struct Bloc{
+		uint8_t type;
+		bool hidden;
+	}
+	
 	struct TerrainGrid{
 		static const uint16_t TERRAIN_WIDTH = 32;
 		static const uint16_t TERRAIN_HEIGHT = 32;
