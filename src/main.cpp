@@ -45,7 +45,7 @@ void printHelp(){
 	std::cout << "O : remove first torch placed (then following)" << std::endl;
 	std::cout << "M / P : change the far frustum distance" << std::endl;
 	std::cout << std::endl;
-	std::cout << "Don't be afraid if your stucked in a cube ! Jump !" << std::endl;
+	std::cout << "Don't be afraid if you are stuck in a cube ! Jump !" << std::endl;
 	
 	std::cout << std::endl;
 }
