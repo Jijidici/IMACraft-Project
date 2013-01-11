@@ -20,7 +20,9 @@ namespace imacraft{
 	struct Bloc{
 		uint8_t type;
 		bool hidden;
-	}
+		
+		Bloc():type(0), hidden(false){}
+	};
 	
 	struct TerrainGrid{
 		static const uint16_t TERRAIN_WIDTH = 32;
@@ -28,10 +30,10 @@ namespace imacraft{
 		//STATIC METHOD
 		static glm::ivec3 getCubeIntegerPosition(const glm::vec3 position);
 		static glm::vec3 getCubeFloatPosition(const glm::ivec3 cube);
-		static uint8_t* randomGen();
+		static Bloc* randomGen();
 		
 		private:
-			uint8_t *m_data;
+			Bloc *m_data;
 			int m_northPosition;
 			int m_northRelativePosition;
 			int m_eastPosition;

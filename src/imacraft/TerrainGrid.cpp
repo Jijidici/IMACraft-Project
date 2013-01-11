@@ -23,11 +23,11 @@ namespace imacraft{
 	}
 	
 	uint8_t TerrainGrid::operator[](size_t idx) const{
-		return m_data[idx];
+		return m_data[idx].type;
 	}
 	
 	uint8_t& TerrainGrid::operator[](size_t idx){
-		return m_data[idx];
+		return m_data[idx].type;
 	}
 	
 	bool TerrainGrid::readFile(const char* fileName){
@@ -94,8 +94,8 @@ namespace imacraft{
 			test_fic = fread(&tempFAKE, sizeof(uint16_t), 1, rDataFile);
 			
 			delete[] m_data;
-			m_data = new uint8_t[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
-			test_fic = fread(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, rDataFile);
+			m_data = new Bloc[TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT];
+			test_fic = fread(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(Bloc), 1, rDataFile);
 		
 			fclose(rDataFile);
 			
@@ -141,7 +141,7 @@ namespace imacraft{
 
 		test_fic = fwrite(&tempFAKE, sizeof(uint16_t), 1, wDataFile);
 		
-		test_fic = fwrite(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(uint8_t), 1, wDataFile);
+		test_fic = fwrite(m_data, TERRAIN_WIDTH*TERRAIN_WIDTH*TERRAIN_HEIGHT*sizeof(Bloc), 1, wDataFile);
 		
 		fclose(wDataFile);
 
@@ -176,12 +176,12 @@ namespace imacraft{
 	
 	void TerrainGrid::removeCube(glm::vec3 fPos){
 		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
-		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = 0;
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x].type = 0;
 	}
 	
 	void TerrainGrid::addCube(glm::vec3 fPos, uint8_t cubeType){
 		glm::ivec3 iPos = getCubeIntegerPosition(fPos);
-		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x] = cubeType;
+		m_data[iPos.z*TERRAIN_HEIGHT*TERRAIN_WIDTH + iPos.y*TERRAIN_WIDTH + iPos.x].type = cubeType;
 	}
 	
 	
@@ -200,47 +200,47 @@ namespace imacraft{
 		return glm::vec3(x, y, z);
 	}
 	
-	uint8_t* TerrainGrid::randomGen(){
+	Bloc* TerrainGrid::randomGen(){
 		int i,j,k,l,lift = 0;
 		// TERRAIN_WIDTH, TERRAIN_HEIGHT
 		uint16_t w = 32;
 		uint16_t h = 32;
-		uint8_t* data = new uint8_t[w*w*h];
+		Bloc* data = new Bloc[w*w*h];
 		srand(time(NULL));
-
-
-		// Generate the cube and randomly move it up or down
-		j=15;
-		for(k=0;k<=31;++k){
-			for(i=0;i<=31;++i){
-				lift = rand() %100;
-				if(lift>=98 && j<31){
-					++j;
-				}
-				
-				if(lift<=1 && j>0){
-					--j;
-				}
-				data[k*w*h + j*w + i]=1;
+		
+		int nbStep = rand()%5 +1;
+		int altitude = rand()%6 +1;
+		int sign = 0;
+		if(rand()%100 <50){
+			sign = -1;
+		}else{
+			sign = 1;
+		}
+		
+		glm::vec2 upper = glm::vec2(rand()%16 + 8, rand()%16 + 8); 
+		
+		j = 15;
+		for(k=0;k<31;++k){
+			for(i=0;i<31;++i){
+				data[k*w*h + j*w + i].type = 1;
 			}
 		}
-
 
 		// Fill lower cubes
 		for(k=0;k<=31;++k){
 			for(i=0;i<=31;++i){
 				for(j=31;j>=0;--j){
-					if(data[k*w*h + j*w + i] != 0){
+					if(data[k*w*h + j*w + i].type != 0){
 						// Fill the two following cubes with type 1
 						for(l=j;l>=j-2;--l){
-							data[k*w*h + l*w + i]=1;
+							data[k*w*h + l*w + i].type=1;
 						}
 						// Fill the following cubes with type 2
 						for(l=j-3;l>=0;--l){
 							if (l<=1){
-								data[k*w*h + l*w + i]=4;
+								data[k*w*h + l*w + i].type=4;
 							}else{
-								data[k*w*h + l*w + i]=2;
+								data[k*w*h + l*w + i].type=2;
 							}
 						}
 						break;
